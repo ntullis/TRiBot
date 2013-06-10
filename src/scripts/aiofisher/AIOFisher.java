@@ -1,6 +1,8 @@
 package scripts.aiofisher;
 
 
+import org.tribot.api.input.Mouse;
+import org.tribot.api2007.Game;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Skills;
@@ -28,7 +30,7 @@ import java.util.concurrent.TimeUnit;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = { "Merphz" }, category = "Fishing", name = "AIOFisher",version = 0.1)
+@ScriptManifest(authors = { "Merphz" }, category = "Fishing", name = "AIOFisher",version = 1.0)
 public class AIOFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -60,6 +62,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
     public States handleState(States states) {
 
         scriptState = states;
+
 
         switch (scriptState) {
             case BANK:
@@ -94,6 +97,12 @@ public class AIOFisher extends EnumScript<States> implements Painting {
 
     public States getState() {
 
+        //println("uptext = "+Game.getUptext());
+
+        if (Game.getUptext().contains("->")) {
+            println("failsafe");
+            Mouse.click(1);
+        }
 
        oldCount = Inventory.getCount(fishIDs);
 
@@ -121,8 +130,8 @@ public class AIOFisher extends EnumScript<States> implements Painting {
            if (oldCount > newCount)return States.INV_CHANGE;
            newCount = Inventory.getCount(fishIDs);
 
-           if ((GUI.powerfish || walk.fishIsNear()) && Player.getAnimation() == -1) return States.FISH;
-           else if (!GUI.powerfish &&!walk.fishIsNear() && Player.getAnimation() == -1)return States.WALK_TO_FISH;
+           if ((walk.fishIsNear()) && Player.getAnimation() == -1) return States.FISH;
+           else if (!walk.fishIsNear() && Player.getAnimation() == -1)return States.WALK_TO_FISH;
        }
 
 
@@ -170,11 +179,9 @@ public class AIOFisher extends EnumScript<States> implements Painting {
         toolEnum = GUI.getTool();
         dropMap = GUI.getDropList();
 
-        if (!GUI.powerfish) {
-            bank = new Bank(bankEnum,toolEnum);
-            walk = new Walk(bankEnum,poolEnum);
-        }
 
+        bank = new Bank(bankEnum,toolEnum);
+        walk = new Walk(bankEnum,poolEnum);
 
         newCount = Inventory.getCount(fishIDs);
 
