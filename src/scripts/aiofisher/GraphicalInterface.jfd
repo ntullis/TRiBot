@@ -1,0 +1,111 @@
+JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_10" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+			"$horizontalGroup": "par l {comp tabbedPane1::l:::x, seq t {space :::x, comp button1:::p:162:p, space :p:156:p}}"
+			"$verticalGroup": "par l {seq l {comp tabbedPane1:::::x, space :::p, comp button1:::p:38:p, space :p:7:p}}"
+		} ) {
+			name: "this"
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "button1"
+				"text": "Start"
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "button1ActionPerformed", true ) )
+			} )
+			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
+				name: "tabbedPane1"
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel1:::::x, space :p:97:p}, seq {par l {comp checkBox1:::p:85:p, comp panel2:::p::p}, space ::69:x}}, comp panel4:::::x, space :::p}}"
+					"$verticalGroup": "par l {seq {space :::p, par l {seq t {comp panel1:::::x, space u:::p, comp panel2:::p::p, space :::p, comp checkBox1:::p::p}, seq l {comp panel4:::::x, space :::p}}}}"
+				} ) {
+					name: "optionsPanel"
+					"border": new javax.swing.border.TitledBorder( "Options" )
+					"toolTipText": "Options"
+					"foreground": new java.awt.Color( 51, 51, 51, 255 )
+					auxiliary() {
+						"JavaCodeGenerator.variableName": "optionsPanel"
+					}
+					add( new FormComponent( "javax.swing.JCheckBox" ) {
+						name: "checkBox1"
+						"text": "powerfish"
+						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "powerfishActionPerformed", true ) )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox1::::140:x, space :::p}}"
+						"$verticalGroup": "par l {seq t {space :::x, comp comboBox1:::p::p, space :::p}}"
+					} ) {
+						name: "panel1"
+						"border": new javax.swing.border.TitledBorder( "Location" )
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "comboBox1"
+							"model": new javax.swing.DefaultComboBoxModel {
+								selectedItem: "Catherby"
+								addElement( "Catherby" )
+								addElement( "Al-kharid" )
+								addElement( "Draynor" )
+								addElement( "Edgeville" )
+							}
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox2:::p:168:p, space :::x}}"
+						"$verticalGroup": "par l {seq l {comp comboBox2:::p::p, space :0:15:x}}"
+					} ) {
+						name: "panel2"
+						"border": new javax.swing.border.TitledBorder( "Fish" )
+						"toolTipText": "Select fish for script to fish"
+						add( new FormComponent( "javax.swing.JComboBox" ) {
+							name: "comboBox2"
+							"model": new javax.swing.DefaultComboBoxModel {
+								selectedItem: "Bass/Mackerel/Cod/Junk"
+								addElement( "Bass/Mackerel/Cod/Junk" )
+								addElement( "Tuna" )
+								addElement( "Lobster" )
+							}
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::174:x, seq {comp button2:::p::p, space s:::p, comp textField1::::113:x}}, space :::p}}"
+						"$verticalGroup": "par l {seq l {comp scrollPane1:::p:86:p, space u:::p, par b {comp textField1::b:p::p, comp button2::b:p::p}, space :0:0:x}}"
+					} ) {
+						name: "panel4"
+						"border": new javax.swing.border.TitledBorder( "Droplist - ItemIDs" )
+						add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
+							name: "scrollPane1"
+							add( new FormComponent( "javax.swing.JList" ) {
+								name: "list1"
+								"toolTipText": "Select item and right-click to remove it"
+								"selectionMode": 0
+								addEvent( new FormEvent( "java.awt.event.MouseListener", "mouseClicked", "list1MouseClicked", true ) )
+							} )
+						} )
+						add( new FormComponent( "javax.swing.JButton" ) {
+							name: "button2"
+							"text": "Add"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "dropListButtonActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "textField1"
+						} )
+					} )
+				}, new FormLayoutConstraints( null ) {
+					"title": "Basic"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+					"$horizontalGroup": "par l {space :0:477:x}"
+					"$verticalGroup": "par l {space :0:186:x}"
+				} ) {
+					name: "panel3"
+				}, new FormLayoutConstraints( null ) {
+					"title": "Extras"
+				} )
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 15, 40 )
+			"size": new java.awt.Dimension( 495, 295 )
+		} )
+	}
+}
