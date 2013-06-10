@@ -31,10 +31,6 @@ import java.util.concurrent.TimeUnit;
 @ScriptManifest(authors = { "Merphz" }, category = "Fishing", name = "AIOFisher",version = 0.1)
 public class AIOFisher extends EnumScript<States> implements Painting {
 
-
-
-
-
     private GraphicalInterface GUI;
     private States scriptState = States.GUI;
 
@@ -42,8 +38,6 @@ public class AIOFisher extends EnumScript<States> implements Painting {
     private Walk walk;
     private Fish fish;
     private Drop drop;
-
-
 
     private Banks bankEnum;
     private FishPools poolEnum;
