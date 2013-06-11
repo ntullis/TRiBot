@@ -1,7 +1,6 @@
 package scripts.aiofisher.methods;
 
 import org.tribot.api2007.Inventory;
-import org.tribot.api2007.Projection;
 import org.tribot.api2007.types.RSItem;
 import scripts.aiofisher.enums.FishTools;
 
@@ -16,9 +15,10 @@ import java.util.HashMap;
  */
 public class Drop {
 
-    private HashMap<Integer,Integer> dropList =new HashMap<Integer,Integer>();
+    private HashMap<Integer, Integer> dropList = new HashMap<Integer, Integer>();
     private boolean power = false;
     private FishTools tool;
+
 
     public Drop(HashMap dropList, boolean power, FishTools tool) {
         this.dropList = dropList;
@@ -34,7 +34,7 @@ public class Drop {
 
             for (RSItem item : Inventory.find(Integer.parseInt(dropList.get(i).toString()))) {
                 if (item != null) {
-                    int count =  Inventory.getCount(item.getID());
+                    int count = Inventory.getCount(item.getID());
                     if (count > 0) return true;
                 }
 
@@ -44,12 +44,17 @@ public class Drop {
         return false;
     }
 
+
     public boolean dropAll() {
 
         if (power) {
             for (RSItem item : Inventory.getAll()) {
-                if (item.getID() == tool.getID() || item.getID() ==  tool.getIngredientID()) continue;
-                Inventory.drop(item.getID());
+                if (item != null) {
+                    if (item.getID() == tool.getID() || item.getID() == tool.getIngredientID()) continue;
+
+
+                }
+
             }
             return true;
         } else {
@@ -58,6 +63,7 @@ public class Drop {
                 for (RSItem item : Inventory.find(Integer.parseInt(dropList.get(i).toString()))) {
                     if (item != null) {
                         Inventory.drop(item.getID());
+
                     }
 
                 }
@@ -66,8 +72,7 @@ public class Drop {
         }
 
 
-
-      return false;
+        return false;
     }
 
 

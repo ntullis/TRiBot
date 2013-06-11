@@ -1,15 +1,16 @@
 package scripts.aiofisher;
 
 
-import org.tribot.api.input.Mouse;
-import org.tribot.api2007.Game;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Skills;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
-import scripts.aiofisher.enums.*;
+import scripts.aiofisher.enums.Banks;
+import scripts.aiofisher.enums.FishPools;
+import scripts.aiofisher.enums.FishTools;
+import scripts.aiofisher.enums.States;
 import scripts.aiofisher.methods.Bank;
 import scripts.aiofisher.methods.Drop;
 import scripts.aiofisher.methods.Fish;
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = { "Merphz" }, category = "Fishing", name = "AIOFisher",version = 1.0)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "AIOFisher", version = 1.0)
 public class AIOFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -61,6 +62,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
     @Override
     public States handleState(States states) {
 
+
         scriptState = states;
 
 
@@ -69,19 +71,21 @@ public class AIOFisher extends EnumScript<States> implements Painting {
                 bank.deposit();
                 break;
             case WALK_TO_BANK:
+                walk.toggleRun(true);
                 walk.walkToBank();
                 break;
             case FISH:
                 fish.startFishing();
                 break;
             case WALK_TO_FISH:
+                walk.toggleRun(true);
                 walk.walkToFish();
                 break;
             case DROP:
-                 drop.dropAll();
+                drop.dropAll();
                 break;
             case INV_CHANGE:
-                FISHES_CAUGHT+=(oldCount-newCount);
+                FISHES_CAUGHT += (oldCount - newCount);
                 newCount = Inventory.getCount(fishIDs);
                 break;
             case WITHDRAW_TOOLS:
@@ -99,54 +103,50 @@ public class AIOFisher extends EnumScript<States> implements Painting {
 
         //println("uptext = "+Game.getUptext());
 
-        if (Game.getUptext().contains("->")) {
+        /*if (Game.getUptext().contains("Use")) {
             println("failsafe");
             Mouse.click(1);
+            sleep(300,600);
+        }                */
+
+        oldCount = Inventory.getCount(fishIDs);
+
+
+        if (!guiDone) return States.GUI;
+        if (Inventory.isFull()) {
+            if (!dropMap.isEmpty() || GUI.powerfish) {
+                if (drop.invContainsDropItem()) {
+                    return States.DROP;
+                }
+            }
+            if (walk.bankIsNear()) return States.BANK;
+            else return States.WALK_TO_BANK;
+        } else {
+
+            if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
+                if (!walk.bankIsNear()) return States.WALK_TO_BANK;
+                else return States.WITHDRAW_TOOLS;
+
+
+            }
+
+            if (oldCount > newCount) return States.INV_CHANGE;
+            newCount = Inventory.getCount(fishIDs);
+
+            if ((walk.fishIsNear()) && Player.getAnimation() == -1) return States.FISH;
+            else if (!walk.fishIsNear() && Player.getAnimation() == -1) return States.WALK_TO_FISH;
         }
-
-       oldCount = Inventory.getCount(fishIDs);
-
-
-
-
-       if (!guiDone) return States.GUI;
-       if (Inventory.isFull()) {
-           if (!dropMap.isEmpty() || GUI.powerfish) {
-              if (drop.invContainsDropItem()) {
-                return States.DROP;
-              }
-           }
-           if (walk.bankIsNear()) return States.BANK;
-           else return States.WALK_TO_BANK;
-       } else {
-
-           if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
-               if (!walk.bankIsNear()) return States.WALK_TO_BANK;
-               else return States.WITHDRAW_TOOLS;
-
-
-           }
-
-           if (oldCount > newCount)return States.INV_CHANGE;
-           newCount = Inventory.getCount(fishIDs);
-
-           if ((walk.fishIsNear()) && Player.getAnimation() == -1) return States.FISH;
-           else if (!walk.fishIsNear() && Player.getAnimation() == -1)return States.WALK_TO_FISH;
-       }
-
 
 
         return States.IDLE;
     }
 
 
-
-
     @Override
     public States getInitialState() {
 
 
-        java.awt.EventQueue.invokeLater(new Runnable(){
+        java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
                 GUI = new GraphicalInterface();
@@ -154,7 +154,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
 
                 Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-                GUI.setLocation((screenSize.width/2)-(GUI.getSize().width/2),screenSize.height/2-(GUI.getSize().height/2));
+                GUI.setLocation((screenSize.width / 2) - (GUI.getSize().width / 2), screenSize.height / 2 - (GUI.getSize().height / 2));
 
 
                 GUI.setVisible(true);
@@ -164,9 +164,9 @@ public class AIOFisher extends EnumScript<States> implements Painting {
 
         startTime = System.currentTimeMillis();
 
-        while(true){
+        while (true) {
 
-            if(guiDone){
+            if (guiDone) {
                 break;
             }
             sleep(40, 80);
@@ -180,15 +180,15 @@ public class AIOFisher extends EnumScript<States> implements Painting {
         dropMap = GUI.getDropList();
 
 
-        bank = new Bank(bankEnum,toolEnum);
-        walk = new Walk(bankEnum,poolEnum);
+        bank = new Bank(bankEnum, toolEnum);
+        walk = new Walk(bankEnum, poolEnum);
 
         newCount = Inventory.getCount(fishIDs);
 
-        fish = new Fish(poolEnum,toolEnum);
+        fish = new Fish(poolEnum, toolEnum);
 
         if (!dropMap.isEmpty() || GUI.powerfish) {
-            drop = new Drop(dropMap,GUI.powerfish,toolEnum);
+            drop = new Drop(dropMap, GUI.powerfish, toolEnum);
         }
 
         return getState();
@@ -197,7 +197,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
     private Image getImage(String url) {
         try {
             return ImageIO.read(new URL(url));
-        } catch(IOException e) {
+        } catch (IOException e) {
             return null;
         }
     }
@@ -210,30 +210,29 @@ public class AIOFisher extends EnumScript<States> implements Painting {
     private final Image img1 = getImage("http://i.imgur.com/Exwhyeo.png");
 
 
-
     String formatMillis(long millis) {
-        return String.format("%d h, %d min, %d sec",TimeUnit.MILLISECONDS.toHours(millis),TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) -TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+        return String.format("%d h, %d min, %d sec", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
     }
 
     @Override
     public void onPaint(Graphics graphics) {
-        Graphics2D g = (Graphics2D)graphics;
+        Graphics2D g = (Graphics2D) graphics;
         g.drawImage(img1, 331, 206, null);
 
-        int gainedXP = Skills.getXP("FISHING")-startXP;
+        int gainedXP = Skills.getXP("FISHING") - startXP;
 
-        long time = System.currentTimeMillis()-startTime;
+        long time = System.currentTimeMillis() - startTime;
 
 
         g.setFont(font1);
         g.setColor(color1);
-        g.drawString("Time Running: "+formatMillis(time), 333, 224);
-        g.drawString("XP Gained: "+gainedXP, 334, 247);
-        g.drawString("XP Till Level: "+Skills.getXPToLevel("FISHING",(Skills.getCurrentLevel("FISHING")+1)), 332, 271);
-        g.drawString("Current Level: "+Skills.getCurrentLevel("FISHING"),332,296);
-        g.drawString("Fishes caught: "+FISHES_CAUGHT, 332, 321);
-        g.drawString("XP/H: "+(long)(gainedXP / (time / 3600000D)),420,321);
+        g.drawString("Time Running: " + formatMillis(time), 333, 224);
+        g.drawString("XP Gained: " + gainedXP, 334, 247);
+        g.drawString("XP Till Level: " + Skills.getXPToLevel("FISHING", (Skills.getCurrentLevel("FISHING") + 1)), 332, 271);
+        g.drawString("Current Level: " + Skills.getCurrentLevel("FISHING"), 332, 296);
+        g.drawString("Fishes caught: " + FISHES_CAUGHT, 332, 321);
+        g.drawString("XP/H: " + (long) (gainedXP / (time / 3600000D)), 420, 321);
 
     }
 }
