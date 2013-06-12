@@ -57,6 +57,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
 
     private int FISHES_CAUGHT = 0;
 
+
     public static boolean guiDone = false;
 
     @Override
@@ -78,6 +79,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
                 fish.startFishing();
                 break;
             case WALK_TO_FISH:
+
                 walk.toggleRun(true);
                 walk.walkToFish();
                 break;
@@ -190,6 +192,7 @@ public class AIOFisher extends EnumScript<States> implements Painting {
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);
         }
+
 
         return getState();
     }

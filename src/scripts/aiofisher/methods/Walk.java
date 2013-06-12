@@ -6,6 +6,7 @@ import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
 import scripts.aiofisher.enums.Banks;
 import scripts.aiofisher.enums.FishPools;
+import util.Timer;
 import util.Timing;
 
 import static org.tribot.api.General.*;
@@ -24,6 +25,8 @@ public class Walk {
     FishPools pool;
 
     private RSTile[] walkPath;
+
+    private Timer runTimer;
 
 
     public Walk(Banks chosenBank, FishPools chosenPool) {
@@ -45,58 +48,61 @@ public class Walk {
                         new RSTile(3079, 3472, 0), new RSTile(3080, 3485, 0), new RSTile(3087, 3491, 0), new RSTile(3093, 3489, 0)};
         }
 
+        runTimer = new Timer(180000);
+
     }
 
     public boolean toggleRun(boolean enable) {
 
+        if (!runTimer.isRunning()) {
+            final int settings[] = Game.getSettingsArray();
 
-        final int settings[] = Game.getSettingsArray();
+            if (settings != null) {
+                if (settings[173] == 0) {
+                    if (enable) {
+                        if (GameTab.open(GameTab.TABS.OPTIONS)) {
+                            if (Interfaces.get(261, 0) != null) {
 
-        if (settings != null) {
-            if (settings[173] == 0) {
-                if (enable) {
-                    if (GameTab.open(GameTab.TABS.OPTIONS)) {
-                        if (Interfaces.get(261, 0) != null) {
+                                Interfaces.get(261, 0).click("Toggle Run");
 
-                            Interfaces.get(261, 0).click("Toggle Run");
+                                if (settings[173] == 1) {
+                                    GameTab.open(GameTab.TABS.OPTIONS);
 
-                            if (settings[173] == 1) {
-                                GameTab.open(GameTab.TABS.OPTIONS);
+                                    CSleep(new Timing.Condition() {
+                                        @Override
+                                        public boolean validate() {
+                                            return settings[173] == 1;
+                                        }
+                                    }, random(2000, 3000));
+                                }
 
+
+                                GameTab.open(GameTab.TABS.INVENTORY);
                                 CSleep(new Timing.Condition() {
                                     @Override
                                     public boolean validate() {
-                                        return settings[173] == 1;  //To change body of implemented methods use File | Settings | File Templates.
+                                        return GameTab.open(GameTab.TABS.INVENTORY);
                                     }
                                 }, random(2000, 3000));
+                                return true;
                             }
+                        } else {
 
-
-                            GameTab.open(GameTab.TABS.INVENTORY);
-                            CSleep(new Timing.Condition() {
-                                @Override
-                                public boolean validate() {
-                                    return GameTab.open(GameTab.TABS.INVENTORY); //To change body of implemented methods use File | Settings | File Templates.
-                                }
-                            }, random(2000, 3000));
                             return true;
                         }
-                    } else {
-
-                        return true;
                     }
-                }
-            } else {
-                if (!enable) {
-                    if (GameTab.open(GameTab.TABS.OPTIONS)) {
-                        if (Interfaces.get(261, 0) != null) {
+                } else {
+                    if (!enable) {
+                        if (GameTab.open(GameTab.TABS.OPTIONS)) {
+                            if (Interfaces.get(261, 0) != null) {
 
-                            Interfaces.get(261, 0).click("Toggle Run");
+                                Interfaces.get(261, 0).click("Toggle Run");
+                            }
+                        } else {
+                            GameTab.open(GameTab.TABS.OPTIONS);
+                            sleep(1000, 2000);
+                            return true;
                         }
-                    } else {
-                        GameTab.open(GameTab.TABS.OPTIONS);
-                        sleep(1000, 2000);
-                        return true;
                     }
                 }
             }
