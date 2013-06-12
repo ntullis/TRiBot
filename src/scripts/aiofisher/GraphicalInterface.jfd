@@ -8,6 +8,8 @@ new FormModel {
 			"$verticalGroup": "par l {seq l {comp tabbedPane1:::::x, space :::p, comp button1:::p:38:p, space :p:7:p}}"
 		} ) {
 			name: "this"
+			"title": "Setup"
+			"resizable": false
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "button1"
 				"text": "Start"

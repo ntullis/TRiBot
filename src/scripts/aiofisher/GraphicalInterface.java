@@ -17,8 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
-import static org.tribot.api.General.println;
-
 
 public class GraphicalInterface extends JFrame {
 
@@ -63,7 +61,6 @@ public class GraphicalInterface extends JFrame {
 
     private void button1ActionPerformed(ActionEvent e) {
 
-        println("startAction");
 
         if (!listModel.isEmpty()) {
 
@@ -177,6 +174,7 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+        listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -187,12 +185,14 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        list1 = new JList(listModel);
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
 
         //======== this ========
+        setTitle("Setup");
+        setResizable(false);
         Container contentPane = getContentPane();
 
         //---- button1 ----
@@ -216,7 +216,7 @@ public class GraphicalInterface extends JFrame {
                 // JFormDesigner evaluation mark
                 optionsPanel.setBorder(new javax.swing.border.CompoundBorder(
                         new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                                "", javax.swing.border.TitledBorder.CENTER,
                                 javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
                                 java.awt.Color.red), optionsPanel.getBorder()));
                 optionsPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener() {

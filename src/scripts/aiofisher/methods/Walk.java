@@ -48,7 +48,8 @@ public class Walk {
                         new RSTile(3079, 3472, 0), new RSTile(3080, 3485, 0), new RSTile(3087, 3491, 0), new RSTile(3093, 3489, 0)};
         }
 
-        runTimer = new Timer(180000);
+        runTimer = new Timer(random(180000, 300000));
+        Walking.walking_timeout = random(2000, 4000);
 
     }
 
@@ -84,6 +85,7 @@ public class Walk {
                                         return GameTab.open(GameTab.TABS.INVENTORY);
                                     }
                                 }, random(2000, 3000));
+                                runTimer.reset();
                                 return true;
                             }
                         } else {
