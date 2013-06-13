@@ -13,7 +13,8 @@ public enum FishPools {
     LOBSTER("Lobster", 321),
     SHRIMPS("Anchovies/Shrimps", 330, 327),
     HERRING("Herring/Sardine", 330),
-    SALMON("Salmon/Trout", 328);
+    SALMON("Salmon/Trout", 328),
+    SHARK("Shark", 322);
 
 
     private final int[] POOL_IDs;

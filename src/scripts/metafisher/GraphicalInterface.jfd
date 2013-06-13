@@ -66,6 +66,7 @@ new FormModel {
 								addElement( "Bass/Mackerel/Cod/Junk" )
 								addElement( "Tuna" )
 								addElement( "Lobster" )
+								addElement( "Shark" )
 							}
 						} )
 					} )

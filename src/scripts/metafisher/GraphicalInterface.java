@@ -28,7 +28,7 @@ public class GraphicalInterface extends JFrame {
     private FishTools chosenTool;
 
     private final Banks[] alLBanks = {Banks.CATHERBY, Banks.AL_KHARID, Banks.DRAYNOR, Banks.EDGEVILLE};
-    private final FishPools[] allPools = {FishPools.MACKEREL, FishPools.TUNA, FishPools.LOBSTER, FishPools.SHRIMPS, FishPools.HERRING, FishPools.SALMON};
+    private final FishPools[] allPools = {FishPools.MACKEREL, FishPools.TUNA, FishPools.LOBSTER, FishPools.SHRIMPS, FishPools.HERRING, FishPools.SALMON, FishPools.SHARK};
 
 
     private HashMap<Integer, Integer> dropList = new HashMap<Integer, Integer>();
@@ -108,6 +108,9 @@ public class GraphicalInterface extends JFrame {
             case SALMON:
                 chosenTool = FishTools.FLY_FISHING_ROD;
                 break;
+            case SHARK:
+                chosenTool = FishTools.HARPOON;
+                break;
         }
 
 
@@ -172,8 +175,7 @@ public class GraphicalInterface extends JFrame {
 
 
     private void initComponents() {
-        // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+
         listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
@@ -281,7 +283,8 @@ public class GraphicalInterface extends JFrame {
                     comboBox2.setModel(new DefaultComboBoxModel(new String[]{
                             "Bass/Mackerel/Cod/Junk",
                             "Tuna",
-                            "Lobster"
+                            "Lobster",
+                            "Shark"
                     }));
 
                     GroupLayout panel2Layout = new GroupLayout(panel2);
