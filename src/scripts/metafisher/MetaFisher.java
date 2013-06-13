@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 @ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.0)
-public class AIOFisher extends EnumScript<States> implements Painting {
+public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
     private States scriptState = States.GUI;

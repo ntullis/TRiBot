@@ -112,7 +112,7 @@ public class GraphicalInterface extends JFrame {
 
 
         this.dispose();
-        AIOFisher.guiDone = true;
+        MetaFisher.guiDone = true;
     }
 
     private void powerfishActionPerformed(ActionEvent e) {
@@ -174,6 +174,7 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+        listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -184,7 +185,7 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        list1 = new JList(listModel);
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
