@@ -8,10 +8,10 @@ package scripts.aiofisher.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum Banks {
-    CATHERBY("Catherby",0,57),
-    AL_KHARID("Al-kharid",7126,65),
-    DRAYNOR("Draynor",7126,57,56),
-    EDGEVILLE("Edgeville",7126,56);
+    CATHERBY("Catherby", 0, 57),
+    AL_KHARID("Al Kharid", 7126, 65),
+    DRAYNOR("Draynor", 7126, 57, 56),
+    EDGEVILLE("Edgeville", 7126, 56);
 
     private final String BANK_NAME;
     private final int BOOTH_ID;
@@ -32,7 +32,7 @@ public enum Banks {
     }
 
     public int[] getBankerID() {
-       return BANKER_IDS;
+        return BANKER_IDS;
     }
 
 
