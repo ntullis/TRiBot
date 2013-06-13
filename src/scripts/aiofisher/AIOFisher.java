@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "AIOFisher", version = 1.0)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.0)
 public class AIOFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;

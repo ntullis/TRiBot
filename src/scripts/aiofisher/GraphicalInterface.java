@@ -174,7 +174,6 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
-        listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -185,7 +184,7 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList(listModel);
+        list1 = new JList();
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
@@ -216,7 +215,7 @@ public class GraphicalInterface extends JFrame {
                 // JFormDesigner evaluation mark
                 optionsPanel.setBorder(new javax.swing.border.CompoundBorder(
                         new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                                "", javax.swing.border.TitledBorder.CENTER,
+                                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
                                 javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
                                 java.awt.Color.red), optionsPanel.getBorder()));
                 optionsPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
@@ -290,8 +289,7 @@ public class GraphicalInterface extends JFrame {
                             panel2Layout.createParallelGroup()
                                     .addGroup(panel2Layout.createSequentialGroup()
                                             .addContainerGap()
-                                            .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, 168, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                            .addComponent(comboBox2, GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))
                     );
                     panel2Layout.setVerticalGroup(
                             panel2Layout.createParallelGroup()
@@ -367,9 +365,9 @@ public class GraphicalInterface extends JFrame {
                                                         .addGap(97, 97, 97))
                                                 .addGroup(optionsPanelLayout.createSequentialGroup()
                                                         .addGroup(optionsPanelLayout.createParallelGroup()
-                                                                .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE))
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)))
+                                                                .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)))
                                         .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addContainerGap())
                 );
