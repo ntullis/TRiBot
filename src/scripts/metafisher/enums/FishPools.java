@@ -9,7 +9,7 @@ package scripts.metafisher.enums;
  */
 public enum FishPools {
     MACKEREL("Bass/Mackerel/Cod/Junk", 322),
-    TUNA("Tuna", 321),
+    TUNA("Swordfish/Tuna", 321),
     LOBSTER("Lobster", 321),
     SHRIMPS("Anchovies/Shrimps", 330, 327),
     HERRING("Herring/Sardine", 330),

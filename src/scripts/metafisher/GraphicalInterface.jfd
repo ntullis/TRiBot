@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_21" encoding: "UTF-8"
+JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_10" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -18,7 +18,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel1:::::x, space :p:97:p}, seq {par l {comp checkBox1:::p:129:p, comp panel2:::p::p}, space ::39:x}}, comp panel4:::::x, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel1:::::x, space :p:97:p}, seq {par l {comp checkBox1:::p:129:p, comp panel2:::p::p}, space ::37:x}}, comp panel4:::::x, space :::p}}"
 					"$verticalGroup": "par l {seq {space :::p, par l {seq t {comp panel1:::::x, space u:::p, comp panel2:::p::p, space :::p, comp checkBox1:::p::p}, seq l {comp panel4:::::x, space :::p}}}}"
 				} ) {
 					name: "optionsPanel"
@@ -34,8 +34,8 @@ new FormModel {
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "powerfishActionPerformed", true ) )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox1::::141:x, space :::p}}"
-						"$verticalGroup": "par l {seq t {space ::14:x, comp comboBox1:::p::p, space :::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox1::::139:x, space :::p}}"
+						"$verticalGroup": "par l {seq t {space :::x, comp comboBox1:::p::p, space :::p}}"
 					} ) {
 						name: "panel1"
 						"border": new javax.swing.border.TitledBorder( "Location" )
@@ -53,8 +53,8 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox2::::205:x}}"
-						"$verticalGroup": "par l {seq l {comp comboBox2:::p::p, space :0:15:x}}"
+						"$horizontalGroup": "par l {seq {space :p:25:p, comp comboBox2::::180:x, space :::p}}"
+						"$verticalGroup": "par l {seq l {space :::p, comp comboBox2:::p::p, space ::9:x}}"
 					} ) {
 						name: "panel2"
 						"border": new javax.swing.border.TitledBorder( "Fish" )
@@ -64,14 +64,14 @@ new FormModel {
 							"model": new javax.swing.DefaultComboBoxModel {
 								selectedItem: "Bass/Mackerel/Cod/Junk"
 								addElement( "Bass/Mackerel/Cod/Junk" )
-								addElement( "Tuna" )
+								addElement( "Swordfish/Tuna" )
 								addElement( "Lobster" )
 								addElement( "Shark" )
 							}
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::177:x, seq {comp button2:::p::p, space s:::p, comp textField1::::114:x}}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::175:x, seq {comp button2:::p::p, space s:::p, comp textField1::::114:x}}, space :::p}}"
 						"$verticalGroup": "par l {seq l {comp scrollPane1:::p:86:p, space u:::p, par b {comp textField1::b:p::p, comp button2::b:p::p}, space :0:0:x}}"
 					} ) {
 						name: "panel4"
@@ -98,8 +98,8 @@ new FormModel {
 					"title": "Basic"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {space :0:481:x}"
-					"$verticalGroup": "par l {space :0:194:x}"
+					"$horizontalGroup": "par l {space :0:477:x}"
+					"$verticalGroup": "par l {space :0:186:x}"
 				} ) {
 					name: "panel3"
 				}, new FormLayoutConstraints( null ) {
