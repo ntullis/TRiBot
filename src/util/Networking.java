@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.tribot.api.General.println;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,6 +26,7 @@ public class Networking {
 
     public String fetchSettings() {
         String website = "http://www.snapbasecode.com/settings.php?action=get&script="+script;
+        println(website);
         try {
 
             URL url = new URL(website);
@@ -36,9 +39,9 @@ public class Networking {
             }
             in.close();
         } catch (MalformedURLException e) {
-            System.out.println("Your firewall blocked the settings loader.");
+            println("Your firewall blocked the settings loader.");
         } catch (IOException e) {
-            System.out.println("Unable to connect to "+website);
+            println("Unable to connect to "+website);
         }
      return null;
     }

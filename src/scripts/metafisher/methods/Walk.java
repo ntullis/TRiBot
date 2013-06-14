@@ -46,6 +46,10 @@ public class Walk {
             case EDGEVILLE:
                 walkPath = new RSTile[]{new RSTile(3102, 3430, 0), new RSTile(3098, 3438, 0), new RSTile(3093, 3445, 0), new RSTile(3090, 3452, 0), new RSTile(3087, 3461, 0),
                         new RSTile(3079, 3472, 0), new RSTile(3080, 3485, 0), new RSTile(3087, 3491, 0), new RSTile(3093, 3489, 0)};
+                break;
+            case FISHING_GUILD:
+                walkPath = new RSTile[]{new RSTile(2606, 3400, 0), new RSTile(2598, 3408, 0), new RSTile(2595, 3417, 0), new RSTile(2587, 3420, 0)};
+                break;
         }
 
         runTimer = new Timer(random(180000, 300000));

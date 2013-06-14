@@ -11,7 +11,8 @@ public enum Banks {
     CATHERBY("Catherby", 0, 57),
     AL_KHARID("Al Kharid", 7126, 65),
     DRAYNOR("Draynor", 7126, 57, 56),
-    EDGEVILLE("Edgeville", 7126, 56);
+    EDGEVILLE("Edgeville", 7126, 56),
+    FISHING_GUILD("Fishing Guild", 23961, 57, 56);
 
     private final String BANK_NAME;
     private final int BOOTH_ID;

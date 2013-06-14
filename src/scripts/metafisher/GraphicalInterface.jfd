@@ -53,7 +53,7 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :p:25:p, comp comboBox2::::180:x, space :::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox2::::180:x, space :p:25:p}}"
 						"$verticalGroup": "par l {seq l {space :::p, comp comboBox2:::p::p, space ::9:x}}"
 					} ) {
 						name: "panel2"

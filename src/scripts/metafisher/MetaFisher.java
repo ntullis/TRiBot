@@ -148,12 +148,16 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     @Override
     public States getInitialState() {
 
-        Networking networking = new Networking(script_name);
-        println("settings = "+networking.fetchSettings());
+
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
+
+                Networking networking = new Networking(script_name);
+                String s = networking.fetchSettings();
+                println("settings = "+s);
+
                 GUI = new GraphicalInterface();
 
 
