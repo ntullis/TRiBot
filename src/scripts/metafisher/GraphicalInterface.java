@@ -204,6 +204,7 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+        listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -462,9 +463,9 @@ public class GraphicalInterface extends JFrame {
                             .addGroup(panel5Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(panel5Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                    .addComponent(checkBox2)
-                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(label1))
+                                        .addComponent(checkBox2)
+                                        .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(label1))
                                 .addContainerGap(7, Short.MAX_VALUE))
                     );
                 }
