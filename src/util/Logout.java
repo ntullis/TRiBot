@@ -1,14 +1,12 @@
 package util;
 
 
-import org.tribot.api2007.Game;
 import org.tribot.api2007.GameTab;
 import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.Login;
 import org.tribot.api2007.types.RSInterfaceChild;
 
 
-import java.io.IOException;
 
 import static org.tribot.api.General.sleep;
 
@@ -23,18 +21,13 @@ import static org.tribot.api.General.sleep;
 public class Logout {
 
 
-
-    public Logout() {
-
-    }
-
-    public boolean Logout() {
+    public static boolean Logout() {
 
         final RSInterfaceChild tab = Interfaces.get(548,33);
 
         if (Login.getLoginState() == Login.STATE.INGAME) {
             if (GameTab.getOpen() == GameTab.TABS.INVENTORY) {
-                tab.click("Logout");
+                if (tab != null) tab.click("Logout");
             } else {
                 Login.logout();
             }

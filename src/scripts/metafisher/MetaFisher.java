@@ -28,6 +28,7 @@ import java.util.HashMap;
 
 
 import static org.tribot.api.General.random;
+import static org.tribot.api.General.sleep;
 import static util.Timing.CSleep;
 
 /**
@@ -48,7 +49,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Walk walk;
     private Fish fish;
     private Drop drop;
-    private Logout logout;
 
     private Banks bankEnum;
     private FishPools poolEnum;
@@ -116,7 +116,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 }
                 break;
             case LOGOUT:
-                if (logout.Logout()) {
+                if (Logout.Logout()) {
                     super.setLoginBotState(false);
                     stopScript();
                 }
@@ -217,7 +217,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         }
 
         if (GUI.logout()) {
-
             logoutTimer = new Timer(GUI.getLogoutMS());
         }
 
@@ -230,10 +229,15 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         bank = new Bank(bankEnum, toolEnum);
         walk = new Walk(bankEnum, poolEnum);
+        fish = new Fish(poolEnum, toolEnum);
+
+        while(Login.getLoginState() != Login.STATE.INGAME) {
+            sleep(50);
+        }
 
         newCount = Inventory.getCount(fishIDs);
 
-        fish = new Fish(poolEnum, toolEnum);
+
 
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);
