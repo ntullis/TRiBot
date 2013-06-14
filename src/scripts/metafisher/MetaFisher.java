@@ -15,6 +15,7 @@ import scripts.metafisher.methods.Bank;
 import scripts.metafisher.methods.Drop;
 import scripts.metafisher.methods.Fish;
 import scripts.metafisher.methods.Walk;
+import util.Networking;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -45,7 +46,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Banks bankEnum;
     private FishPools poolEnum;
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371};
 
     private HashMap dropMap;
 
@@ -147,6 +148,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     @Override
     public States getInitialState() {
 
+        Networking networking = new Networking(script_name);
+        println("settings = "+networking.fetchSettings());
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
@@ -173,6 +176,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             }
             sleep(40, 80);
         }
+
 
 
         startXP = Skills.getXP("FISHING");
@@ -213,9 +217,29 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private final Image img1 = getImage("http://i.imgur.com/Exwhyeo.png");
 
 
-    String formatMillis(long millis) {
-        return String.format("%d h, %d min, %d sec", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis),
-                TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+    public static String format(long time) {
+        StringBuilder t = new StringBuilder();
+        long total_secs = time / 1000;
+        long total_mins = total_secs / 60;
+        long total_hrs = total_mins / 60;
+        int secs = (int) total_secs % 60;
+        int mins = (int) total_mins % 60;
+        int hrs = (int) total_hrs % 60;
+        if (hrs < 10) {
+            t.append("0");
+        }
+        t.append(hrs);
+        t.append(":");
+        if (mins < 10) {
+            t.append("0");
+        }
+        t.append(mins);
+        t.append(":");
+        if (secs < 10) {
+            t.append("0");
+        }
+        t.append(secs);
+        return t.toString();
     }
 
     @Override
@@ -230,7 +254,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         g.setFont(font1);
         g.setColor(color1);
-        g.drawString("Time Running: " + formatMillis(time), 333, 224);
+        g.drawString("Time Running: " + format(time), 333, 224);
         g.drawString("XP Gained: " + gainedXP, 334, 247);
         g.drawString("XP Till Level: " + Skills.getXPToLevel("FISHING", (Skills.getCurrentLevel("FISHING") + 1)), 332, 271);
         g.drawString("Current Level: " + Skills.getCurrentLevel("FISHING"), 332, 296);
