@@ -4,6 +4,7 @@
 
 package scripts.metafisher;
 
+import com.jgoodies.forms.layout.*;
 import scripts.metafisher.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
@@ -50,6 +51,16 @@ public class GraphicalInterface extends JFrame {
     public HashMap getDropList() {
         return dropList;
     }
+
+    public boolean logout() {
+        return checkBox2.isSelected();
+    }
+
+    public int getLogoutMS() {
+        return Integer.parseInt(textField2.getText())*60000;
+    }
+
+
 
     /*public boolean getAntiban() {
         return checkBox2.isSelected();
@@ -181,11 +192,18 @@ public class GraphicalInterface extends JFrame {
 
     }
 
+    private void checkBox2ActionPerformed(ActionEvent e) {
+        if (checkBox2.isEnabled()) {
+            textField2.setEnabled(true);
+        } else {
+            textField2.setEnabled(false);
+        }
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
-        listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -196,10 +214,14 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList(listModel);
+        list1 = new JList();
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
+        panel5 = new JPanel();
+        checkBox2 = new JCheckBox();
+        textField2 = new JTextField();
+        label1 = new JLabel();
 
         //======== this ========
         setTitle("Setup");
@@ -403,15 +425,64 @@ public class GraphicalInterface extends JFrame {
             //======== panel3 ========
             {
 
+                //======== panel5 ========
+                {
+                    panel5.setBorder(new TitledBorder("Logout"));
+
+                    //---- checkBox2 ----
+                    checkBox2.setText("Logout in ");
+                    checkBox2.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            checkBox2ActionPerformed(e);
+                        }
+                    });
+
+                    //---- textField2 ----
+                    textField2.setEnabled(false);
+
+                    //---- label1 ----
+                    label1.setText("min");
+
+                    GroupLayout panel5Layout = new GroupLayout(panel5);
+                    panel5.setLayout(panel5Layout);
+                    panel5Layout.setHorizontalGroup(
+                        panel5Layout.createParallelGroup()
+                            .addGroup(panel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(checkBox2)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(label1)
+                                .addContainerGap(35, Short.MAX_VALUE))
+                    );
+                    panel5Layout.setVerticalGroup(
+                        panel5Layout.createParallelGroup()
+                            .addGroup(panel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel5Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(checkBox2)
+                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label1))
+                                .addContainerGap(7, Short.MAX_VALUE))
+                    );
+                }
+
                 GroupLayout panel3Layout = new GroupLayout(panel3);
                 panel3.setLayout(panel3Layout);
                 panel3Layout.setHorizontalGroup(
                     panel3Layout.createParallelGroup()
-                        .addGap(0, 477, Short.MAX_VALUE)
+                        .addGroup(panel3Layout.createSequentialGroup()
+                            .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 256, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
-                        .addGap(0, 186, Short.MAX_VALUE)
+                        .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
+                            .addContainerGap(122, Short.MAX_VALUE)
+                            .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap())
                 );
             }
             tabbedPane1.addTab("Extras", panel3);
@@ -456,5 +527,9 @@ public class GraphicalInterface extends JFrame {
     private JButton button2;
     private JTextField textField1;
     private JPanel panel3;
+    private JPanel panel5;
+    private JCheckBox checkBox2;
+    private JTextField textField2;
+    private JLabel label1;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

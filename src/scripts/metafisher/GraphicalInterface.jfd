@@ -99,10 +99,30 @@ new FormModel {
 					"title": "Basic"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {space :0:477:x}"
-					"$verticalGroup": "par l {space :0:186:x}"
+					"$horizontalGroup": "par l {seq l {comp panel5:::p::p, space :0:256:x}}"
+					"$verticalGroup": "par l {seq t {space ::122:x, comp panel5:::p::p, space :::p}}"
 				} ) {
 					name: "panel3"
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
+						"$horizontalGroup": "par l {seq {space :::p, comp checkBox2:::p::p, space :::p, comp textField2:::p:67:p, space :::p, comp label1:::p::p, space ::35:x}}"
+						"$verticalGroup": "par l {seq l {space :::p, par b {comp checkBox2::b:p::p, comp textField2::b:p::p, comp label1::b:p::p}, space ::7:x}}"
+					} ) {
+						name: "panel5"
+						"border": new javax.swing.border.TitledBorder( "Logout" )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox2"
+							"text": "Logout in "
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "checkBox2ActionPerformed", true ) )
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "textField2"
+							"enabled": false
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label1"
+							"text": "min"
+						} )
+					} )
 				}, new FormLayoutConstraints( null ) {
 					"title": "Extras"
 				} )

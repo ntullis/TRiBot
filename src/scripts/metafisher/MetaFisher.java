@@ -1,13 +1,9 @@
 package scripts.metafisher;
 
 
-import org.tribot.api.DynamicClicking;
-import org.tribot.api2007.GroundItems;
-import org.tribot.api2007.Inventory;
-import org.tribot.api2007.Player;
-import org.tribot.api2007.Skills;
+
+import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
-import org.tribot.api2007.types.RSItem;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
@@ -19,7 +15,9 @@ import scripts.metafisher.methods.Bank;
 import scripts.metafisher.methods.Drop;
 import scripts.metafisher.methods.Fish;
 import scripts.metafisher.methods.Walk;
+import util.Logout;
 import util.Networking;
+import util.Timer;
 import util.Timing;
 
 import javax.imageio.ImageIO;
@@ -27,7 +25,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
+
 
 import static org.tribot.api.General.random;
 import static util.Timing.CSleep;
@@ -50,6 +48,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Walk walk;
     private Fish fish;
     private Drop drop;
+    private Logout logout;
 
     private Banks bankEnum;
     private FishPools poolEnum;
@@ -66,6 +65,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     private int FISHES_CAUGHT = 0;
 
+    private Timer logoutTimer = null;
 
     public static boolean guiDone = false;
 
@@ -76,15 +76,14 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         scriptState = states;
 
 
+
         switch (scriptState) {
             case BANK:
-                println("bank");
                 bank.deposit();
                 break;
             case WALK_TO_BANK:
                 walk.toggleRun(true);
                 walk.walkToBank();
-                println("walkToBank");
                 break;
             case FISH:
                 fish.startFishing();
@@ -116,6 +115,12 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                     }
                 }
                 break;
+            case LOGOUT:
+                if (logout.Logout()) {
+                    super.setLoginBotState(false);
+                    stopScript();
+                }
+                break;
             case GUI:
                 break;
         }
@@ -137,6 +142,9 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
 
         if (!guiDone) return States.GUI;
+
+        if (logoutTimer != null && !logoutTimer.isRunning() && !Banking.isBankScreenOpen()) return States.LOGOUT;
+
         if (Inventory.isFull()) {
             if (!dropMap.isEmpty() || GUI.powerfish) {
                 if (drop.invContainsDropItem()) {
@@ -184,7 +192,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
                 Networking networking = new Networking(script_name);
                 String s = networking.fetchSettings();
-                println("settings = "+s);
 
                 GUI = new GraphicalInterface();
 
@@ -209,7 +216,10 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             sleep(40, 80);
         }
 
+        if (GUI.logout()) {
 
+            logoutTimer = new Timer(GUI.getLogoutMS());
+        }
 
         startXP = Skills.getXP("FISHING");
         bankEnum = GUI.getBank();

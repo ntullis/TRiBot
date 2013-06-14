@@ -17,6 +17,7 @@ public enum States {
     WALK_TO_FISH,
     INV_CHANGE,
     WITHDRAW_TOOL,
-    PICKUP_TOOL;
+    PICKUP_TOOL,
+    LOGOUT;
 
 }
