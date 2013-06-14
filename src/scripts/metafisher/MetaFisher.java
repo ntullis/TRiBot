@@ -1,9 +1,13 @@
 package scripts.metafisher;
 
 
+import org.tribot.api.DynamicClicking;
+import org.tribot.api2007.GroundItems;
 import org.tribot.api2007.Inventory;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Skills;
+import org.tribot.api2007.types.RSGroundItem;
+import org.tribot.api2007.types.RSItem;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
@@ -16,6 +20,7 @@ import scripts.metafisher.methods.Drop;
 import scripts.metafisher.methods.Fish;
 import scripts.metafisher.methods.Walk;
 import util.Networking;
+import util.Timing;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,6 +28,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import static org.tribot.api.General.random;
+import static util.Timing.CSleep;
 
 /**
  * Created with IntelliJ IDEA.
@@ -92,8 +100,21 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 FISHES_CAUGHT += (oldCount - newCount);
                 newCount = Inventory.getCount(fishIDs);
                 break;
-            case WITHDRAW_TOOLS:
+            case WITHDRAW_TOOL:
                 bank.withdrawTool();
+                break;
+            case PICKUP_TOOL:
+                RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
+                if (tool[0].isOnScreen()) {
+                    if (tool[0].click("Take")) {
+                        CSleep(new Timing.Condition() {
+                            @Override
+                            public boolean validate() {
+                                return Inventory.getCount(toolEnum.getID()) > 0;
+                            }
+                        },random(2000,4000));
+                    }
+                }
                 break;
             case GUI:
                 break;
@@ -104,6 +125,11 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     }
 
     public States getState() {
+
+
+
+
+
 
 
 
@@ -122,8 +148,15 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         } else {
 
             if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
-                if (!walk.bankIsNear()) return States.WALK_TO_BANK;
-                else return States.WITHDRAW_TOOLS;
+                RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
+                if (tool.length > 0 && tool != null) {
+                    return States.PICKUP_TOOL;
+                } else {
+                    if (!walk.bankIsNear()) return States.WALK_TO_BANK;
+                    else return States.WITHDRAW_TOOL;
+                }
+
+
 
 
             }

@@ -16,5 +16,7 @@ public enum States {
     WALK_TO_BANK,
     WALK_TO_FISH,
     INV_CHANGE,
-    WITHDRAW_TOOLS;
+    WITHDRAW_TOOL,
+    PICKUP_TOOL;
+
 }
