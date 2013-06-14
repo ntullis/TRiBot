@@ -46,7 +46,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Banks bankEnum;
     private FishPools poolEnum;
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377};
 
     private HashMap dropMap;
 
