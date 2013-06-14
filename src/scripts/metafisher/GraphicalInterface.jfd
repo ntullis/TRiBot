@@ -47,6 +47,7 @@ new FormModel {
 								addElement( "Al-kharid" )
 								addElement( "Draynor" )
 								addElement( "Edgeville" )
+								addElement( "Fishing Guild" )
 							}
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )

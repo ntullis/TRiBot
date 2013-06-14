@@ -70,17 +70,18 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         switch (scriptState) {
             case BANK:
+                println("bank");
                 bank.deposit();
                 break;
             case WALK_TO_BANK:
                 walk.toggleRun(true);
                 walk.walkToBank();
+                println("walkToBank");
                 break;
             case FISH:
                 fish.startFishing();
                 break;
             case WALK_TO_FISH:
-
                 walk.toggleRun(true);
                 walk.walkToFish();
                 break;
@@ -104,13 +105,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     public States getState() {
 
-        //println("uptext = "+Game.getUptext());
 
-        /*if (Game.getUptext().contains("Use")) {
-            println("failsafe");
-            Mouse.click(1);
-            sleep(300,600);
-        }                */
 
         oldCount = Inventory.getCount(fishIDs);
 

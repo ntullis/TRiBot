@@ -149,13 +149,15 @@ public class Walk {
     public boolean bankIsNear() {
         RSNPC banker[] = NPCs.find(bank.getBankerID());
         //println("distance = "+Player.getPosition().distanceTo(banker[0].getPosition()));
-        return banker.length > 0 && banker != null && Player.getPosition().distanceTo(banker[0].getPosition()) < 4;
+
+
+        return banker.length > 0 && banker != null && Player.getPosition().distanceTo(banker[0].getPosition()) < bank.getMaxDistance();
     }
 
     public boolean boothIsNear() {
         RSObject booth[] = Objects.findNearest(bank.getBoothID());
         println("boothLength = " + booth.length);
-        return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) < 4;
+        return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) < bank.getMaxDistance();
     }
 
     public boolean fishIsNear() {

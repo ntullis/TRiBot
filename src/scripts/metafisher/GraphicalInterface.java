@@ -250,7 +250,8 @@ public class GraphicalInterface extends JFrame {
                         "Catherby",
                         "Al-kharid",
                         "Draynor",
-                        "Edgeville"
+                        "Edgeville",
+                        "Fishing Guild"
                     }));
                     comboBox1.addActionListener(new ActionListener() {
                         @Override
@@ -375,8 +376,8 @@ public class GraphicalInterface extends JFrame {
                                     .addGap(97, 97, 97))
                                 .addGroup(optionsPanelLayout.createSequentialGroup()
                                     .addGroup(optionsPanelLayout.createParallelGroup()
-                                            .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)))
                             .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())
