@@ -1,7 +1,6 @@
 package scripts.metafisher;
 
 
-
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.script.EnumScript;
@@ -15,7 +14,6 @@ import scripts.metafisher.methods.Bank;
 import scripts.metafisher.methods.Drop;
 import scripts.metafisher.methods.Fish;
 import scripts.metafisher.methods.Walk;
-import util.Logout;
 import util.Networking;
 import util.Timer;
 import util.Timing;
@@ -26,10 +24,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
-
 import static org.tribot.api.General.random;
-import static org.tribot.api.General.sleep;
+import static util.Logout.Logout;
 import static util.Timing.CSleep;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -116,7 +114,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 }
                 break;
             case LOGOUT:
-                if (Logout.Logout()) {
+                if (Logout()) {
                     super.setLoginBotState(false);
                     stopScript();
                 }

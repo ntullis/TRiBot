@@ -21,6 +21,7 @@ import static org.tribot.api.General.sleep;
 public class Logout {
 
 
+
     public static boolean Logout() {
 
         final RSInterfaceChild tab = Interfaces.get(548,33);
