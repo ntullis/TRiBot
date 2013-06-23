@@ -10,7 +10,7 @@ package scripts.metafisher.enums;
 public enum Banks {
     CATHERBY("Catherby", 4, 0, 57),
     AL_KHARID("Al Kharid", 4, 7126, 65),
-    DRAYNOR("Draynor", 4, 7126, 57, 56),
+    DRAYNOR("Draynor", 7, 7126, 57, 56),
     EDGEVILLE("Edgeville", 4, 7126, 56),
     FISHING_GUILD("Fishing Guild", 8, 23961, 57, 56);
 

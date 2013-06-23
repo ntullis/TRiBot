@@ -51,7 +51,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Banks bankEnum;
     private FishPools poolEnum;
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321};
 
     private HashMap dropMap;
 
@@ -116,7 +116,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             case LOGOUT:
                 if (Logout()) {
                     super.setLoginBotState(false);
-                    stopScript();
                 }
                 break;
             case GUI:
@@ -155,7 +154,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
             if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool.length > 0 && tool != null) {
+                if (tool.length > 1 && tool != null) {
                     return States.PICKUP_TOOL;
                 } else {
                     if (!walk.bankIsNear()) return States.WALK_TO_BANK;
@@ -188,7 +187,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             @Override
             public void run() {
 
-                Networking networking = new Networking(script_name);
+                Networking networking = new Networking("a");
                 String s = networking.fetchSettings();
 
                 GUI = new GraphicalInterface();
@@ -306,4 +305,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         g.drawString("XP/H: " + (long) (gainedXP / (time / 3600000D)), 420, 321);
 
     }
+
+
 }

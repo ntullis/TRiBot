@@ -155,7 +155,7 @@ public class Walk {
     }
 
     public boolean boothIsNear() {
-        RSObject booth[] = Objects.findNearest(bank.getBoothID());
+        RSObject booth[] = Objects.findNearest(bank.getMaxDistance(),bank.getBoothID());
         println("boothLength = " + booth.length);
         return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) < bank.getMaxDistance();
     }

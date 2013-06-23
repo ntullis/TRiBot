@@ -4,7 +4,7 @@
 
 package scripts.metafisher;
 
-import com.jgoodies.forms.layout.*;
+
 import scripts.metafisher.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;

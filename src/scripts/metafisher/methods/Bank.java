@@ -34,7 +34,7 @@ public class Bank {
     }
 
     public boolean openBooth() {
-        RSObject[] booth = Objects.findNearest(chosenBank.getBoothID());
+        RSObject[] booth = Objects.findNearest(chosenBank.getMaxDistance(),chosenBank.getBoothID());
 
         if (booth.length > 0 && booth != null) {
             RSObject o = booth[0];
