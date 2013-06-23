@@ -37,7 +37,7 @@ import static util.Timing.CSleep;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.11)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.12)
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
