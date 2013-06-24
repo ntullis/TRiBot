@@ -3,6 +3,7 @@ package scripts.metafisher;
 
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
+import org.tribot.api2007.types.RSNPC;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
@@ -10,10 +11,7 @@ import scripts.metafisher.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 import scripts.metafisher.enums.States;
-import scripts.metafisher.methods.Bank;
-import scripts.metafisher.methods.Drop;
-import scripts.metafisher.methods.Fish;
-import scripts.metafisher.methods.Walk;
+import scripts.metafisher.methods.*;
 import util.Networking;
 import util.Timer;
 import util.Timing;
@@ -37,7 +35,7 @@ import static util.Timing.CSleep;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.12)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.14)
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -51,7 +49,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Banks bankEnum;
     private FishPools poolEnum;
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327};
 
     private HashMap dropMap;
 
@@ -64,6 +62,9 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private int FISHES_CAUGHT = 0;
 
     private Timer logoutTimer = null;
+    private Timer antiBanTimer = null;
+
+    private Antiban antiban = null;
 
     public static boolean guiDone = false;
 
@@ -118,6 +119,10 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                     super.setLoginBotState(false);
                 }
                 break;
+            case INCOMBAT:
+                walk.toggleRun(true);
+                walk.walkToBank();
+                break;
             case GUI:
                 break;
         }
@@ -140,7 +145,19 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         if (!guiDone) return States.GUI;
 
+        if (Player.getRSPlayer().isInCombat()) return States.INCOMBAT;
+
         if (logoutTimer != null && !logoutTimer.isRunning() && !Banking.isBankScreenOpen()) return States.LOGOUT;
+
+        if (antiBanTimer == null && GUI.getAntiban() != -1) {
+            antiBanTimer = new Timer(GUI.getAntiban());
+        }
+
+        if (antiBanTimer != null && !antiBanTimer.isRunning()) {
+            antiban = new Antiban();
+            antiban = null;
+            antiBanTimer = null;
+        }
 
         if (Inventory.isFull()) {
             if (!dropMap.isEmpty() || GUI.powerfish) {
@@ -151,10 +168,9 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             if (walk.bankIsNear()) return States.BANK;
             else return States.WALK_TO_BANK;
         } else {
-
             if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool.length > 1 && tool != null) {
+                if (tool.length > 0 && tool != null && tool[0].isOnScreen()) {
                     return States.PICKUP_TOOL;
                 } else {
                     if (!walk.bankIsNear()) return States.WALK_TO_BANK;
@@ -169,8 +185,13 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             if (oldCount > newCount) return States.INV_CHANGE;
             newCount = Inventory.getCount(fishIDs);
 
-            if ((walk.fishIsNear()) && Player.getAnimation() == -1) return States.FISH;
-            else if (!walk.fishIsNear() && Player.getAnimation() == -1) return States.WALK_TO_FISH;
+
+            RSNPC swirlpool[] = NPCs.findNearest(0);
+
+            if (swirlpool.length > 0 && swirlpool != null && swirlpool[0].isInteractingWithMe()) return States.FISH;
+
+            if ((walk.fishIsNear()) && (Player.getAnimation() == -1)) return States.FISH;
+            else if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat()) return States.WALK_TO_FISH;
         }
 
 
@@ -228,6 +249,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         walk = new Walk(bankEnum, poolEnum);
         fish = new Fish(poolEnum, toolEnum);
 
+
+
         while(Login.getLoginState() != Login.STATE.INGAME) {
             sleep(50);
         }
@@ -239,6 +262,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);
         }
+
 
 
         return getState();
@@ -302,7 +326,11 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         g.drawString("XP Till Level: " + Skills.getXPToLevel("FISHING", (Skills.getCurrentLevel("FISHING") + 1)), 332, 271);
         g.drawString("Current Level: " + Skills.getCurrentLevel("FISHING"), 332, 296);
         g.drawString("Fishes caught: " + FISHES_CAUGHT, 332, 321);
-        g.drawString("XP/H: " + (long) (gainedXP / (time / 3600000D)), 420, 321);
+        g.drawString("XP/H: " + (long) (gainedXP / (time / 3600000D)), 425, 321);
+        if (antiBanTimer != null) {
+            g.drawString("antiban in: " + antiBanTimer.toRemainingString(), 5, 321);
+        }
+
 
     }
 

@@ -1,10 +1,10 @@
-JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_10" encoding: "UTF-8"
+JFDML JFormDesigner: "5.1.1.0.120" Java: "1.7.0_21" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {comp tabbedPane1::l:::x, seq t {space :::x, comp button1:::p:162:p, space :p:156:p}}"
+			"$horizontalGroup": "par l {comp tabbedPane1::l::0:x, seq t {space :::x, comp button1:::p:162:p, space :p:156:p}}"
 			"$verticalGroup": "par l {seq l {comp tabbedPane1:::::x, space :::p, comp button1:::p:38:p, space :p:7:p}}"
 		} ) {
 			name: "this"
@@ -18,7 +18,7 @@ new FormModel {
 			add( new FormContainer( "javax.swing.JTabbedPane", new FormLayoutManager( class javax.swing.JTabbedPane ) ) {
 				name: "tabbedPane1"
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel1:::::x, space :p:97:p}, seq {par l {comp checkBox1:::p:129:p, comp panel2:::p::p}, space ::37:x}}, comp panel4:::::x, space :::p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel1:::::x, space :p:97:p}, seq {par l {comp checkBox1:::p:129:p, comp panel2:::p::p}, space ::38:x}}, comp panel4:::::x, space :::p}}"
 					"$verticalGroup": "par l {seq {space :::p, par l {seq t {comp panel1:::::x, space u:::p, comp panel2:::p::p, space :::p, comp checkBox1:::p::p}, seq l {comp panel4:::::x, space :::p}}}}"
 				} ) {
 					name: "optionsPanel"
@@ -34,8 +34,8 @@ new FormModel {
 						addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "powerfishActionPerformed", true ) )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox1::::139:x, space :::p}}"
-						"$verticalGroup": "par l {seq t {space :::x, comp comboBox1:::p::p, space :::p}}"
+						"$horizontalGroup": "par l {seq l {space :::p, comp comboBox1::::140:x, space :::p}}"
+						"$verticalGroup": "par l {seq t {space ::14:x, comp comboBox1:::p::p, space :::p}}"
 					} ) {
 						name: "panel1"
 						"border": new javax.swing.border.TitledBorder( "Location" )
@@ -72,7 +72,7 @@ new FormModel {
 						} )
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::175:x, seq {comp button2:::p::p, space s:::p, comp textField1::::114:x}}, space :::p}}"
+						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::178:x, seq {comp button2:::p::p, space s:::p, comp textField1::::115:x}}, space :::p}}"
 						"$verticalGroup": "par l {seq l {comp scrollPane1:::p:86:p, space u:::p, par b {comp textField1::b:p::p, comp button2::b:p::p}, space :0:0:x}}"
 					} ) {
 						name: "panel4"
@@ -99,8 +99,8 @@ new FormModel {
 					"title": "Basic"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq l {comp panel5:::p::p, space :0:256:x}}"
-					"$verticalGroup": "par l {seq t {space ::122:x, comp panel5:::p::p, space :::p}}"
+					"$horizontalGroup": "par l {seq {comp panel5:::p::p, space u:::p, comp panel6:::p::p, space ::64:x}}"
+					"$verticalGroup": "par l {seq t {space ::113:x, par l {comp panel5::t:p::p, comp panel6::t:p::p}, space :::p}}"
 				} ) {
 					name: "panel3"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -120,7 +120,62 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label1"
-							"text": "min"
+							"text": "minutes"
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+						name: "panel6"
+						"border": new javax.swing.border.TitledBorder( "Antiban" )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox3"
+							"text": "Antiban"
+							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "checkBox3ActionPerformed", true ) )
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 10
+							"y": 15
+							"width": 80
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label2"
+							"text": "between"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 90
+							"y": 20
+							"width": 75
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label3"
+							"text": "-"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 45
+							"y": 45
+							"width": 25
+							"height": 25
+						} )
+						add( new FormComponent( "javax.swing.JLabel" ) {
+							name: "label4"
+							"text": "seconds"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 90
+							"y": 45
+							"width": 60
+							"height": 20
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "textField5"
+							"enabled": false
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"width": 25
+							"x": 55
+							"y": 45
+						} )
+						add( new FormComponent( "javax.swing.JTextField" ) {
+							name: "textField4"
+							"enabled": false
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"width": 26
+							"x": 15
+							"y": 45
 						} )
 					} )
 				}, new FormLayoutConstraints( null ) {

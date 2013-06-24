@@ -18,6 +18,8 @@ public enum States {
     INV_CHANGE,
     WITHDRAW_TOOL,
     PICKUP_TOOL,
-    LOGOUT;
+    LOGOUT,
+    ANTIBAN,
+    INCOMBAT;
 
 }

@@ -12,6 +12,7 @@ import scripts.metafisher.enums.Banks;
 import scripts.metafisher.enums.FishTools;
 import util.Timing;
 
+import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static org.tribot.api.General.sleep;
 
@@ -158,6 +159,7 @@ public class Bank {
     public boolean withdrawTool() {
         boolean ing = false;
         boolean tool = false;
+        println("count: "+Inventory.getCount(chosenTool.getID()));
         if (chosenTool.getIngredientID() != -1 && Inventory.getCount(chosenTool.getIngredientID()) == 0) ing = true;
         if (Inventory.getCount(chosenTool.getID()) == 0) tool = true;
 

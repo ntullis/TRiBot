@@ -18,6 +18,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
+import static org.tribot.api.General.random;
+
 
 public class GraphicalInterface extends JFrame {
 
@@ -62,9 +64,14 @@ public class GraphicalInterface extends JFrame {
 
 
 
-    /*public boolean getAntiban() {
-        return checkBox2.isSelected();
-    }*/
+    public int getAntiban() {
+
+        if (checkBox3.isSelected()) {
+            return random(Integer.parseInt(textField4.getText())*1000,Integer.parseInt(textField5.getText())*1000);
+        }
+
+        return -1;
+    }
 
     public GraphicalInterface() {
         initComponents();
@@ -200,10 +207,20 @@ public class GraphicalInterface extends JFrame {
         }
     }
 
+    private void checkBox3ActionPerformed(ActionEvent e) {
+        if (checkBox3.isSelected()) {
+            textField4.setEnabled(true);
+            textField5.setEnabled(true);
+        } else {
+            textField4.setEnabled(false);
+            textField5.setEnabled(false);
+        }
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+        // Generated using JFormDesigner Evaluation license - Jari JÃ¤Ã¤skelÃ¤
         listModel = new DefaultListModel();
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
@@ -215,7 +232,7 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        list1 = new JList(listModel);
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
@@ -223,6 +240,13 @@ public class GraphicalInterface extends JFrame {
         checkBox2 = new JCheckBox();
         textField2 = new JTextField();
         label1 = new JLabel();
+        panel6 = new JPanel();
+        checkBox3 = new JCheckBox();
+        label2 = new JLabel();
+        label3 = new JLabel();
+        label4 = new JLabel();
+        textField5 = new JTextField();
+        textField4 = new JTextField();
 
         //======== this ========
         setTitle("Setup");
@@ -290,13 +314,13 @@ public class GraphicalInterface extends JFrame {
                         panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                                .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
                                 .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
                         panel1Layout.createParallelGroup()
                             .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addContainerGap(14, Short.MAX_VALUE)
                                 .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
                     );
@@ -368,11 +392,11 @@ public class GraphicalInterface extends JFrame {
                             .addGroup(panel4Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(panel4Layout.createParallelGroup()
-                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                                     .addGroup(panel4Layout.createSequentialGroup()
                                         .addComponent(button2)
                                         .addGap(18, 18, 18)
-                                        .addComponent(textField1, GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)))
+                                        .addComponent(textField1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
                                 .addContainerGap())
                     );
                     panel4Layout.setVerticalGroup(
@@ -401,7 +425,7 @@ public class GraphicalInterface extends JFrame {
                                     .addGroup(optionsPanelLayout.createParallelGroup()
                                         .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)))
                             .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())
                 );
@@ -443,7 +467,7 @@ public class GraphicalInterface extends JFrame {
                     textField2.setEnabled(false);
 
                     //---- label1 ----
-                    label1.setText("min");
+                    label1.setText("minutes");
 
                     GroupLayout panel5Layout = new GroupLayout(panel5);
                     panel5.setLayout(panel5Layout);
@@ -463,11 +487,67 @@ public class GraphicalInterface extends JFrame {
                             .addGroup(panel5Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(panel5Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                        .addComponent(checkBox2)
-                                        .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(label1))
+                                    .addComponent(checkBox2)
+                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label1))
                                 .addContainerGap(7, Short.MAX_VALUE))
                     );
+                }
+
+                //======== panel6 ========
+                {
+                    panel6.setBorder(new TitledBorder("Antiban"));
+                    panel6.setLayout(null);
+
+                    //---- checkBox3 ----
+                    checkBox3.setText("Antiban");
+                    checkBox3.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            checkBox3ActionPerformed(e);
+                        }
+                    });
+                    panel6.add(checkBox3);
+                    checkBox3.setBounds(10, 15, 80, checkBox3.getPreferredSize().height);
+
+                    //---- label2 ----
+                    label2.setText("between");
+                    panel6.add(label2);
+                    label2.setBounds(90, 20, 75, label2.getPreferredSize().height);
+
+                    //---- label3 ----
+                    label3.setText("-");
+                    panel6.add(label3);
+                    label3.setBounds(45, 45, 25, 25);
+
+                    //---- label4 ----
+                    label4.setText("seconds");
+                    panel6.add(label4);
+                    label4.setBounds(90, 45, 60, 20);
+
+                    //---- textField5 ----
+                    textField5.setEnabled(false);
+                    panel6.add(textField5);
+                    textField5.setBounds(55, 45, 25, textField5.getPreferredSize().height);
+
+                    //---- textField4 ----
+                    textField4.setEnabled(false);
+                    panel6.add(textField4);
+                    textField4.setBounds(15, 45, 26, textField4.getPreferredSize().height);
+
+                    { // compute preferred size
+                        Dimension preferredSize = new Dimension();
+                        for(int i = 0; i < panel6.getComponentCount(); i++) {
+                            Rectangle bounds = panel6.getComponent(i).getBounds();
+                            preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                            preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                        }
+                        Insets insets = panel6.getInsets();
+                        preferredSize.width += insets.right;
+                        preferredSize.height += insets.bottom;
+                        panel6.setMinimumSize(preferredSize);
+                        panel6.setPreferredSize(preferredSize);
+                    }
                 }
 
                 GroupLayout panel3Layout = new GroupLayout(panel3);
@@ -476,13 +556,17 @@ public class GraphicalInterface extends JFrame {
                     panel3Layout.createParallelGroup()
                         .addGroup(panel3Layout.createSequentialGroup()
                             .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(0, 256, Short.MAX_VALUE))
+                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(64, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                            .addContainerGap(122, Short.MAX_VALUE)
-                            .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap(113, Short.MAX_VALUE)
+                            .addGroup(panel3Layout.createParallelGroup()
+                                .addComponent(panel5, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(panel6, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addContainerGap())
                 );
             }
@@ -493,7 +577,7 @@ public class GraphicalInterface extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addComponent(tabbedPane1)
+                .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
@@ -513,7 +597,7 @@ public class GraphicalInterface extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - fasd sdfgsdf
+    // Generated using JFormDesigner Evaluation license - Jari JÃ¤Ã¤skelÃ¤
     private JButton button1;
     private JTabbedPane tabbedPane1;
     private JPanel optionsPanel;
@@ -532,5 +616,12 @@ public class GraphicalInterface extends JFrame {
     private JCheckBox checkBox2;
     private JTextField textField2;
     private JLabel label1;
+    private JPanel panel6;
+    private JCheckBox checkBox3;
+    private JLabel label2;
+    private JLabel label3;
+    private JLabel label4;
+    private JTextField textField5;
+    private JTextField textField4;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

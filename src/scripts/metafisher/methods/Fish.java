@@ -30,31 +30,36 @@ public class Fish {
 
     public boolean startFishing() {
         final RSNPC pool[] = NPCs.findNearest(POOL.getID());
-        if (pool[0].isOnScreen()) {
-            if (!pool[0].isInteractingWithMe()) {
+
+        if (pool.length > 0 && pool != null) {
+            if (pool[0].isOnScreen()) {
+                if (!pool[0].isInteractingWithMe()) {
 
 
-                if (DynamicClicking.clickRSNPC(pool[0], TOOL.getOption())) {
-                    Timing.CSleep(new Timing.Condition() {
-                        @Override
-                        public boolean validate() {
-                            return pool[0].isInteractingWithMe();
-                        }
-                    }, random(4000, 5000));
-                    return true;
+                    if (DynamicClicking.clickRSNPC(pool[0], TOOL.getOption())) {
+                        Timing.CSleep(new Timing.Condition() {
+                            @Override
+                            public boolean validate() {
+                                return pool[0].isInteractingWithMe();
+                            }
+                        }, random(4000, 5000));
+                        return true;
+                    }
+
+
                 }
-
-
+            } else {
+                Walking.walkTo(pool[0].getPosition());
+                Timing.CSleep(new Timing.Condition() {
+                    @Override
+                    public boolean validate() {
+                        return !Player.isMoving();
+                    }
+                }, 5000);
             }
-        } else {
-            Walking.walkTo(pool[0].getPosition());
-            Timing.CSleep(new Timing.Condition() {
-                @Override
-                public boolean validate() {
-                    return !Player.isMoving();
-                }
-            }, 5000);
         }
+
+
 
         return false;
     }
