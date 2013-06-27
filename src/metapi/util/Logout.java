@@ -1,4 +1,4 @@
-package util;
+package metapi.util;
 
 
 import org.tribot.api2007.GameTab;

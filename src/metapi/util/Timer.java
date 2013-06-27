@@ -1,4 +1,4 @@
-package util;
+package metapi.util;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,4 +1,4 @@
-package scripts.metafisher.enums;
+package metapi.enums;
 
 /**
  * Created with IntelliJ IDEA.
@@ -8,6 +8,7 @@ package scripts.metafisher.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum Banks {
+    LUMBRIDGE("Lumbridge", 4, 18492, 18491, 4907),
     CATHERBY("Catherby", 4, 0, 57),
     AL_KHARID("Al Kharid", 4, 7126, 65),
     DRAYNOR("Draynor", 7, 7126, 57, 56),

@@ -1,16 +1,16 @@
 package scripts.metafisher.methods;
 
+import metapi.MWalking;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSNPC;
 import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
-import scripts.metafisher.enums.Banks;
+import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
-import util.Timer;
-import util.Timing;
+
 
 import static org.tribot.api.General.*;
-import static util.Timing.CSleep;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,7 +26,7 @@ public class Walk {
 
     private RSTile[] walkPath;
 
-    private Timer runTimer;
+
 
 
     public Walk(Banks chosenBank, FishPools chosenPool) {
@@ -52,98 +52,18 @@ public class Walk {
                 break;
         }
 
-        runTimer = new Timer(random(180000, 300000));
+
         Walking.walking_timeout = random(2000, 4000);
 
     }
 
-    public boolean toggleRun(boolean enable) {
-
-        if (!runTimer.isRunning()) {
-            final int settings[] = Game.getSettingsArray();
-
-            if (settings != null) {
-                if (settings[173] == 0) {
-                    if (enable) {
-                        if (GameTab.open(GameTab.TABS.OPTIONS)) {
-                            if (Interfaces.get(261, 0) != null) {
-
-                                Interfaces.get(261, 0).click("Toggle Run");
-
-                                if (settings[173] == 1) {
-                                    GameTab.open(GameTab.TABS.OPTIONS);
-
-                                    CSleep(new Timing.Condition() {
-                                        @Override
-                                        public boolean validate() {
-                                            return settings[173] == 1;
-                                        }
-                                    }, random(2000, 3000));
-                                }
-
-
-                                GameTab.open(GameTab.TABS.INVENTORY);
-                                CSleep(new Timing.Condition() {
-                                    @Override
-                                    public boolean validate() {
-                                        return GameTab.open(GameTab.TABS.INVENTORY);
-                                    }
-                                }, random(2000, 3000));
-                                runTimer.reset();
-                                return true;
-                            }
-                        } else {
-
-                            return true;
-                        }
-                    }
-                } else {
-                    if (!enable) {
-                        if (GameTab.open(GameTab.TABS.OPTIONS)) {
-                            if (Interfaces.get(261, 0) != null) {
-
-                                Interfaces.get(261, 0).click("Toggle Run");
-                            }
-                        } else {
-                            GameTab.open(GameTab.TABS.OPTIONS);
-                            sleep(1000, 2000);
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-
-
-        return false;
-    }
-
-    public boolean walkPath(RSTile[] path, boolean reverse) {
-        if (path != null) {
-
-            RSTile[] tempPath = new RSTile[path.length];
-            if (reverse) {
-                int y = 0;
-                for (int i = path.length - 1; i >= 0; i--) {
-                    tempPath[y] = path[i];
-                    y++;
-                }
-
-                path = tempPath;
-            }
-
-
-            Walking.walkPath(path);
-        }
-        return false;
-    }
 
     public boolean walkToBank() {
-        return walkPath(walkPath, false);
+        return MWalking.walkPath(walkPath, false);
     }
 
     public boolean walkToFish() {
-        return walkPath(walkPath, true);
+        return MWalking.walkPath(walkPath, true);
     }
 
     public boolean bankIsNear() {

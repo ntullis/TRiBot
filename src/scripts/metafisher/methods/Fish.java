@@ -7,7 +7,7 @@ import org.tribot.api2007.Walking;
 import org.tribot.api2007.types.RSNPC;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
-import util.Timing;
+import metapi.util.Timing;
 
 import static org.tribot.api.General.random;
 

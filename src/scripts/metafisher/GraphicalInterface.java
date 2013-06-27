@@ -5,7 +5,7 @@
 package scripts.metafisher;
 
 
-import scripts.metafisher.enums.Banks;
+import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 
@@ -186,7 +186,8 @@ public class GraphicalInterface extends JFrame {
             }));
         } else if (loc.equals(Banks.EDGEVILLE.getName())) {
             comboBox2.setModel(new DefaultComboBoxModel(new String[]{
-                    FishPools.SALMON.getName()
+                    FishPools.SALMON.getName(),
+                    FishPools.HERRING.getName()
             }));
         } else if (loc.equals(Banks.FISHING_GUILD.getName())) {
             comboBox2.setModel(new DefaultComboBoxModel(new String[]{
@@ -221,7 +222,9 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Jari JÃ¤Ã¤skelÃ¤
+
         listModel = new DefaultListModel();
+
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();

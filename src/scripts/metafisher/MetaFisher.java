@@ -1,20 +1,21 @@
 package scripts.metafisher;
 
 
+import metapi.MWalking;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.api2007.types.RSNPC;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
-import scripts.metafisher.enums.Banks;
+import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 import scripts.metafisher.enums.States;
 import scripts.metafisher.methods.*;
-import util.Networking;
-import util.Timer;
-import util.Timing;
+import metapi.util.Networking;
+import metapi.util.Timer;
+import metapi.util.Timing;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -23,8 +24,8 @@ import java.net.URL;
 import java.util.HashMap;
 
 import static org.tribot.api.General.random;
-import static util.Logout.Logout;
-import static util.Timing.CSleep;
+import static metapi.util.Logout.Logout;
+import static metapi.util.Timing.CSleep;
 
 
 /**
@@ -49,7 +50,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Banks bankEnum;
     private FishPools poolEnum;
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327, 349};
 
     private HashMap dropMap;
 
@@ -63,6 +64,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     private Timer logoutTimer = null;
     private Timer antiBanTimer = null;
+    private Timer runTimer = null;
 
     private Antiban antiban = null;
 
@@ -81,14 +83,14 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 bank.deposit();
                 break;
             case WALK_TO_BANK:
-                walk.toggleRun(true);
+                MWalking.toggleRun(true, runTimer);
                 walk.walkToBank();
                 break;
             case FISH:
                 fish.startFishing();
                 break;
             case WALK_TO_FISH:
-                walk.toggleRun(true);
+                MWalking.toggleRun(true, runTimer);
                 walk.walkToFish();
                 break;
             case DROP:
@@ -120,7 +122,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 }
                 break;
             case INCOMBAT:
-                walk.toggleRun(true);
+                MWalking.toggleRun(true, runTimer);
                 walk.walkToBank();
                 break;
             case GUI:
@@ -233,6 +235,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             }
             sleep(40, 80);
         }
+
+        runTimer = new Timer(random(180000, 300000));
 
         if (GUI.logout()) {
             logoutTimer = new Timer(GUI.getLogoutMS());
