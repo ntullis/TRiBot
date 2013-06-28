@@ -5,6 +5,7 @@ import metapi.MWalking;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.api2007.types.RSNPC;
+import org.tribot.api2007.types.RSTile;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
+import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static metapi.util.Logout.Logout;
 import static metapi.util.Timing.CSleep;
@@ -71,6 +73,38 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     public static boolean guiDone = false;
 
+    private RSTile[] tileBlacklist = new RSTile[]{new RSTile(2605,3395,0), new RSTile(2605,3396,0)};
+
+    public boolean badTile(RSTile tile) {
+
+        for (int i = 0; i < tileBlacklist.length; i++) {
+            if (tile.equals(tileBlacklist[i])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean pickupTool() {
+        RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
+
+        if (tool[0].isOnScreen()) {
+            if (tool[0].click("Take")) {
+                CSleep(new Timing.Condition() {
+                    @Override
+                    public boolean validate() {
+                        return Inventory.getCount(toolEnum.getID()) > 0;
+                    }
+                },random(2000,4000));
+            }
+        } else {
+            Walking.walkTo(tool[0].getPosition());
+            sleep(1000,2000);
+        }
+        return false;
+    }
+
     @Override
     public States handleState(States states) {
 
@@ -105,20 +139,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 bank.withdrawTool();
                 break;
             case PICKUP_TOOL:
-                RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool[0].isOnScreen()) {
-                    if (tool[0].click("Take")) {
-                        CSleep(new Timing.Condition() {
-                            @Override
-                            public boolean validate() {
-                                return Inventory.getCount(toolEnum.getID()) > 0;
-                            }
-                        },random(2000,4000));
-                    }
-                } else {
-                    Walking.walkTo(tool[0].getPosition());
-                    sleep(1000,2000);
-                }
+
                 break;
             case LOGOUT:
                 if (Logout()) {
@@ -176,7 +197,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         } else {
             if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool.length > 0 && tool != null) {
+                if (tool.length > 0 && tool != null && !badTile(tool[0].getPosition())) {
                     return States.PICKUP_TOOL;
                 } else {
                     if (!walk.bankIsNear()) return States.WALK_TO_BANK;
