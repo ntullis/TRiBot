@@ -4,8 +4,8 @@ new FormModel {
 	contentType: "form/swing"
 	root: new FormRoot {
 		add( new FormWindow( "javax.swing.JFrame", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-			"$horizontalGroup": "par l {comp tabbedPane1::l::479:x, seq t {space :::x, comp button1:::p:162:p, space :p:156:p}}"
-			"$verticalGroup": "par l {seq l {comp tabbedPane1::::210:x, space :::p, comp button1:::p:38:p, space :p:7:p}}"
+			"$horizontalGroup": "par l {comp tabbedPane1::l:::x, seq t {space :::x, comp button1:::p:162:p, space :p:156:p}}"
+			"$verticalGroup": "par l {seq l {comp tabbedPane1:::::x, space :::p, comp button1:::p:38:p, space :p:7:p}}"
 		} ) {
 			name: "this"
 			"title": "Setup"
@@ -48,6 +48,7 @@ new FormModel {
 								addElement( "Draynor" )
 								addElement( "Edgeville" )
 								addElement( "Fishing Guild" )
+								addElement( "Seer's Village" )
 							}
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )
 							addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "comboBox1ActionPerformed", true ) )
@@ -73,7 +74,7 @@ new FormModel {
 					} )
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
 						"$horizontalGroup": "par l {seq {space :::p, par l {comp scrollPane1::::176:x, seq {comp button2:::p::p, space s:::p, comp textField1::::115:x}}, space :::p}}"
-						"$verticalGroup": "par l {seq l {comp scrollPane1:::p:86:p, space u:::p, par b {comp textField1::b:p::p, comp button2::b:p::p}, space :0:8:x}}"
+						"$verticalGroup": "par l {seq l {comp scrollPane1:::p:86:p, space u:::p, par b {comp textField1::b:p::p, comp button2::b:p::p}, space :0:0:x}}"
 					} ) {
 						name: "panel4"
 						"border": new javax.swing.border.TitledBorder( "Droplist - ItemIDs" )

@@ -127,6 +127,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             case WALK_TO_FISH:
                 MWalking.toggleRun(true, runTimer);
                 walk.walkToFish();
+                walk.walkToFish();
                 break;
             case DROP:
                 drop.dropAll();
@@ -179,6 +180,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             antiban = null;
             antiBanTimer = null;
         }
+
 
         if (Inventory.isFull()) {
             if (!dropMap.isEmpty() || GUI.powerfish) {

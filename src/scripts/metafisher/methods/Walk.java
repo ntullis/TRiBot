@@ -50,6 +50,10 @@ public class Walk {
             case FISHING_GUILD:
                 walkPath = new RSTile[]{new RSTile(2606, 3400, 0), new RSTile(2598, 3408, 0), new RSTile(2595, 3417, 0), new RSTile(2587, 3420, 0)};
                 break;
+            case SEER_VILLAGE:
+                walkPath = new RSTile[]{new RSTile(2724, 3530, 0), new RSTile(2732, 3525, 0), new RSTile(2737, 3515, 0), new RSTile(2741, 3504, 0), new RSTile(2739, 3496, 0),
+                        new RSTile(2735, 3489, 0), new RSTile(2726, 3491, 0)};
+                break;
         }
 
 
@@ -68,9 +72,6 @@ public class Walk {
 
     public boolean bankIsNear() {
         RSNPC banker[] = NPCs.find(bank.getBankerID());
-        //println("distance = "+Player.getPosition().distanceTo(banker[0].getPosition()));
-
-
         return banker.length > 0 && banker != null && Player.getPosition().distanceTo(banker[0].getPosition()) < bank.getMaxDistance();
     }
 

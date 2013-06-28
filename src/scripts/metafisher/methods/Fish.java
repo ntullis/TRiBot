@@ -1,6 +1,7 @@
 package scripts.metafisher.methods;
 
 import org.tribot.api.DynamicClicking;
+import org.tribot.api2007.Camera;
 import org.tribot.api2007.NPCs;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Walking;
@@ -10,6 +11,7 @@ import scripts.metafisher.enums.FishTools;
 import metapi.util.Timing;
 
 import static org.tribot.api.General.random;
+import static org.tribot.api.General.sleep;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,6 +37,12 @@ public class Fish {
             if (pool[0].isOnScreen()) {
                 if (!pool[0].isInteractingWithMe()) {
 
+                    int r = random(0, 5);
+
+                    if (r == 3) {
+                        Camera.turnToTile(pool[0].getPosition());
+                        sleep(300,500);
+                    }
 
                     if (DynamicClicking.clickRSNPC(pool[0], TOOL.getOption())) {
                         Timing.CSleep(new Timing.Condition() {

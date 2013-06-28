@@ -5,6 +5,7 @@
 package scripts.metafisher;
 
 
+
 import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
@@ -31,7 +32,7 @@ public class GraphicalInterface extends JFrame {
     private FishPools chosenPool;
     private FishTools chosenTool;
 
-    private final Banks[] alLBanks = {Banks.CATHERBY, Banks.AL_KHARID, Banks.DRAYNOR, Banks.EDGEVILLE, Banks.FISHING_GUILD};
+    private final Banks[] alLBanks = {Banks.CATHERBY, Banks.AL_KHARID, Banks.DRAYNOR, Banks.EDGEVILLE, Banks.FISHING_GUILD, Banks.SEER_VILLAGE};
     private final FishPools[] allPools = {FishPools.MACKEREL, FishPools.TUNA, FishPools.LOBSTER, FishPools.SHRIMPS, FishPools.HERRING, FishPools.SALMON, FishPools.SHARK};
 
 
@@ -185,7 +186,7 @@ public class GraphicalInterface extends JFrame {
                     FishPools.SHRIMPS.getName(),
                     FishPools.HERRING.getName()
             }));
-        } else if (loc.equals(Banks.EDGEVILLE.getName())) {
+        } else if (loc.equals(Banks.EDGEVILLE.getName()) || loc.equals(Banks.SEER_VILLAGE.getName())) {
             comboBox2.setModel(new DefaultComboBoxModel(new String[]{
                     FishPools.SALMON.getName(),
                     FishPools.HERRING.getName()
@@ -302,7 +303,8 @@ public class GraphicalInterface extends JFrame {
                         "Al Kharid",
                         "Draynor",
                         "Edgeville",
-                        "Fishing Guild"
+                        "Fishing Guild",
+                        "Seer's Village"
                     }));
                     comboBox1.addActionListener(new ActionListener() {
                         @Override
@@ -411,7 +413,7 @@ public class GraphicalInterface extends JFrame {
                                 .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(button2))
-                                .addGap(0, 8, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE))
                     );
                 }
 
@@ -581,7 +583,7 @@ public class GraphicalInterface extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
+                .addComponent(tabbedPane1)
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
@@ -590,7 +592,7 @@ public class GraphicalInterface extends JFrame {
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addComponent(tabbedPane1)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
                     .addGap(7, 7, 7))
