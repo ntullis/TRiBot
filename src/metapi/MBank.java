@@ -76,9 +76,9 @@ public class MBank {
         return false;
     }
 
-
+    public static int BANK_SECTION = 0;
     public static void withdraw(int count, int... ids) {
-        int BANK_SECTION = 0;
+
 
         int section, scrollTo, itemX, itemY;
 

@@ -9,8 +9,8 @@ package metapi.enums;
  */
 public enum Banks {
     LUMBRIDGE("Lumbridge", 4, 18492, 18491, 4907),
-    CATHERBY("Catherby", 4, 0, 57),
-    AL_KHARID("Al Kharid", 4, 7126, 65),
+    CATHERBY("Catherby", 4, 0, 57, 56),
+    AL_KHARID("Al Kharid", 4, 7126, 69, 65),
     DRAYNOR("Draynor", 7, 7126, 57, 56),
     EDGEVILLE("Edgeville", 4, 7126, 56),
     FISHING_GUILD("Fishing Guild", 8, 23961, 57, 56);

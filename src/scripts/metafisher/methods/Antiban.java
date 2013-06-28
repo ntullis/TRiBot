@@ -20,7 +20,6 @@ public class Antiban {
     public Antiban() {
         int r = random(0,4);
 
-        println("antibanCase = "+r);
         switch (r) {
             case 0:
                 RSNPC n[] = NPCs.getAll();

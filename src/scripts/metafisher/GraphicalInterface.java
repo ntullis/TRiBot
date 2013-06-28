@@ -18,6 +18,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
+import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 
 
@@ -221,7 +222,7 @@ public class GraphicalInterface extends JFrame {
 
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
-        // Generated using JFormDesigner Evaluation license - Jari JÃ¤Ã¤skelÃ¤
+        // Generated using JFormDesigner Evaluation license - Jari Jaaskela
 
         listModel = new DefaultListModel();
 
@@ -298,7 +299,7 @@ public class GraphicalInterface extends JFrame {
                     //---- comboBox1 ----
                     comboBox1.setModel(new DefaultComboBoxModel(new String[] {
                         "Catherby",
-                        "Al-kharid",
+                        "Al Kharid",
                         "Draynor",
                         "Edgeville",
                         "Fishing Guild"
@@ -317,13 +318,13 @@ public class GraphicalInterface extends JFrame {
                         panel1Layout.createParallelGroup()
                             .addGroup(panel1Layout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                                .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
                                 .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
                         panel1Layout.createParallelGroup()
                             .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                .addContainerGap(14, Short.MAX_VALUE)
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addContainerGap())
                     );
@@ -395,7 +396,7 @@ public class GraphicalInterface extends JFrame {
                             .addGroup(panel4Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(panel4Layout.createParallelGroup()
-                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
                                     .addGroup(panel4Layout.createSequentialGroup()
                                         .addComponent(button2)
                                         .addGap(18, 18, 18)
@@ -410,7 +411,7 @@ public class GraphicalInterface extends JFrame {
                                 .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                                     .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addComponent(button2))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(0, 8, Short.MAX_VALUE))
                     );
                 }
 
@@ -428,7 +429,7 @@ public class GraphicalInterface extends JFrame {
                                     .addGroup(optionsPanelLayout.createParallelGroup()
                                         .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)))
                             .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addContainerGap())
                 );
@@ -561,12 +562,12 @@ public class GraphicalInterface extends JFrame {
                             .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                             .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap(64, Short.MAX_VALUE))
+                            .addContainerGap(53, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                            .addContainerGap(113, Short.MAX_VALUE)
+                            .addContainerGap(105, Short.MAX_VALUE)
                             .addGroup(panel3Layout.createParallelGroup()
                                 .addComponent(panel5, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                 .addComponent(panel6, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -580,7 +581,7 @@ public class GraphicalInterface extends JFrame {
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
             contentPaneLayout.createParallelGroup()
-                .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
                 .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
                     .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
@@ -589,7 +590,7 @@ public class GraphicalInterface extends JFrame {
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(tabbedPane1)
+                    .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
                     .addGap(7, 7, 7))
@@ -600,7 +601,7 @@ public class GraphicalInterface extends JFrame {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Jari JÃ¤Ã¤skelÃ¤
+    // Generated using JFormDesigner Evaluation license - Jari Jaaskela
     private JButton button1;
     private JTabbedPane tabbedPane1;
     private JPanel optionsPanel;

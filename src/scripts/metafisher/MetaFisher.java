@@ -26,6 +26,7 @@ import java.util.HashMap;
 import static org.tribot.api.General.random;
 import static metapi.util.Logout.Logout;
 import static metapi.util.Timing.CSleep;
+import static org.tribot.api.General.sleep;
 
 
 /**
@@ -36,7 +37,7 @@ import static metapi.util.Timing.CSleep;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.14)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.15)
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -114,6 +115,9 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                             }
                         },random(2000,4000));
                     }
+                } else {
+                    Walking.walkTo(tool[0].getPosition());
+                    sleep(1000,2000);
                 }
                 break;
             case LOGOUT:
@@ -172,7 +176,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         } else {
             if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool.length > 0 && tool != null && tool[0].isOnScreen()) {
+                if (tool.length > 0 && tool != null) {
                     return States.PICKUP_TOOL;
                 } else {
                     if (!walk.bankIsNear()) return States.WALK_TO_BANK;

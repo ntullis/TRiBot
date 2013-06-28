@@ -8,13 +8,13 @@ package scripts.metafisher.enums;
  * To change this template use File | Settings | File Templates.
  */
 public enum FishPools {
-    MACKEREL("Bass/Mackerel/Cod/Junk", 322, 313),
-    TUNA("Swordfish/Tuna", 321, 312),
-    LOBSTER("Lobster", 321, 312),
-    SHRIMPS("Anchovies/Shrimps", 330, 327),
-    HERRING("Herring/Sardine/Pike", 330, 327, 328),
-    SALMON("Salmon/Trout", 328),
-    SHARK("Shark", 322, 313);
+    MACKEREL("Bass/Mackerel/Cod/Junk", 4908, 313),
+    TUNA("Swordfish/Tuna", 311, 312),
+    LOBSTER("Lobster", 311, 312),
+    SHRIMPS("Anchovies/Shrimps", 322, 330, 3019),
+    HERRING("Herring/Sardine/Pike", 322, 330, 314, 3019),
+    SALMON("Salmon/Trout", 314),
+    SHARK("Shark", 4908, 313);
 
 
     private final int[] POOL_IDs;
