@@ -161,12 +161,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     public States getState() {
 
 
-
-
-
-
-
-
         oldCount = Inventory.getCount(fishIDs);
 
 
@@ -213,7 +207,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             newCount = Inventory.getCount(fishIDs);
 
 
-            RSNPC swirlpool[] = NPCs.findNearest(0);
+            RSNPC swirlpool[] = NPCs.findNearest(406);
 
             if (swirlpool.length > 0 && swirlpool != null && swirlpool[0].isInteractingWithMe()) return States.FISH;
 
