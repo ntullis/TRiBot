@@ -1,5 +1,6 @@
 package scripts.metafisher.methods;
 
+import metapi.AStar;
 import metapi.MWalking;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSNPC;
@@ -23,8 +24,9 @@ public class Walk {
 
     Banks bank;
     FishPools pool;
+    AStar pf;
 
-    private RSTile[] walkPath;
+    private RSTile Spot;
 
 
 
@@ -35,26 +37,29 @@ public class Walk {
 
         switch (bank) {
             case CATHERBY:
-                walkPath = new RSTile[]{new RSTile(2854, 3430, 0), new RSTile(2842, 3433, 0), new RSTile(2830, 3437, 0), new RSTile(2817, 3436, 0), new RSTile(2809, 3439, 0)};
+                Spot = new RSTile(2854, 3430, 0);
                 break;
             case AL_KHARID:
-                walkPath = new RSTile[]{new RSTile(3277, 3143, 0), new RSTile(3271, 3150, 0), new RSTile(3276, 3159, 0), new RSTile(3270, 3165, 0)};
+                Spot = new RSTile(3277, 3143, 0);
                 break;
             case DRAYNOR:
-                walkPath = new RSTile[]{new RSTile(3087, 3228, 0), new RSTile(3085, 3237, 0), new RSTile(3093, 3242, 0)};
+                Spot = new RSTile(3087, 3228, 0);
                 break;
             case EDGEVILLE:
-                walkPath = new RSTile[]{new RSTile(3102, 3430, 0), new RSTile(3098, 3438, 0), new RSTile(3093, 3445, 0), new RSTile(3090, 3452, 0), new RSTile(3087, 3461, 0),
-                        new RSTile(3079, 3472, 0), new RSTile(3080, 3485, 0), new RSTile(3087, 3491, 0), new RSTile(3093, 3489, 0)};
+                Spot = new RSTile(3102, 3430, 0);
                 break;
             case FISHING_GUILD:
-                walkPath = new RSTile[]{new RSTile(2606, 3400, 0), new RSTile(2598, 3408, 0), new RSTile(2595, 3417, 0), new RSTile(2587, 3420, 0)};
+                Spot = new RSTile(2606, 3400, 0);
                 break;
             case SEER_VILLAGE:
-                walkPath = new RSTile[]{new RSTile(2724, 3530, 0), new RSTile(2732, 3525, 0), new RSTile(2737, 3515, 0), new RSTile(2741, 3504, 0), new RSTile(2739, 3496, 0),
-                        new RSTile(2735, 3489, 0), new RSTile(2726, 3491, 0)};
+                Spot = new RSTile(2724, 3530, 0);
                 break;
         }
+
+
+        pf = new AStar();
+
+
 
 
         Walking.walking_timeout = random(2000, 4000);
@@ -63,11 +68,19 @@ public class Walk {
 
 
     public boolean walkToBank() {
-        return MWalking.walkPath(walkPath, false);
+        return PathFinding.aStarWalk(bank.getLocation());
     }
 
     public boolean walkToFish() {
-        return MWalking.walkPath(walkPath, true);
+
+
+        RSTile[] path = pf.findPath(Player.getPosition(), new RSTile(2854, 3430, 0));
+
+        if (path != null) {
+            println("path = "+path.length);
+        }
+
+        return false;
     }
 
     public boolean bankIsNear() {

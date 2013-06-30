@@ -6,7 +6,9 @@ package scripts.metafisher;
 
 
 
+import javax.swing.border.*;
 import metapi.enums.Banks;
+import metapi.util.Networking;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 
@@ -35,6 +37,7 @@ public class GraphicalInterface extends JFrame {
     private final Banks[] alLBanks = {Banks.CATHERBY, Banks.AL_KHARID, Banks.DRAYNOR, Banks.EDGEVILLE, Banks.FISHING_GUILD, Banks.SEER_VILLAGE};
     private final FishPools[] allPools = {FishPools.MACKEREL, FishPools.TUNA, FishPools.LOBSTER, FishPools.SHRIMPS, FishPools.HERRING, FishPools.SALMON, FishPools.SHARK};
 
+    private Networking networking = null;
 
     private HashMap<Integer, Integer> dropList = new HashMap<Integer, Integer>();
 
@@ -64,6 +67,15 @@ public class GraphicalInterface extends JFrame {
         return Integer.parseInt(textField2.getText())*60000;
     }
 
+    public String getEmail() {
+
+        if (checkBox4.isSelected()) {
+            return textField3.toString();
+        }
+
+        return null;
+
+    }
 
 
     public int getAntiban() {
@@ -76,6 +88,21 @@ public class GraphicalInterface extends JFrame {
     }
 
     public GraphicalInterface() {
+        networking = new Networking("MetaFisher", null);
+
+
+
+
+
+        try {
+            String s = networking.fetchSettings();
+            println(s);
+        } catch (Exception e) {
+            println("Networking error: "+e.toString());
+            e.printStackTrace();
+        }
+
+
         initComponents();
     }
 
@@ -133,6 +160,7 @@ public class GraphicalInterface extends JFrame {
                 break;
         }
 
+        networking = null;
 
         this.dispose();
         MetaFisher.guiDone = true;
@@ -220,13 +248,14 @@ public class GraphicalInterface extends JFrame {
         }
     }
 
+    private void checkBox4ActionPerformed(ActionEvent e) {
+            textField3.setEnabled(checkBox4.isSelected());
+    }
+
 
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Jari Jaaskela
-
-        listModel = new DefaultListModel();
-
         button1 = new JButton();
         tabbedPane1 = new JTabbedPane();
         optionsPanel = new JPanel();
@@ -237,7 +266,7 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         panel4 = new JPanel();
         scrollPane1 = new JScrollPane();
-        list1 = new JList(listModel);
+        list1 = new JList();
         button2 = new JButton();
         textField1 = new JTextField();
         panel3 = new JPanel();
@@ -252,6 +281,10 @@ public class GraphicalInterface extends JFrame {
         label4 = new JLabel();
         textField5 = new JTextField();
         textField4 = new JTextField();
+        panel7 = new JPanel();
+        checkBox4 = new JCheckBox();
+        textField3 = new JTextField();
+        label5 = new JLabel();
 
         //======== this ========
         setTitle("Setup");
@@ -556,24 +589,74 @@ public class GraphicalInterface extends JFrame {
                     }
                 }
 
+                //======== panel7 ========
+                {
+                    panel7.setBorder(new CompoundBorder(
+                        new TitledBorder("Email"),
+                        new EmptyBorder(5, 5, 5, 5)));
+                    panel7.setLayout(null);
+
+                    //---- checkBox4 ----
+                    checkBox4.setText("Send email reports");
+                    checkBox4.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            checkBox4ActionPerformed(e);
+                        }
+                    });
+                    panel7.add(checkBox4);
+                    checkBox4.setBounds(new Rectangle(new Point(10, 15), checkBox4.getPreferredSize()));
+
+                    //---- textField3 ----
+                    textField3.setEnabled(false);
+                    panel7.add(textField3);
+                    textField3.setBounds(15, 60, 155, textField3.getPreferredSize().height);
+
+                    //---- label5 ----
+                    label5.setText("Email:");
+                    panel7.add(label5);
+                    label5.setBounds(15, 40, 40, label5.getPreferredSize().height);
+
+                    { // compute preferred size
+                        Dimension preferredSize = new Dimension();
+                        for(int i = 0; i < panel7.getComponentCount(); i++) {
+                            Rectangle bounds = panel7.getComponent(i).getBounds();
+                            preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                            preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                        }
+                        Insets insets = panel7.getInsets();
+                        preferredSize.width += insets.right;
+                        preferredSize.height += insets.bottom;
+                        panel7.setMinimumSize(preferredSize);
+                        panel7.setPreferredSize(preferredSize);
+                    }
+                }
+
                 GroupLayout panel3Layout = new GroupLayout(panel3);
                 panel3.setLayout(panel3Layout);
                 panel3Layout.setHorizontalGroup(
                     panel3Layout.createParallelGroup()
                         .addGroup(panel3Layout.createSequentialGroup()
-                            .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap()
+                            .addGroup(panel3Layout.createParallelGroup()
+                                .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(panel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                             .addContainerGap(53, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                            .addContainerGap(105, Short.MAX_VALUE)
-                            .addGroup(panel3Layout.createParallelGroup()
-                                .addComponent(panel5, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(panel6, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                            .addContainerGap())
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(panel7, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                            .addGap(17, 17, 17))
                 );
             }
             tabbedPane1.addTab("Extras", panel3);
@@ -592,7 +675,7 @@ public class GraphicalInterface extends JFrame {
         contentPaneLayout.setVerticalGroup(
             contentPaneLayout.createParallelGroup()
                 .addGroup(contentPaneLayout.createSequentialGroup()
-                    .addComponent(tabbedPane1)
+                    .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                     .addComponent(button1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
                     .addGap(7, 7, 7))
@@ -629,5 +712,9 @@ public class GraphicalInterface extends JFrame {
     private JLabel label4;
     private JTextField textField5;
     private JTextField textField4;
+    private JPanel panel7;
+    private JCheckBox checkBox4;
+    private JTextField textField3;
+    private JLabel label5;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

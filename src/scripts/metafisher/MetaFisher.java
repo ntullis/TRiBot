@@ -20,15 +20,18 @@ import metapi.util.Timing;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Properties;
 
 import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static metapi.util.Logout.Logout;
 import static metapi.util.Timing.CSleep;
-import static org.tribot.api.General.sleep;
+
 
 
 /**
@@ -49,6 +52,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Walk walk;
     private Fish fish;
     private Drop drop;
+
+    private Networking networking;
 
     private Banks bankEnum;
     private FishPools poolEnum;
@@ -127,7 +132,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             case WALK_TO_FISH:
                 MWalking.toggleRun(true, runTimer);
                 walk.walkToFish();
-                walk.walkToFish();
                 break;
             case DROP:
                 drop.dropAll();
@@ -140,7 +144,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 bank.withdrawTool();
                 break;
             case PICKUP_TOOL:
-
+                pickupTool();
                 break;
             case LOGOUT:
                 if (Logout()) {
@@ -158,6 +162,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         return getState();
     }
+
+
 
     public States getState() {
 
@@ -224,15 +230,14 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     @Override
     public States getInitialState() {
-
+        Properties properties = System.getProperties();
 
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
 
-                Networking networking = new Networking("a");
-                String s = networking.fetchSettings();
+
 
                 GUI = new GraphicalInterface();
 
@@ -247,7 +252,12 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         });
 
 
+
         startTime = System.currentTimeMillis();
+
+
+
+
 
         while (true) {
 
@@ -282,7 +292,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         newCount = Inventory.getCount(fishIDs);
 
-
+        networking = new Networking(script_name, GUI.getEmail());
 
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);
@@ -358,6 +368,5 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
 
     }
-
 
 }
