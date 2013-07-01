@@ -84,7 +84,7 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
             case WALK_TO_CRAFT:
                 break;
             case CRAFT:
-                craft.Craft();
+                craft.craft();
                 break;
 
             default:

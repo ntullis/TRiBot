@@ -220,6 +220,8 @@ public class GraphicalInterface extends JFrame {
 
         networking = new Networking("MetaFisher");
 
+        listModel = new DefaultListModel();
+
         initComponents();
 
 
@@ -390,6 +392,9 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Jari Jaaskela
+
+
+
         JButton button1 = new JButton();
         JTabbedPane tabbedPane1 = new JTabbedPane();
         JPanel optionsPanel = new JPanel();
@@ -400,7 +405,7 @@ public class GraphicalInterface extends JFrame {
         comboBox2 = new JComboBox();
         JPanel panel4 = new JPanel();
         JScrollPane scrollPane1 = new JScrollPane();
-        list1 = new JList();
+        list1 = new JList(listModel);
         button2 = new JButton();
         textField1 = new JTextField();
         JPanel panel3 = new JPanel();
