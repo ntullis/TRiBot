@@ -33,10 +33,7 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
     private Stations chosenStation = Stations.FURNACE;
 
     private Walk walk;
-    private Bank bank;
     private Craft craft;
-
-    private States scriptState = null;
 
 
     public States getState() {
@@ -67,7 +64,7 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
     @Override
     public States getInitialState() {
 
-        bank = new Bank(chosenBank);
+        Bank bank = new Bank(chosenBank);
         craft = new Craft(chosenCraftable);
         walk = new Walk(chosenStation, chosenBank);
 
@@ -77,7 +74,7 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
     @Override
     public States handleState(States states) {
 
-        scriptState = states;
+        States scriptState = states;
 
         switch (scriptState) {
             case BANK:

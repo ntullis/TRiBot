@@ -62,7 +62,6 @@ public class Networking {
 
 
     public boolean sendEmail(String email, String event, String msg) {
-        ;
 
 
         // Sender's email ID needs to be mentioned

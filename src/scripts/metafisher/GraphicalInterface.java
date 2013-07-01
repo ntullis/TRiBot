@@ -390,35 +390,35 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Jari Jaaskela
-        button1 = new JButton();
-        tabbedPane1 = new JTabbedPane();
-        optionsPanel = new JPanel();
+        JButton button1 = new JButton();
+        JTabbedPane tabbedPane1 = new JTabbedPane();
+        JPanel optionsPanel = new JPanel();
         checkBox1 = new JCheckBox();
-        panel1 = new JPanel();
+        JPanel panel1 = new JPanel();
         comboBox1 = new JComboBox();
-        panel2 = new JPanel();
+        JPanel panel2 = new JPanel();
         comboBox2 = new JComboBox();
-        panel4 = new JPanel();
-        scrollPane1 = new JScrollPane();
+        JPanel panel4 = new JPanel();
+        JScrollPane scrollPane1 = new JScrollPane();
         list1 = new JList();
         button2 = new JButton();
         textField1 = new JTextField();
-        panel3 = new JPanel();
-        panel5 = new JPanel();
+        JPanel panel3 = new JPanel();
+        JPanel panel5 = new JPanel();
         checkBox2 = new JCheckBox();
         textField2 = new JTextField();
-        label1 = new JLabel();
-        panel6 = new JPanel();
+        JLabel label1 = new JLabel();
+        JPanel panel6 = new JPanel();
         checkBox3 = new JCheckBox();
-        label2 = new JLabel();
-        label3 = new JLabel();
-        label4 = new JLabel();
+        JLabel label2 = new JLabel();
+        JLabel label3 = new JLabel();
+        JLabel label4 = new JLabel();
         textField5 = new JTextField();
         textField4 = new JTextField();
-        panel7 = new JPanel();
+        JPanel panel7 = new JPanel();
         checkBox4 = new JCheckBox();
         textField3 = new JTextField();
-        label5 = new JLabel();
+        JLabel label5 = new JLabel();
 
         //======== this ========
         setTitle("Setup");
@@ -824,36 +824,18 @@ public class GraphicalInterface extends JFrame {
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
 
-    // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables
-    // Generated using JFormDesigner Evaluation license - Jari Jaaskela
-    private JButton button1;
-    private JTabbedPane tabbedPane1;
-    private JPanel optionsPanel;
     private JCheckBox checkBox1;
-    private JPanel panel1;
     private JComboBox comboBox1;
-    private JPanel panel2;
     private JComboBox comboBox2;
-    private JPanel panel4;
-    private JScrollPane scrollPane1;
     private JList list1;
     private JButton button2;
     private JTextField textField1;
-    private JPanel panel3;
-    private JPanel panel5;
     private JCheckBox checkBox2;
     private JTextField textField2;
-    private JLabel label1;
-    private JPanel panel6;
     private JCheckBox checkBox3;
-    private JLabel label2;
-    private JLabel label3;
-    private JLabel label4;
     private JTextField textField5;
     private JTextField textField4;
-    private JPanel panel7;
     private JCheckBox checkBox4;
     private JTextField textField3;
-    private JLabel label5;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

@@ -85,7 +85,7 @@ public class Craft {
         return false;
     }
 
-    public boolean Craft() {
+    public Craft() {
 
         switch (craftable.getType()) {
             case 1:

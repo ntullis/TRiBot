@@ -20,6 +20,6 @@ public enum States {
     PICKUP_TOOL,
     LOGOUT,
     ANTIBAN,
-    INCOMBAT;
+    INCOMBAT
 
 }

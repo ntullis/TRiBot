@@ -14,10 +14,8 @@ public enum Pathes {
             new RSTile(3223, 3239, 0), new RSTile(3218, 3247, 0), new RSTile(0, 0, 0), new RSTile(3225, 3253, 0)}),
     LUMB_FORGE_PLANE1(new RSTile[]{new RSTile(0, 0, 0), new RSTile(0, 0, 0)});
 
-    private RSTile[] PATH;
-
     private Pathes(RSTile[] PATH) {
-        this.PATH = PATH;
+        RSTile[] PATH1 = PATH;
     }
 
 }

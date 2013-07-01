@@ -25,8 +25,6 @@ public class Walk {
     FishPools pool;
     AStar pf;
 
-    private RSTile Spot;
-
 
     public Walk(Banks chosenBank, FishPools chosenPool) {
         this.bank = chosenBank;
@@ -34,22 +32,22 @@ public class Walk {
 
         switch (bank) {
             case CATHERBY:
-                Spot = new RSTile(2854, 3430, 0);
+                RSTile spot = new RSTile(2854, 3430, 0);
                 break;
             case AL_KHARID:
-                Spot = new RSTile(3277, 3143, 0);
+                spot = new RSTile(3277, 3143, 0);
                 break;
             case DRAYNOR:
-                Spot = new RSTile(3087, 3228, 0);
+                spot = new RSTile(3087, 3228, 0);
                 break;
             case EDGEVILLE:
-                Spot = new RSTile(3102, 3430, 0);
+                spot = new RSTile(3102, 3430, 0);
                 break;
             case FISHING_GUILD:
-                Spot = new RSTile(2606, 3400, 0);
+                spot = new RSTile(2606, 3400, 0);
                 break;
             case SEER_VILLAGE:
-                Spot = new RSTile(2724, 3530, 0);
+                spot = new RSTile(2724, 3530, 0);
                 break;
         }
 

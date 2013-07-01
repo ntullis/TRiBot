@@ -41,17 +41,12 @@ import static org.tribot.api.General.random;
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
-    private States scriptState = States.GUI;
 
     private Bank bank;
     private Walk walk;
     private Fish fish;
     private Drop drop;
 
-    private Networking networking;
-
-    private Banks bankEnum;
-    private FishPools poolEnum;
     private FishTools toolEnum;
     private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327, 349};
 
@@ -68,8 +63,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     private Timer logoutTimer = null;
     private Timer antiBanTimer = null;
     private Timer runTimer = null;
-
-    private Antiban antiban = null;
 
     public static boolean guiDone = false;
 
@@ -109,7 +102,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     public States handleState(States states) {
 
 
-        scriptState = states;
+        States scriptState = states;
 
 
         switch (scriptState) {
@@ -175,7 +168,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         }
 
         if (antiBanTimer != null && !antiBanTimer.isRunning()) {
-            antiban = new Antiban();
+            Antiban antiban = new Antiban();
             antiban = null;
             antiBanTimer = null;
         }
@@ -225,7 +218,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         String settings = null;
 
-        networking = new Networking(script_name);
+        Networking networking = new Networking(script_name);
 
         try {
             settings = networking.fetchSettings();
@@ -233,7 +226,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             println("Networking error: " + e.toString());
             e.printStackTrace();
         }
-        ;
 
 
         final String finalSettings = settings;
@@ -263,8 +255,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         }
 
         startXP = Skills.getXP("FISHING");
-        bankEnum = GUI.getBank();
-        poolEnum = GUI.getPool();
+        Banks bankEnum = GUI.getBank();
+        FishPools poolEnum = GUI.getPool();
         toolEnum = GUI.getTool();
         dropMap = GUI.getDropList();
 

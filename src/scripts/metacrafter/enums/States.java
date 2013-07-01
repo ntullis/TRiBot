@@ -11,5 +11,5 @@ public enum States {
     BANK,
     WALK_TO_BANK,
     WALK_TO_CRAFT,
-    CRAFT;
+    CRAFT
 }

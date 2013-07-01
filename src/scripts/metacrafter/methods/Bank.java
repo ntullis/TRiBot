@@ -11,10 +11,8 @@ import metapi.enums.Banks;
  */
 public class Bank {
 
-    private Banks bank;
-
     public Bank(final Banks bank) {
-        this.bank = bank;
+        Banks bank1 = bank;
 
     }
 }
