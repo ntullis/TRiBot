@@ -76,6 +76,9 @@ public class Craft {
                     useInteract();
                 }
 
+
+                return true;
+
             } else {
                 Walking.walkTo(o.getPosition());
             }
@@ -85,7 +88,7 @@ public class Craft {
         return false;
     }
 
-    public Craft() {
+    public boolean craft() {
 
         switch (craftable.getType()) {
             case 1:
