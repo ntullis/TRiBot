@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 
-import static metapi.util.Logout.Logout;
-import static metapi.util.Logout.Logout;
-import static metapi.util.Logout.Logout;
+
 import static metapi.util.Timing.CSleep;
 import static org.tribot.api.General.random;
 import static org.tribot.api2007.Login.logout;
