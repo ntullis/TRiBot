@@ -40,17 +40,23 @@
 
 package metapi.mail.imap.protocol;
 
-import java.io.*;
-import java.util.*;
+import metapi.mail.iap.ParsingException;
+import metapi.mail.iap.Protocol;
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.iap.Response;
 
-import metapi.mail.iap.*;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 /**
  * This class represents a FETCH response obtained from the input stream
  * of an IMAP server.
  *
- * @author  John Mani
- * @author  Bill Shannon
+ * @author John Mani
+ * @author Bill Shannon
  */
 
 public class FetchResponse extends IMAPResponse {
@@ -68,16 +74,16 @@ public class FetchResponse extends IMAPResponse {
     private Map<String, Serializable> extensionItems;
     private final FetchItem[] fitems;
 
-    public FetchResponse(Protocol p) 
-		throws IOException, ProtocolException {
-	super(p);
-	fitems = null;
-	parse();
+    public FetchResponse(Protocol p)
+            throws IOException, ProtocolException {
+        super(p);
+        fitems = null;
+        parse();
     }
 
     public FetchResponse(IMAPResponse r)
-		throws IOException, ProtocolException {
-	this(r, null);
+            throws IOException, ProtocolException {
+        this(r, null);
     }
 
     /**
@@ -86,49 +92,49 @@ public class FetchResponse extends IMAPResponse {
      * @since JavaMail 1.4.6
      */
     public FetchResponse(IMAPResponse r, FetchItem[] fitems)
-		throws IOException, ProtocolException {
-	super(r);
-	this.fitems = fitems;
-	parse();
+            throws IOException, ProtocolException {
+        super(r);
+        this.fitems = fitems;
+        parse();
     }
 
     public int getItemCount() {
-	return items.length;
+        return items.length;
     }
 
     public Item getItem(int index) {
-	return items[index];
+        return items[index];
     }
 
     public <T extends Item> T getItem(Class<T> c) {
-	for (int i = 0; i < items.length; i++) {
-	    if (c.isInstance(items[i]))
-		return c.cast(items[i]);
-	}
+        for (int i = 0; i < items.length; i++) {
+            if (c.isInstance(items[i]))
+                return c.cast(items[i]);
+        }
 
-	return null;
+        return null;
     }
 
     public static <T extends Item> T getItem(Response[] r, int msgno,
-				Class<T> c) {
-	if (r == null)
-	    return null;
+                                             Class<T> c) {
+        if (r == null)
+            return null;
 
-	for (int i = 0; i < r.length; i++) {
+        for (int i = 0; i < r.length; i++) {
 
-	    if (r[i] == null ||
-		!(r[i] instanceof FetchResponse) ||
-		((FetchResponse)r[i]).getNumber() != msgno)
-		continue;
+            if (r[i] == null ||
+                    !(r[i] instanceof FetchResponse) ||
+                    ((FetchResponse) r[i]).getNumber() != msgno)
+                continue;
 
-	    FetchResponse f = (FetchResponse)r[i];
-	    for (int j = 0; j < f.items.length; j++) {
-		if (c.isInstance(f.items[j]))
-		    return c.cast(f.items[j]);
-	    }
-	}
+            FetchResponse f = (FetchResponse) r[i];
+            for (int j = 0; j < f.items.length; j++) {
+                if (c.isInstance(f.items[j]))
+                    return c.cast(f.items[j]);
+            }
+        }
 
-	return null;
+        return null;
     }
 
     /**
@@ -139,40 +145,40 @@ public class FetchResponse extends IMAPResponse {
      * @since JavaMail 1.4.6
      */
     public Map<String, Serializable> getExtensionItems() {
-	if (extensionItems == null)
-	    extensionItems = new HashMap<String, Serializable>();
-	return extensionItems;
+        if (extensionItems == null)
+            extensionItems = new HashMap<String, Serializable>();
+        return extensionItems;
     }
 
-    private final static char[] HEADER = {'.','H','E','A','D','E','R'};
-    private final static char[] TEXT = {'.','T','E','X','T'};
+    private final static char[] HEADER = {'.', 'H', 'E', 'A', 'D', 'E', 'R'};
+    private final static char[] TEXT = {'.', 'T', 'E', 'X', 'T'};
 
     private void parse() throws ParsingException {
-	skipSpaces();
-	if (buffer[index] != '(')
-	    throw new ParsingException(
-		"error in FETCH parsing, missing '(' at index " + index);
+        skipSpaces();
+        if (buffer[index] != '(')
+            throw new ParsingException(
+                    "error in FETCH parsing, missing '(' at index " + index);
 
-	Vector<Item> v = new Vector<Item>();
-	Item i = null;
-	do {
-	    index++; // skip '(', or SPACE
+        Vector<Item> v = new Vector<Item>();
+        Item i = null;
+        do {
+            index++; // skip '(', or SPACE
 
-	    if (index >= size)
-		throw new ParsingException(
-		"error in FETCH parsing, ran off end of buffer, size " + size);
+            if (index >= size)
+                throw new ParsingException(
+                        "error in FETCH parsing, ran off end of buffer, size " + size);
 
-	    i = parseItem();
-	    if (i != null)
-		v.addElement(i);
-	    else if (!parseExtensionItem())
-		throw new ParsingException(
-		"error in FETCH parsing, unrecognized item at index " + index);
-	} while (buffer[index] != ')');
+            i = parseItem();
+            if (i != null)
+                v.addElement(i);
+            else if (!parseExtensionItem())
+                throw new ParsingException(
+                        "error in FETCH parsing, unrecognized item at index " + index);
+        } while (buffer[index] != ')');
 
-	index++; // skip ')'
-	items = new Item[v.size()];
-	v.copyInto(items);
+        index++; // skip ')'
+        items = new Item[v.size()];
+        v.copyInto(items);
     }
 
     /**
@@ -181,68 +187,75 @@ public class FetchResponse extends IMAPResponse {
      * and leave the buffer position unmodified.
      */
     private Item parseItem() throws ParsingException {
-	switch (buffer[index]) {
-	case 'E': case 'e':
-	    if (match(ENVELOPE.name))
-		return new ENVELOPE(this);
-	    break;
-	case 'F': case 'f':
-	    if (match(FLAGS.name))
-		return new FLAGS((IMAPResponse)this);
-	    break;
-	case 'I': case 'i':
-	    if (match(INTERNALDATE.name))
-		return new INTERNALDATE(this);
-	    break;
-	case 'B': case 'b':
-	    if (match(BODYSTRUCTURE.name))
-		return new BODYSTRUCTURE(this);
-	    else if (match(BODY.name)) {
-		if (buffer[index] == '[')
-		    return new BODY(this);
-		else
-		    return new BODYSTRUCTURE(this);
-	    }
-	    break;
-	case 'R': case 'r':
-	    if (match(RFC822SIZE.name))
-		return new RFC822SIZE(this);
-	    else if (match(RFC822DATA.name)) {
-		if (match(HEADER))
-		    ;	// skip ".HEADER"
-		else if (match(TEXT))
-		    ;	// skip ".TEXT"
-		return new RFC822DATA(this);
-	    }
-	    break;
-	case 'U': case 'u':
-	    if (match(UID.name))
-		return new UID(this);
-	    break;
-	case 'M': case 'm':
-	    if (match(MODSEQ.name))
-		return new MODSEQ(this);
-	    break;
-	default: 
-	    break;
-	}
-	return null;
+        switch (buffer[index]) {
+            case 'E':
+            case 'e':
+                if (match(ENVELOPE.name))
+                    return new ENVELOPE(this);
+                break;
+            case 'F':
+            case 'f':
+                if (match(FLAGS.name))
+                    return new FLAGS((IMAPResponse) this);
+                break;
+            case 'I':
+            case 'i':
+                if (match(INTERNALDATE.name))
+                    return new INTERNALDATE(this);
+                break;
+            case 'B':
+            case 'b':
+                if (match(BODYSTRUCTURE.name))
+                    return new BODYSTRUCTURE(this);
+                else if (match(BODY.name)) {
+                    if (buffer[index] == '[')
+                        return new BODY(this);
+                    else
+                        return new BODYSTRUCTURE(this);
+                }
+                break;
+            case 'R':
+            case 'r':
+                if (match(RFC822SIZE.name))
+                    return new RFC822SIZE(this);
+                else if (match(RFC822DATA.name)) {
+                    if (match(HEADER))
+                        ;    // skip ".HEADER"
+                    else if (match(TEXT))
+                        ;    // skip ".TEXT"
+                    return new RFC822DATA(this);
+                }
+                break;
+            case 'U':
+            case 'u':
+                if (match(UID.name))
+                    return new UID(this);
+                break;
+            case 'M':
+            case 'm':
+                if (match(MODSEQ.name))
+                    return new MODSEQ(this);
+                break;
+            default:
+                break;
+        }
+        return null;
     }
 
     /**
      * If this item is a known extension item, parse it.
      */
     private boolean parseExtensionItem() throws ParsingException {
-	if (fitems == null)
-	    return false;
-	for (int i = 0; i < fitems.length; i++) {
-	    if (match(fitems[i].getName())) {
-		getExtensionItems().put(fitems[i].getName(),
-				    fitems[i].parseItem(this));
-		return true;
-	    }
-	}
-	return false;
+        if (fitems == null)
+            return false;
+        for (int i = 0; i < fitems.length; i++) {
+            if (match(fitems[i].getName())) {
+                getExtensionItems().put(fitems[i].getName(),
+                        fitems[i].parseItem(this));
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -253,14 +266,14 @@ public class FetchResponse extends IMAPResponse {
      * is incremented past the matched item.
      */
     private boolean match(char[] itemName) {
-	int len = itemName.length;
-	for (int i = 0, j = index; i < len;)
-	    // IMAP tokens are case-insensitive. We store itemNames in
-	    // uppercase, so convert operand to uppercase before comparing.
-	    if (Character.toUpperCase((char)buffer[j++]) != itemName[i++])
-		return false;
-	index += len;
-	return true;
+        int len = itemName.length;
+        for (int i = 0, j = index; i < len; )
+            // IMAP tokens are case-insensitive. We store itemNames in
+            // uppercase, so convert operand to uppercase before comparing.
+            if (Character.toUpperCase((char) buffer[j++]) != itemName[i++])
+                return false;
+        index += len;
+        return true;
     }
 
     /**
@@ -271,14 +284,14 @@ public class FetchResponse extends IMAPResponse {
      * is incremented past the matched item.
      */
     private boolean match(String itemName) {
-	int len = itemName.length();
-	for (int i = 0, j = index; i < len;)
-	    // IMAP tokens are case-insensitive. We store itemNames in
-	    // uppercase, so convert operand to uppercase before comparing.
-	    if (Character.toUpperCase((char)buffer[j++]) !=
-		    itemName.charAt(i++))
-		return false;
-	index += len;
-	return true;
+        int len = itemName.length();
+        for (int i = 0, j = index; i < len; )
+            // IMAP tokens are case-insensitive. We store itemNames in
+            // uppercase, so convert operand to uppercase before comparing.
+            if (Character.toUpperCase((char) buffer[j++]) !=
+                    itemName.charAt(i++))
+                return false;
+        index += len;
+        return true;
     }
 }

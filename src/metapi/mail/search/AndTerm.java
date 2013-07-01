@@ -63,73 +63,73 @@ public final class AndTerm extends SearchTerm {
 
     /**
      * Constructor that takes two terms.
-     * 
+     *
      * @param t1 first term
      * @param t2 second term
      */
     public AndTerm(SearchTerm t1, SearchTerm t2) {
-	terms = new SearchTerm[2];
-	terms[0] = t1;
-	terms[1] = t2;
+        terms = new SearchTerm[2];
+        terms[0] = t1;
+        terms[1] = t2;
     }
 
     /**
      * Constructor that takes an array of SearchTerms.
-     * 
-     * @param t  array of terms
+     *
+     * @param t array of terms
      */
     public AndTerm(SearchTerm[] t) {
-	terms = new SearchTerm[t.length]; // clone the array
-	for (int i = 0; i < t.length; i++)
-	    terms[i] = t[i];
+        terms = new SearchTerm[t.length]; // clone the array
+        for (int i = 0; i < t.length; i++)
+            terms[i] = t[i];
     }
 
     /**
      * Return the search terms.
      */
     public SearchTerm[] getTerms() {
-	return (SearchTerm[])terms.clone();
+        return (SearchTerm[]) terms.clone();
     }
 
     /**
      * The AND operation. <p>
-     *
+     * <p/>
      * The terms specified in the constructor are applied to
      * the given object and the AND operator is applied to their results.
      *
-     * @param msg	The specified SearchTerms are applied to this Message
-     *			and the AND operator is applied to their results.
-     * @return		true if the AND succeds, otherwise false
+     * @param msg The specified SearchTerms are applied to this Message
+     *            and the AND operator is applied to their results.
+     * @return true if the AND succeds, otherwise false
      */
     public boolean match(Message msg) {
-	for (int i=0; i < terms.length; i++)
-	    if (!terms[i].match(msg))
-		return false;
-	return true;
+        for (int i = 0; i < terms.length; i++)
+            if (!terms[i].match(msg))
+                return false;
+        return true;
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof AndTerm))
-	    return false;
-	AndTerm at = (AndTerm)obj;
-	if (at.terms.length != terms.length)
-	    return false;
-	for (int i=0; i < terms.length; i++)
-	    if (!terms[i].equals(at.terms[i]))
-		return false;
-	return true;
+        if (!(obj instanceof AndTerm))
+            return false;
+        AndTerm at = (AndTerm) obj;
+        if (at.terms.length != terms.length)
+            return false;
+        for (int i = 0; i < terms.length; i++)
+            if (!terms[i].equals(at.terms[i]))
+                return false;
+        return true;
     }
 
     /**
      * Compute a hashCode for this object.
      */
     public int hashCode() {
-	int hash = 0;
-	for (int i=0; i < terms.length; i++)
-	    hash += terms[i].hashCode();
-	return hash;
+        int hash = 0;
+        for (int i = 0; i < terms.length; i++)
+            hash += terms[i].hashCode();
+        return hash;
     }
 }

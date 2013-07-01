@@ -40,43 +40,45 @@
 
 package metapi.mail.imap;
 
+import metapi.mail.BodyPart;
+import metapi.mail.MessagingException;
+import metapi.mail.MultipartDataSource;
+import metapi.mail.imap.protocol.BODYSTRUCTURE;
+import metapi.mail.internet.MimePart;
+import metapi.mail.internet.MimePartDataSource;
+
 import java.util.Vector;
 
-import metapi.mail.*;
-import metapi.mail.internet.*;
-
-import metapi.mail.imap.protocol.*;
-
 /**
- * This class 
+ * This class
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class IMAPMultipartDataSource extends MimePartDataSource
-				     implements MultipartDataSource {
+        implements MultipartDataSource {
     private Vector<IMAPBodyPart> parts;
 
-    protected IMAPMultipartDataSource(MimePart part, BODYSTRUCTURE[] bs, 
-				      String sectionId, IMAPMessage msg) {
-	super(part);
+    protected IMAPMultipartDataSource(MimePart part, BODYSTRUCTURE[] bs,
+                                      String sectionId, IMAPMessage msg) {
+        super(part);
 
-	parts = new Vector<IMAPBodyPart>(bs.length);
-	for (int i = 0; i < bs.length; i++)
-	    parts.addElement(
-		new IMAPBodyPart(bs[i], 
-				 sectionId == null ? 
-				   Integer.toString(i+1) : 
-				   sectionId + "." + Integer.toString(i+1),
-				 msg)
-	    );
+        parts = new Vector<IMAPBodyPart>(bs.length);
+        for (int i = 0; i < bs.length; i++)
+            parts.addElement(
+                    new IMAPBodyPart(bs[i],
+                            sectionId == null ?
+                                    Integer.toString(i + 1) :
+                                    sectionId + "." + Integer.toString(i + 1),
+                            msg)
+            );
     }
 
     public int getCount() {
-	return parts.size();
+        return parts.size();
     }
 
     public BodyPart getBodyPart(int index) throws MessagingException {
-	return parts.elementAt(index);
+        return parts.elementAt(index);
     }
 }

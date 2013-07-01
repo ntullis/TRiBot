@@ -40,22 +40,25 @@
 
 package metapi.mail.iap;
 
-import java.util.Vector;
-import java.util.Properties;
-import java.io.*;
-import java.net.*;
-import java.util.logging.Level;
-import javax.net.ssl.SSLSocket;
 import metapi.mail.util.*;
+
+import javax.net.ssl.SSLSocket;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.logging.Level;
 
 /**
  * General protocol handling code for IMAP-like protocols. <p>
- *
+ * <p/>
  * The Protocol object is multithread safe.
  *
- * @author  John Mani
- * @author  Max Spivak
- * @author  Bill Shannon
+ * @author John Mani
+ * @author Max Spivak
+ * @author Bill Shannon
  */
 
 public class Protocol {
@@ -68,11 +71,11 @@ public class Protocol {
     protected Properties props;
     protected String prefix;
 
-    private boolean connected = false;		// did constructor succeed?
-    private TraceInputStream traceInput;	// the Tracer
+    private boolean connected = false;        // did constructor succeed?
+    private TraceInputStream traceInput;    // the Tracer
     private volatile ResponseInputStream input;
 
-    private TraceOutputStream traceOutput;	// the Tracer
+    private TraceOutputStream traceOutput;    // the Tracer
     private volatile DataOutputStream output;
 
     private int tagCounter = 0;
@@ -88,71 +91,71 @@ public class Protocol {
 
     private volatile long timestamp;
 
-    private static final byte[] CRLF = { (byte)'\r', (byte)'\n'};
- 
+    private static final byte[] CRLF = {(byte) '\r', (byte) '\n'};
+
     /**
      * Constructor. <p>
-     * 
+     * <p/>
      * Opens a connection to the given host at given port.
      *
-     * @param host	host to connect to
-     * @param port	portnumber to connect to
-     * @param props     Properties object used by this protocol
-     * @param prefix 	Prefix to prepend to property keys
-     * @param isSSL 	use SSL?
-     * @param logger 	log messages here
+     * @param host   host to connect to
+     * @param port   portnumber to connect to
+     * @param props  Properties object used by this protocol
+     * @param prefix Prefix to prepend to property keys
+     * @param isSSL  use SSL?
+     * @param logger log messages here
      */
-    public Protocol(String host, int port, 
-		    Properties props, String prefix,
-		    boolean isSSL, MailLogger logger)
-		    throws IOException, ProtocolException {
-	try {
-	    this.host = host;
-	    this.props = props;
-	    this.prefix = prefix;
-	    this.logger = logger;
-	    traceLogger = logger.getSubLogger("protocol", null);
+    public Protocol(String host, int port,
+                    Properties props, String prefix,
+                    boolean isSSL, MailLogger logger)
+            throws IOException, ProtocolException {
+        try {
+            this.host = host;
+            this.props = props;
+            this.prefix = prefix;
+            this.logger = logger;
+            traceLogger = logger.getSubLogger("protocol", null);
 
-	    socket = SocketFetcher.getSocket(host, port, props, prefix, isSSL);
-	    quote = PropUtil.getBooleanProperty(props,
-					"javamail.debug.quote", false);
+            socket = SocketFetcher.getSocket(host, port, props, prefix, isSSL);
+            quote = PropUtil.getBooleanProperty(props,
+                    "javamail.debug.quote", false);
 
-	    initStreams();
+            initStreams();
 
-	    // Read server greeting
-	    processGreeting(readResponse());
+            // Read server greeting
+            processGreeting(readResponse());
 
-	    timestamp = System.currentTimeMillis();
- 
-	    connected = true;	// must be last statement in constructor
-	} finally {
-	    /*
+            timestamp = System.currentTimeMillis();
+
+            connected = true;    // must be last statement in constructor
+        } finally {
+        /*
 	     * If we get here because an exception was thrown, we need
 	     * to disconnect to avoid leaving a connected socket that
 	     * no one will be able to use because this object was never
 	     * completely constructed.
 	     */
-	    if (!connected)
-		disconnect();
-	}
+            if (!connected)
+                disconnect();
+        }
     }
 
     private void initStreams() throws IOException {
-	traceInput = new TraceInputStream(socket.getInputStream(), traceLogger);
-	traceInput.setQuote(quote);
-	input = new ResponseInputStream(traceInput);
+        traceInput = new TraceInputStream(socket.getInputStream(), traceLogger);
+        traceInput.setQuote(quote);
+        input = new ResponseInputStream(traceInput);
 
-	traceOutput =
-	    new TraceOutputStream(socket.getOutputStream(), traceLogger);
-	traceOutput.setQuote(quote);
-	output = new DataOutputStream(new BufferedOutputStream(traceOutput));
+        traceOutput =
+                new TraceOutputStream(socket.getOutputStream(), traceLogger);
+        traceOutput.setQuote(quote);
+        output = new DataOutputStream(new BufferedOutputStream(traceOutput));
     }
 
     /**
      * Constructor for debugging.
      */
     public Protocol(InputStream in, PrintStream out, boolean debug)
-				throws IOException {
+            throws IOException {
 	/*this.host = "localhost";
 	this.quote = false;
 	logger = new MailLogger(this.getClass(), "DEBUG", debug, out);
@@ -173,68 +176,68 @@ public class Protocol {
     /**
      * Returns the timestamp.
      */
- 
+
     public long getTimestamp() {
         return timestamp;
     }
- 
+
     /**
      * Adds a response handler.
      */
     public void addResponseHandler(ResponseHandler h) {
-	handlers.addElement(h);
+        handlers.addElement(h);
     }
 
     /**
      * Removed the specified response handler.
      */
     public void removeResponseHandler(ResponseHandler h) {
-	handlers.removeElement(h);
+        handlers.removeElement(h);
     }
 
     /**
      * Notify response handlers
      */
     public void notifyResponseHandlers(Response[] responses) {
-	if (handlers.size() == 0)
-	    return;
-	
-	for (int i = 0; i < responses.length; i++) { // go thru responses
-	    Response r = responses[i];
+        if (handlers.size() == 0)
+            return;
 
-	    // skip responses that have already been handled
-	    if (r == null)
-		continue;
+        for (int i = 0; i < responses.length; i++) { // go thru responses
+            Response r = responses[i];
 
-	    // Need to copy handlers list because handlers can be removed
-	    // when handling a response.
-	    Object[] h = handlers.toArray();
+            // skip responses that have already been handled
+            if (r == null)
+                continue;
 
-	    // dispatch 'em
-	    for (int j = 0; j < h.length; j++) {
-		if (h[j] != null)
-		    ((ResponseHandler)h[j]).handleResponse(r);
-	    }
-	}
+            // Need to copy handlers list because handlers can be removed
+            // when handling a response.
+            Object[] h = handlers.toArray();
+
+            // dispatch 'em
+            for (int j = 0; j < h.length; j++) {
+                if (h[j] != null)
+                    ((ResponseHandler) h[j]).handleResponse(r);
+            }
+        }
     }
 
     protected void processGreeting(Response r) throws ProtocolException {
-	if (r.isBYE())
-	    throw new ConnectionException(this, r);
+        if (r.isBYE())
+            throw new ConnectionException(this, r);
     }
 
     /**
      * Return the Protocol's InputStream.
      */
     protected ResponseInputStream getInputStream() {
-	return input;
+        return input;
     }
 
     /**
      * Return the Protocol's OutputStream
      */
     protected OutputStream getOutputStream() {
-	return output;
+        return output;
     }
 
     /**
@@ -242,12 +245,12 @@ public class Protocol {
      * Default is false. Subclasses should override this if required
      */
     protected synchronized boolean supportsNonSyncLiterals() {
-	return false;
+        return false;
     }
 
-    public Response readResponse() 
-		throws IOException, ProtocolException {
-	return new Response(this);
+    public Response readResponse()
+            throws IOException, ProtocolException {
+        return new Response(this);
     }
 
     /**
@@ -255,106 +258,106 @@ public class Protocol {
      * The default implementation returns null, which causes
      * a new buffer to be allocated for every response.
      *
-     * @since	JavaMail 1.4.1
+     * @since JavaMail 1.4.1
      */
     protected ByteArray getResponseBuffer() {
-	return null;
+        return null;
     }
 
-    public String writeCommand(String command, Argument args) 
-		throws IOException, ProtocolException {
-	// assert Thread.holdsLock(this);
-	// can't assert because it's called from constructor
-	String tag = "A" + Integer.toString(tagCounter++, 10); // unique tag
+    public String writeCommand(String command, Argument args)
+            throws IOException, ProtocolException {
+        // assert Thread.holdsLock(this);
+        // can't assert because it's called from constructor
+        String tag = "A" + Integer.toString(tagCounter++, 10); // unique tag
 
-	output.writeBytes(tag + " " + command);
-    
-	if (args != null) {
-	    output.write(' ');
-	    args.write(this);
-	}
+        output.writeBytes(tag + " " + command);
 
-	output.write(CRLF);
-	output.flush();
-	return tag;
+        if (args != null) {
+            output.write(' ');
+            args.write(this);
+        }
+
+        output.write(CRLF);
+        output.flush();
+        return tag;
     }
 
     /**
      * Send a command to the server. Collect all responses until either
-     * the corresponding command completion response or a BYE response 
+     * the corresponding command completion response or a BYE response
      * (indicating server failure).  Return all the collected responses.
      *
-     * @param	command	the command
-     * @param	args	the arguments
-     * @return		array of Response objects returned by the server
+     * @param    command    the command
+     * @param    args    the arguments
+     * @return array of Response objects returned by the server
      */
     public synchronized Response[] command(String command, Argument args) {
-	commandStart(command);
-	Vector<Response> v = new Vector<Response>();
-	boolean done = false;
-	String tag = null;
-	Response r = null;
+        commandStart(command);
+        Vector<Response> v = new Vector<Response>();
+        boolean done = false;
+        String tag = null;
+        Response r = null;
 
-	// write the command
-	try {
-	    tag = writeCommand(command, args);
-	} catch (LiteralException lex) {
-	    v.addElement(lex.getResponse());
-	    done = true;
-	} catch (Exception ex) {
-	    // Convert this into a BYE response
-	    v.addElement(Response.byeResponse(ex));
-	    done = true;
-	}
+        // write the command
+        try {
+            tag = writeCommand(command, args);
+        } catch (LiteralException lex) {
+            v.addElement(lex.getResponse());
+            done = true;
+        } catch (Exception ex) {
+            // Convert this into a BYE response
+            v.addElement(Response.byeResponse(ex));
+            done = true;
+        }
 
-	Response byeResp = null;
-	while (!done) {
-	    try {
-		r = readResponse();
-	    } catch (IOException ioex) {
-		if (byeResp != null)	// connection closed after BYE was sent
-		    break;
-		// convert this into a BYE response
-		r = Response.byeResponse(ioex);
-	    } catch (ProtocolException pex) {
-		continue; // skip this response
-	    }
+        Response byeResp = null;
+        while (!done) {
+            try {
+                r = readResponse();
+            } catch (IOException ioex) {
+                if (byeResp != null)    // connection closed after BYE was sent
+                    break;
+                // convert this into a BYE response
+                r = Response.byeResponse(ioex);
+            } catch (ProtocolException pex) {
+                continue; // skip this response
+            }
 
-	    if (r.isBYE()) {
-		byeResp = r;
-		continue;
-	    }
+            if (r.isBYE()) {
+                byeResp = r;
+                continue;
+            }
 
-	    v.addElement(r);
+            v.addElement(r);
 
-	    // If this is a matching command completion response, we are done
-	    if (r.isTagged() && r.getTag().equals(tag))
-		done = true;
-	}
+            // If this is a matching command completion response, we are done
+            if (r.isTagged() && r.getTag().equals(tag))
+                done = true;
+        }
 
-	if (byeResp != null)
-		v.addElement(byeResp);	// must be last
-	Response[] responses = new Response[v.size()];
-	v.copyInto(responses);
+        if (byeResp != null)
+            v.addElement(byeResp);    // must be last
+        Response[] responses = new Response[v.size()];
+        v.copyInto(responses);
         timestamp = System.currentTimeMillis();
-	commandEnd();
-	return responses;
+        commandEnd();
+        return responses;
     }
 
     /**
      * Convenience routine to handle OK, NO, BAD and BYE responses.
      */
     public void handleResult(Response response) throws ProtocolException {
-	if (response.isOK())
-	    return;
-	else if (response.isNO())
-	    throw new CommandFailedException(response);
-	else if (response.isBAD())
-	    throw new BadCommandException(response);
-	else if (response.isBYE()) {
-	    disconnect();
-	    throw new ConnectionException(this, response);
-	}
+        if (response.isOK())
+            return;
+        else if (response.isNO())
+            throw new CommandFailedException(response);
+        else if (response.isBAD())
+            throw new BadCommandException(response);
+        else if (response.isBYE()) {
+            disconnect();
+            throw new ConnectionException(this, response);
+        }
     }
 
     /**
@@ -362,15 +365,15 @@ public class Protocol {
      * that do not have responses specific to that command.
      */
     public void simpleCommand(String cmd, Argument args)
-			throws ProtocolException {
-	// Issue command
-	Response[] r = command(cmd, args);
+            throws ProtocolException {
+        // Issue command
+        Response[] r = command(cmd, args);
 
-	// dispatch untagged responses
-	notifyResponseHandlers(r);
+        // dispatch untagged responses
+        notifyResponseHandlers(r);
 
-	// Handle result of this command
-	handleResult(r[r.length-1]);
+        // Handle result of this command
+        handleResult(r[r.length - 1]);
     }
 
     /**
@@ -381,36 +384,36 @@ public class Protocol {
      * is not issued.
      */
     public synchronized void startTLS(String cmd)
-				throws IOException, ProtocolException {
-	if (socket instanceof SSLSocket)
-	    return;	// nothing to do
-	simpleCommand(cmd, null);
-	socket = SocketFetcher.startTLS(socket, host, props, prefix);
-	initStreams();
+            throws IOException, ProtocolException {
+        if (socket instanceof SSLSocket)
+            return;    // nothing to do
+        simpleCommand(cmd, null);
+        socket = SocketFetcher.startTLS(socket, host, props, prefix);
+        initStreams();
     }
 
     /**
      * Is this connection using an SSL socket?
      *
-     * @return	true if using SSL
-     * @since	JavaMail 1.4.6
+     * @return true if using SSL
+     * @since JavaMail 1.4.6
      */
     public boolean isSSL() {
-	return socket instanceof SSLSocket;
+        return socket instanceof SSLSocket;
     }
 
     /**
      * Disconnect.
      */
     protected synchronized void disconnect() {
-	if (socket != null) {
-	    try {
-		socket.close();
-	    } catch (IOException e) {
-		// ignore it
-	    }
-	    socket = null;
-	}
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                // ignore it
+            }
+            socket = null;
+        }
     }
 
     /**
@@ -419,44 +422,44 @@ public class Protocol {
      * which overrides what InetAddress would tell us.
      */
     protected synchronized String getLocalHost() {
-	// get our hostname and cache it for future use
-	if (localHostName == null || localHostName.length() <= 0)
-	    localHostName =
-		    props.getProperty(prefix + ".localhost");
-	if (localHostName == null || localHostName.length() <= 0)
-	    localHostName =
-		    props.getProperty(prefix + ".localaddress");
-	try {
-	    if (localHostName == null || localHostName.length() <= 0) {
-		InetAddress localHost = InetAddress.getLocalHost();
-		localHostName = localHost.getCanonicalHostName();
-		// if we can't get our name, use local address literal
-		if (localHostName == null)
-		    // XXX - not correct for IPv6
-		    localHostName = "[" + localHost.getHostAddress() + "]";
-	    }
-	} catch (UnknownHostException uhex) {
-	}
+        // get our hostname and cache it for future use
+        if (localHostName == null || localHostName.length() <= 0)
+            localHostName =
+                    props.getProperty(prefix + ".localhost");
+        if (localHostName == null || localHostName.length() <= 0)
+            localHostName =
+                    props.getProperty(prefix + ".localaddress");
+        try {
+            if (localHostName == null || localHostName.length() <= 0) {
+                InetAddress localHost = InetAddress.getLocalHost();
+                localHostName = localHost.getCanonicalHostName();
+                // if we can't get our name, use local address literal
+                if (localHostName == null)
+                    // XXX - not correct for IPv6
+                    localHostName = "[" + localHost.getHostAddress() + "]";
+            }
+        } catch (UnknownHostException uhex) {
+        }
 
-	// last chance, try to get our address from our socket
-	if (localHostName == null || localHostName.length() <= 0) {
-	    if (socket != null && socket.isBound()) {
-		InetAddress localHost = socket.getLocalAddress();
-		localHostName = localHost.getCanonicalHostName();
-		// if we can't get our name, use local address literal
-		if (localHostName == null)
-		    // XXX - not correct for IPv6
-		    localHostName = "[" + localHost.getHostAddress() + "]";
-	    }
-	}
-	return localHostName;
+        // last chance, try to get our address from our socket
+        if (localHostName == null || localHostName.length() <= 0) {
+            if (socket != null && socket.isBound()) {
+                InetAddress localHost = socket.getLocalAddress();
+                localHostName = localHost.getCanonicalHostName();
+                // if we can't get our name, use local address literal
+                if (localHostName == null)
+                    // XXX - not correct for IPv6
+                    localHostName = "[" + localHost.getHostAddress() + "]";
+            }
+        }
+        return localHostName;
     }
 
     /**
      * Is protocol tracing enabled?
      */
     protected boolean isTracing() {
-	return traceLogger.isLoggable(Level.FINEST);
+        return traceLogger.isLoggable(Level.FINEST);
     }
 
     /**
@@ -464,33 +467,36 @@ public class Protocol {
      * tracing the authentication sequence, including the password.
      */
     protected void suspendTracing() {
-	if (traceLogger.isLoggable(Level.FINEST)) {
-	    traceInput.setTrace(false);
-	    traceOutput.setTrace(false);
-	}
+        if (traceLogger.isLoggable(Level.FINEST)) {
+            traceInput.setTrace(false);
+            traceOutput.setTrace(false);
+        }
     }
 
     /**
      * Resume protocol tracing, if it was enabled to begin with.
      */
     protected void resumeTracing() {
-	if (traceLogger.isLoggable(Level.FINEST)) {
-	    traceInput.setTrace(true);
-	    traceOutput.setTrace(true);
-	}
+        if (traceLogger.isLoggable(Level.FINEST)) {
+            traceInput.setTrace(true);
+            traceOutput.setTrace(true);
+        }
     }
 
     /**
      * Finalizer.
      */
     protected void finalize() throws Throwable {
-	super.finalize();
-	disconnect();
+        super.finalize();
+        disconnect();
     }
 
     /*
      * Probe points for GlassFish monitoring.
      */
-    private void commandStart(String command) { }
-    private void commandEnd() { }
+    private void commandStart(String command) {
+    }
+
+    private void commandEnd() {
+    }
 }

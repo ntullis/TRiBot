@@ -50,6 +50,7 @@ public interface MessageChangedListener extends java.util.EventListener {
     /**
      * Invoked when a message is changed. The change-type specifies
      * what changed.
+     *
      * @see MessageChangedEvent#FLAGS_CHANGED
      * @see MessageChangedEvent#ENVELOPE_CHANGED
      */

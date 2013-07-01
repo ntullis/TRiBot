@@ -41,7 +41,7 @@
 package metapi.mail.remote;
 
 import metapi.mail.*;
-import metapi.mail.mbox.*;
+import metapi.mail.mbox.MboxStore;
 
 /**
  * A wrapper around a local <code>MboxStore</code> that fetches data
@@ -57,8 +57,8 @@ public abstract class RemoteStore extends MboxStore {
     protected long lastUpdate = 0;
 
     public RemoteStore(Session session, URLName url) {
-	super(session, url);
-	remoteStore = getRemoteStore(session, url);
+        super(session, url);
+        remoteStore = getRemoteStore(session, url);
     }
 
     /**
@@ -72,79 +72,79 @@ public abstract class RemoteStore extends MboxStore {
      * Connect to the store.
      */
     public void connect(String host, int port, String user, String password)
-			throws MessagingException {
-	this.host = host;
-	this.port = port;
-	this.user = user;
-	this.password = password;
-	updateInbox();
+            throws MessagingException {
+        this.host = host;
+        this.port = port;
+        this.user = user;
+        this.password = password;
+        updateInbox();
     }
 
     /**
      * Fetch any new javamail in the remote INBOX and add it to the local INBOX.
      */
     protected void updateInbox() throws MessagingException {
-	// is it time to do an update yet?
-	// XXX - polling frequency, rules, etc. should be in properties
-	if (System.currentTimeMillis() < lastUpdate + (5 * 1000))
-	    return;
-	try {
-	    /*
+        // is it time to do an update yet?
+        // XXX - polling frequency, rules, etc. should be in properties
+        if (System.currentTimeMillis() < lastUpdate + (5 * 1000))
+            return;
+        try {
+        /*
 	     * Connect to the remote store, using the saved
 	     * authentication information.
 	     */
-	    remoteStore.connect(host, port, user, password);
+            remoteStore.connect(host, port, user, password);
 
 	    /*
 	     * If this store isn't connected yet, do it now, because
 	     * it needs to be connected to get the INBOX folder.
 	     */
-	    if (!isConnected())
-		super.connect(host, port, user, password);
-	    if (remoteInbox == null)
-		remoteInbox = remoteStore.getFolder("INBOX");
-	    if (inbox == null)
-		inbox = getFolder("INBOX");
-	    remoteInbox.open(Folder.READ_WRITE);
-	    Message[] msgs = remoteInbox.getMessages();
-	    inbox.appendMessages(msgs);
-	    remoteInbox.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
-	    remoteInbox.close(true);
-	    remoteStore.close();
-	} catch (MessagingException ex) {
-	    try {
-		if (remoteInbox != null && remoteInbox.isOpen())
-		    remoteInbox.close(false);
-	    } finally {
-		if (remoteStore != null && remoteStore.isConnected())
-		    remoteStore.close();
-	    }
-	    throw ex;
-	}
+            if (!isConnected())
+                super.connect(host, port, user, password);
+            if (remoteInbox == null)
+                remoteInbox = remoteStore.getFolder("INBOX");
+            if (inbox == null)
+                inbox = getFolder("INBOX");
+            remoteInbox.open(Folder.READ_WRITE);
+            Message[] msgs = remoteInbox.getMessages();
+            inbox.appendMessages(msgs);
+            remoteInbox.setFlags(msgs, new Flags(Flags.Flag.DELETED), true);
+            remoteInbox.close(true);
+            remoteStore.close();
+        } catch (MessagingException ex) {
+            try {
+                if (remoteInbox != null && remoteInbox.isOpen())
+                    remoteInbox.close(false);
+            } finally {
+                if (remoteStore != null && remoteStore.isConnected())
+                    remoteStore.close();
+            }
+            throw ex;
+        }
     }
 
     public Folder getDefaultFolder() throws MessagingException {
-	checkConnected();
+        checkConnected();
 
-	return new RemoteDefaultFolder(this, null);
+        return new RemoteDefaultFolder(this, null);
     }
 
     public Folder getFolder(String name) throws MessagingException {
-	checkConnected();
+        checkConnected();
 
-	if (name.equalsIgnoreCase("INBOX"))
-	    return new RemoteInbox(this, name);
-	else
-	    return super.getFolder(name);
+        if (name.equalsIgnoreCase("INBOX"))
+            return new RemoteInbox(this, name);
+        else
+            return super.getFolder(name);
     }
 
     public Folder getFolder(URLName url) throws MessagingException {
-	checkConnected();
-	return getFolder(url.getFile());
+        checkConnected();
+        return getFolder(url.getFile());
     }
 
     private void checkConnected() throws MessagingException {
-	if (!isConnected())
-	    throw new MessagingException("Not connected");
+        if (!isConnected())
+            throw new MessagingException("Not connected");
     }
 }

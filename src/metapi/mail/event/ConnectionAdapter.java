@@ -49,7 +49,12 @@ package metapi.mail.event;
  * @author John Mani
  */
 public abstract class ConnectionAdapter implements ConnectionListener {
-    public void opened(ConnectionEvent e) {}
-    public void disconnected(ConnectionEvent e) {}
-    public void closed(ConnectionEvent e) {}
+    public void opened(ConnectionEvent e) {
+    }
+
+    public void disconnected(ConnectionEvent e) {
+    }
+
+    public void closed(ConnectionEvent e) {
+    }
 }

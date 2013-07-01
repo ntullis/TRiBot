@@ -40,22 +40,26 @@
 
 package metapi.mail.handlers;
 
-import java.io.*;
+import javax.activation.ActivationDataFlavor;
+import javax.activation.DataContentHandler;
+import javax.activation.DataSource;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import javax.activation.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 /**
  * DataContentHandler for image/gif.
  */
 public class image_gif implements DataContentHandler {
     private static ActivationDataFlavor myDF = new ActivationDataFlavor(
-	java.awt.Image.class,
-	"image/gif",
-	"GIF Image");
+            java.awt.Image.class,
+            "image/gif",
+            "GIF Image");
 
     protected ActivationDataFlavor getDF() {
-	return myDF;
+        return myDF;
     }
 
     /**
@@ -64,7 +68,7 @@ public class image_gif implements DataContentHandler {
      * @return The DataFlavors
      */
     public DataFlavor[] getTransferDataFlavors() { // throws Exception;
-	return new DataFlavor[] { getDF() };
+        return new DataFlavor[]{getDF()};
     }
 
     /**
@@ -75,48 +79,48 @@ public class image_gif implements DataContentHandler {
      * @return String object
      */
     public Object getTransferData(DataFlavor df, DataSource ds)
-			throws IOException {
-	// use myDF.equals to be sure to get ActivationDataFlavor.equals,
-	// which properly ignores Content-Type parameters in comparison
-	if (getDF().equals(df))
-	    return getContent(ds);
-	else
-	    return null;
+            throws IOException {
+        // use myDF.equals to be sure to get ActivationDataFlavor.equals,
+        // which properly ignores Content-Type parameters in comparison
+        if (getDF().equals(df))
+            return getContent(ds);
+        else
+            return null;
     }
 
     public Object getContent(DataSource ds) throws IOException {
-	InputStream is = ds.getInputStream();
-	int pos = 0;
-	int count;
-	byte buf[] = new byte[1024];
+        InputStream is = ds.getInputStream();
+        int pos = 0;
+        int count;
+        byte buf[] = new byte[1024];
 
-	while ((count = is.read(buf, pos, buf.length - pos)) != -1) {
-	    pos += count;
-	    if (pos >= buf.length) {
-		int size = buf.length;
-		if (size < 256*1024)
-		    size += size;
-		else
-		    size += 256*1024;
-		byte tbuf[] = new byte[size];
-		System.arraycopy(buf, 0, tbuf, 0, pos);
-		buf = tbuf;
-	    }
-	}
-	Toolkit tk = Toolkit.getDefaultToolkit();
-	return tk.createImage(buf, 0, pos);
+        while ((count = is.read(buf, pos, buf.length - pos)) != -1) {
+            pos += count;
+            if (pos >= buf.length) {
+                int size = buf.length;
+                if (size < 256 * 1024)
+                    size += size;
+                else
+                    size += 256 * 1024;
+                byte tbuf[] = new byte[size];
+                System.arraycopy(buf, 0, tbuf, 0, pos);
+                buf = tbuf;
+            }
+        }
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        return tk.createImage(buf, 0, pos);
     }
 
     /**
      * Write the object to the output stream, using the specified MIME type.
      */
     public void writeTo(Object obj, String type, OutputStream os)
-			throws IOException {
-	if (!(obj instanceof Image))
-	    throw new IOException("\"" + getDF().getMimeType() +
-		"\" DataContentHandler requires Image object, " +
-		"was given object of type " + obj.getClass().toString());
+            throws IOException {
+        if (!(obj instanceof Image))
+            throw new IOException("\"" + getDF().getMimeType() +
+                    "\" DataContentHandler requires Image object, " +
+                    "was given object of type " + obj.getClass().toString());
 
-	throw new IOException(getDF().getMimeType() + " encoding not supported");
+        throw new IOException(getDF().getMimeType() + " encoding not supported");
     }
 }

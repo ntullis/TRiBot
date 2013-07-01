@@ -68,16 +68,16 @@ public abstract class ComparisonTerm extends SearchTerm {
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof ComparisonTerm))
-	    return false;
-	ComparisonTerm ct = (ComparisonTerm)obj;
-	return ct.comparison == this.comparison;
+        if (!(obj instanceof ComparisonTerm))
+            return false;
+        ComparisonTerm ct = (ComparisonTerm) obj;
+        return ct.comparison == this.comparison;
     }
 
     /**
      * Compute a hashCode for this object.
      */
     public int hashCode() {
-	return comparison;
+        return comparison;
     }
 }

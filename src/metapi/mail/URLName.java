@@ -40,27 +40,29 @@
 
 package metapi.mail;
 
-import java.net.*;
-
 import java.io.ByteArrayOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.BitSet;
 import java.util.Locale;
 
 
 /**
- * The name of a URL. This class represents a URL name and also 
- * provides the basic parsing functionality to parse most internet 
+ * The name of a URL. This class represents a URL name and also
+ * provides the basic parsing functionality to parse most internet
  * standard URL schemes. <p>
- *
- * Note that this class differs from <code>java.net.URL</code> 
- * in that this class just represents the name of a URL, it does 
+ * <p/>
+ * Note that this class differs from <code>java.net.URL</code>
+ * in that this class just represents the name of a URL, it does
  * not model the connection to a URL.
  *
- * @author	Christopher Cotton
- * @author	Bill Shannon
+ * @author Christopher Cotton
+ * @author Bill Shannon
  */
 
 public class URLName {
@@ -70,23 +72,23 @@ public class URLName {
      */
     protected String fullURL;
 
-    /** 
-     * The protocol to use (ftp, http, nntp, imap, pop3 ... etc.) . 
+    /**
+     * The protocol to use (ftp, http, nntp, imap, pop3 ... etc.) .
      */
     private String protocol;
 
-    /** 
+    /**
      * The username to use when connecting
      */
     private String username;
 
-    /** 
+    /**
      * The password to use when connecting.
      */
     private String password;
 
-    /** 
-     * The host name to which to connect. 
+    /**
+     * The host name to which to connect.
      */
     private String host;
 
@@ -97,18 +99,18 @@ public class URLName {
     private InetAddress hostAddress;
     private boolean hostAddressKnown = false;
 
-    /** 
-     * The protocol port to connect to. 
+    /**
+     * The protocol port to connect to.
      */
     private int port = -1;
 
-    /** 
-     * The specified file name on that host. 
+    /**
+     * The specified file name on that host.
      */
     private String file;
 
-    /** 
-     * # reference. 
+    /**
+     * # reference.
      */
     private String ref;
 
@@ -123,11 +125,11 @@ public class URLName {
     private static boolean doEncode = true;
 
     static {
-	try {
-	    doEncode = !Boolean.getBoolean("javamail.URLName.dontencode");
-	} catch (Exception ex) {
-	    // ignore any errors
-	}
+        try {
+            doEncode = !Boolean.getBoolean("javamail.URLName.dontencode");
+        } catch (Exception ex) {
+            // ignore any errors
+        }
     }
 
     /**
@@ -137,34 +139,33 @@ public class URLName {
      * the protocol.
      */
     public URLName(
-	String protocol,
-	String host,
-	int port,
-	String file,
-	String username,
-	String password
-	)
-    {
-	this.protocol = protocol;
-	this.host = host;
-	this.port = port;
-	int refStart;
-	if (file != null && (refStart = file.indexOf('#')) != -1) {
-	    this.file = file.substring(0, refStart);
-	    this.ref = file.substring(refStart + 1);
-	} else {
-	    this.file = file;
-	    this.ref = null;
-	}
-	this.username = doEncode ? encode(username) : username;
-	this.password = doEncode ? encode(password) : password;
+            String protocol,
+            String host,
+            int port,
+            String file,
+            String username,
+            String password
+    ) {
+        this.protocol = protocol;
+        this.host = host;
+        this.port = port;
+        int refStart;
+        if (file != null && (refStart = file.indexOf('#')) != -1) {
+            this.file = file.substring(0, refStart);
+            this.ref = file.substring(refStart + 1);
+        } else {
+            this.file = file;
+            this.ref = null;
+        }
+        this.username = doEncode ? encode(username) : username;
+        this.password = doEncode ? encode(password) : password;
     }
 
     /**
      * Construct a URLName from a java.net.URL object.
      */
     public URLName(URL url) {
-	this(url.toString());
+        this(url.toString());
     }
 
     /**
@@ -172,159 +173,159 @@ public class URLName {
      * information (protocol, host, port, file, username, password).
      */
     public URLName(String url) {
-	parseString(url);
+        parseString(url);
     }
 
     /**
      * Constructs a string representation of this URLName.
      */
     public String toString() {
-	if (fullURL == null) {
-	    // add the "protocol:"
-	    StringBuffer tempURL = new StringBuffer();
-	    if (protocol != null) {
-		tempURL.append(protocol);
-		tempURL.append(":");
-	    }
+        if (fullURL == null) {
+            // add the "protocol:"
+            StringBuffer tempURL = new StringBuffer();
+            if (protocol != null) {
+                tempURL.append(protocol);
+                tempURL.append(":");
+            }
 
-	    if (username != null || host != null) {
-		// add the "//"
-		tempURL.append("//");
-		
-		// add the user:password@
-		// XXX - can you just have a password? without a username?
-		if (username != null) {
-		    tempURL.append(username);
-		
-		    if (password != null){
-			tempURL.append(":");
-			tempURL.append(password);
-		    }
-		
-		    tempURL.append("@");
-		}
-	    
-		// add host
-		if (host != null) {
-		    tempURL.append(host);
-		}
-	    
-		// add port (if needed)
-		if (port != -1) {
-		    tempURL.append(":");
-		    tempURL.append(Integer.toString(port));
-		}
-		if (file != null)
-		    tempURL.append("/");
-	    }
-	    
-	    // add the file
-	    if (file != null) {
-		tempURL.append(file);
-	    }
-	    
-	    // add the ref
-	    if (ref != null) {
-		tempURL.append("#");
-		tempURL.append(ref);
-	    }
+            if (username != null || host != null) {
+                // add the "//"
+                tempURL.append("//");
 
-	    // create the fullURL now
-	    fullURL = tempURL.toString();
-	}
+                // add the user:password@
+                // XXX - can you just have a password? without a username?
+                if (username != null) {
+                    tempURL.append(username);
 
-	return fullURL;
+                    if (password != null) {
+                        tempURL.append(":");
+                        tempURL.append(password);
+                    }
+
+                    tempURL.append("@");
+                }
+
+                // add host
+                if (host != null) {
+                    tempURL.append(host);
+                }
+
+                // add port (if needed)
+                if (port != -1) {
+                    tempURL.append(":");
+                    tempURL.append(Integer.toString(port));
+                }
+                if (file != null)
+                    tempURL.append("/");
+            }
+
+            // add the file
+            if (file != null) {
+                tempURL.append(file);
+            }
+
+            // add the ref
+            if (ref != null) {
+                tempURL.append("#");
+                tempURL.append(ref);
+            }
+
+            // create the fullURL now
+            fullURL = tempURL.toString();
+        }
+
+        return fullURL;
     }
 
     /**
      * Method which does all of the work of parsing the string.
      */
     protected void parseString(String url) {
-	// initialize everything in case called from subclass
-	// (URLName really should be a final class)
-	protocol = file = ref = host = username = password = null;
-	port = -1;
+        // initialize everything in case called from subclass
+        // (URLName really should be a final class)
+        protocol = file = ref = host = username = password = null;
+        port = -1;
 
-	int len = url.length();
+        int len = url.length();
 
-	// find the protocol
-	// XXX - should check for only legal characters before the colon
-	// (legal: a-z, A-Z, 0-9, "+", ".", "-")
-	int protocolEnd = url.indexOf(':');
+        // find the protocol
+        // XXX - should check for only legal characters before the colon
+        // (legal: a-z, A-Z, 0-9, "+", ".", "-")
+        int protocolEnd = url.indexOf(':');
         if (protocolEnd != -1)
-	    protocol = url.substring(0, protocolEnd);
+            protocol = url.substring(0, protocolEnd);
 
-	// is this an Internet standard URL that contains a host name?
-	if (url.regionMatches(protocolEnd + 1, "//", 0, 2)) {
-	    // find where the file starts
-	    String fullhost = null;
-	    int fileStart = url.indexOf('/', protocolEnd + 3);
-	    if (fileStart != -1) {
-		fullhost = url.substring(protocolEnd + 3, fileStart);
-		if (fileStart + 1 < len)
-		    file = url.substring(fileStart + 1);
-		else
-		    file = "";
-	    } else
-		fullhost = url.substring(protocolEnd + 3);
+        // is this an Internet standard URL that contains a host name?
+        if (url.regionMatches(protocolEnd + 1, "//", 0, 2)) {
+            // find where the file starts
+            String fullhost = null;
+            int fileStart = url.indexOf('/', protocolEnd + 3);
+            if (fileStart != -1) {
+                fullhost = url.substring(protocolEnd + 3, fileStart);
+                if (fileStart + 1 < len)
+                    file = url.substring(fileStart + 1);
+                else
+                    file = "";
+            } else
+                fullhost = url.substring(protocolEnd + 3);
 
-	    // examine the fullhost, for username password etc.
-	    int i = fullhost.indexOf('@');
-	    if (i != -1) {
-		String fulluserpass = fullhost.substring(0, i);
-		fullhost = fullhost.substring(i + 1);
+            // examine the fullhost, for username password etc.
+            int i = fullhost.indexOf('@');
+            if (i != -1) {
+                String fulluserpass = fullhost.substring(0, i);
+                fullhost = fullhost.substring(i + 1);
 
-		// get user and password
-		int passindex = fulluserpass.indexOf(':');
-		if (passindex != -1) {
-		    username = fulluserpass.substring(0, passindex);
-		    password = fulluserpass.substring(passindex + 1);
-		} else {
-		    username = fulluserpass;
-		}
-	    }
-	    
-	    // get the port (if there)
-	    int portindex;
-	    if (fullhost.length() > 0 && fullhost.charAt(0) == '[') {
-		// an IPv6 address?
-		portindex = fullhost.indexOf(':', fullhost.indexOf(']'));
-	    } else {
-		portindex = fullhost.indexOf(':');
-	    }
-	    if (portindex != -1) {
-		String portstring = fullhost.substring(portindex + 1);
-		if (portstring.length() > 0) {
-		    try {
-			port = Integer.parseInt(portstring);
-		    } catch (NumberFormatException nfex) {
-			port = -1;
-		    }
-		}
-		
-		host = fullhost.substring(0, portindex);
-	    } else {
-		host = fullhost;
-	    }
-	} else {
-	    if (protocolEnd + 1 < len)
-		file = url.substring(protocolEnd + 1);
-	}
+                // get user and password
+                int passindex = fulluserpass.indexOf(':');
+                if (passindex != -1) {
+                    username = fulluserpass.substring(0, passindex);
+                    password = fulluserpass.substring(passindex + 1);
+                } else {
+                    username = fulluserpass;
+                }
+            }
 
-	// extract the reference from the file name, if any
-	int refStart;
-	if (file != null && (refStart = file.indexOf('#')) != -1) {
-	    ref = file.substring(refStart + 1);
-	    file = file.substring(0, refStart);
-	}
+            // get the port (if there)
+            int portindex;
+            if (fullhost.length() > 0 && fullhost.charAt(0) == '[') {
+                // an IPv6 address?
+                portindex = fullhost.indexOf(':', fullhost.indexOf(']'));
+            } else {
+                portindex = fullhost.indexOf(':');
+            }
+            if (portindex != -1) {
+                String portstring = fullhost.substring(portindex + 1);
+                if (portstring.length() > 0) {
+                    try {
+                        port = Integer.parseInt(portstring);
+                    } catch (NumberFormatException nfex) {
+                        port = -1;
+                    }
+                }
+
+                host = fullhost.substring(0, portindex);
+            } else {
+                host = fullhost;
+            }
+        } else {
+            if (protocolEnd + 1 < len)
+                file = url.substring(protocolEnd + 1);
+        }
+
+        // extract the reference from the file name, if any
+        int refStart;
+        if (file != null && (refStart = file.indexOf('#')) != -1) {
+            ref = file.substring(refStart + 1);
+            file = file.substring(0, refStart);
+        }
     }
-    
+
     /**
      * Returns the port number of this URLName.
-     * Returns -1 if the port is not set. 
+     * Returns -1 if the port is not set.
      */
     public int getPort() {
-	return port;
+        return port;
     }
 
     /**
@@ -332,7 +333,7 @@ public class URLName {
      * Returns null if this URLName has no protocol.
      */
     public String getProtocol() {
-	return protocol;
+        return protocol;
     }
 
     /**
@@ -340,7 +341,7 @@ public class URLName {
      * Returns null if this URLName has no file name.
      */
     public String getFile() {
-	return file;
+        return file;
     }
 
     /**
@@ -348,7 +349,7 @@ public class URLName {
      * Returns null if this URLName has no reference.
      */
     public String getRef() {
-	return ref;
+        return ref;
     }
 
     /**
@@ -356,7 +357,7 @@ public class URLName {
      * Returns null if this URLName has no host.
      */
     public String getHost() {
-	return host;
+        return host;
     }
 
     /**
@@ -364,7 +365,7 @@ public class URLName {
      * Returns null if this URLName has no user name.
      */
     public String getUsername() {
-	return doEncode ? decode(username) : username;
+        return doEncode ? decode(username) : username;
     }
 
     /**
@@ -372,7 +373,7 @@ public class URLName {
      * Returns null if this URLName has no password.
      */
     public String getPassword() {
-	return doEncode ? decode(password) : password;
+        return doEncode ? decode(password) : password;
     }
 
     /**
@@ -391,63 +392,63 @@ public class URLName {
      * and the same file on the host. The fields (host, username,
      * file) are also considered the same if they are both
      * null.  <p>
-     *
+     * <p/>
      * Hosts are considered equal if the names are equal (case independent)
      * or if host name lookups for them both succeed and they both reference
      * the same IP address. <p>
-     *
+     * <p/>
      * Note that URLName has no knowledge of default port numbers for
      * particular protocols, so "imap://host" and "imap://host:143"
      * would not compare as equal. <p>
-     *
+     * <p/>
      * Note also that the password field is not included in the comparison,
      * nor is any reference field appended to the filename.
      */
     public boolean equals(Object obj) {
         if (!(obj instanceof URLName))
-	    return false;
-	URLName u2 = (URLName)obj;
+            return false;
+        URLName u2 = (URLName) obj;
 
-	// compare protocols
-	if (u2.protocol == null || !u2.protocol.equals(protocol))
-	    return false;
+        // compare protocols
+        if (u2.protocol == null || !u2.protocol.equals(protocol))
+            return false;
 
-	// compare hosts
-	InetAddress a1 = getHostAddress(), a2 = u2.getHostAddress();
-	// if we have internet address for both, and they're not the same, fail
-	if (a1 != null && a2 != null) {
-	    if (!a1.equals(a2))
-		return false;
-	// else, if we have host names for both, and they're not the same, fail
-	} else if (host != null && u2.host != null) {
-	    if (!host.equalsIgnoreCase(u2.host))
-		return false;
-	// else, if not both null
-	} else if (host != u2.host) {
-	    return false;
-	}
-	// at this point, hosts match
+        // compare hosts
+        InetAddress a1 = getHostAddress(), a2 = u2.getHostAddress();
+        // if we have internet address for both, and they're not the same, fail
+        if (a1 != null && a2 != null) {
+            if (!a1.equals(a2))
+                return false;
+            // else, if we have host names for both, and they're not the same, fail
+        } else if (host != null && u2.host != null) {
+            if (!host.equalsIgnoreCase(u2.host))
+                return false;
+            // else, if not both null
+        } else if (host != u2.host) {
+            return false;
+        }
+        // at this point, hosts match
 
-	// compare usernames
-	if (!(username == u2.username ||
-		(username != null && username.equals(u2.username))))
-	    return false;
+        // compare usernames
+        if (!(username == u2.username ||
+                (username != null && username.equals(u2.username))))
+            return false;
 
-	// Forget about password since it doesn't
-	// really denote a different store.
+        // Forget about password since it doesn't
+        // really denote a different store.
 
-	// compare files
-	String f1 = file == null ? "" : file;
-	String f2 = u2.file == null ? "" : u2.file;
+        // compare files
+        String f1 = file == null ? "" : file;
+        String f2 = u2.file == null ? "" : u2.file;
 
-	if (!f1.equals(f2))
-	    return false;
+        if (!f1.equals(f2))
+            return false;
 
-	// compare ports
-	if (port != u2.port)
-	    return false;
+        // compare ports
+        if (port != u2.port)
+            return false;
 
-	// all comparisons succeeded, they're equal
+        // all comparisons succeeded, they're equal
         return true;
     }
 
@@ -455,21 +456,21 @@ public class URLName {
      * Compute the hash code for this URLName.
      */
     public int hashCode() {
-	if (hashCode != 0)
-	    return hashCode;
-	if (protocol != null)
-	    hashCode += protocol.hashCode();
-	InetAddress addr = getHostAddress();
-	if (addr != null)
-	    hashCode += addr.hashCode();
-	else if (host != null)
-	    hashCode += host.toLowerCase(Locale.ENGLISH).hashCode();
-	if (username != null)
-	    hashCode += username.hashCode();
-	if (file != null)
-	    hashCode += file.hashCode();
-	hashCode += port;
-	return hashCode;
+        if (hashCode != 0)
+            return hashCode;
+        if (protocol != null)
+            hashCode += protocol.hashCode();
+        InetAddress addr = getHostAddress();
+        if (addr != null)
+            hashCode += addr.hashCode();
+        else if (host != null)
+            hashCode += host.toLowerCase(Locale.ENGLISH).hashCode();
+        if (username != null)
+            hashCode += username.hashCode();
+        if (file != null)
+            hashCode += file.hashCode();
+        hashCode += port;
+        return hashCode;
     }
 
     /**
@@ -478,39 +479,39 @@ public class URLName {
      * so, whether the lookup fails or not.
      */
     private synchronized InetAddress getHostAddress() {
-	if (hostAddressKnown)
-	    return hostAddress;
-	if (host == null)
-	    return null;
-	try {
-	    hostAddress = InetAddress.getByName(host);
-	} catch (UnknownHostException ex) {
-	    hostAddress = null;
-	}
-	hostAddressKnown = true;
-	return hostAddress;
+        if (hostAddressKnown)
+            return hostAddress;
+        if (host == null)
+            return null;
+        try {
+            hostAddress = InetAddress.getByName(host);
+        } catch (UnknownHostException ex) {
+            hostAddress = null;
+        }
+        hostAddressKnown = true;
+        return hostAddress;
     }
 
     /**
      * The class contains a utility method for converting a
      * <code>String</code> into a MIME format called
      * "<code>x-www-form-urlencoded</code>" format.
-     * <p>
+     * <p/>
      * To convert a <code>String</code>, each character is examined in turn:
      * <ul>
      * <li>The ASCII characters '<code>a</code>' through '<code>z</code>',
-     *     '<code>A</code>' through '<code>Z</code>', '<code>0</code>'
-     *     through '<code>9</code>', and &quot;.&quot;, &quot;-&quot;, 
+     * '<code>A</code>' through '<code>Z</code>', '<code>0</code>'
+     * through '<code>9</code>', and &quot;.&quot;, &quot;-&quot;,
      * &quot;*&quot;, &quot;_&quot; remain the same.
      * <li>The space character '<code>&nbsp;</code>' is converted into a
-     *     plus sign '<code>+</code>'.
+     * plus sign '<code>+</code>'.
      * <li>All other characters are converted into the 3-character string
-     *     "<code>%<i>xy</i></code>", where <i>xy</i> is the two-digit
-     *     hexadecimal representation of the lower 8-bits of the character.
+     * "<code>%<i>xy</i></code>", where <i>xy</i> is the two-digit
+     * hexadecimal representation of the lower 8-bits of the character.
      * </ul>
      *
-     * @author  Herb Jellinek
-     * @since   JDK1.0
+     * @author Herb Jellinek
+     * @since JDK1.0
      */
     static BitSet dontNeedEncoding;
     static final int caseDiff = ('a' - 'A');
@@ -519,86 +520,86 @@ public class URLName {
        referencing O'Reilly's "HTML: The Definitive Guide" (page 164). */
 
     static {
-	dontNeedEncoding = new BitSet(256);
-	int i;
-	for (i = 'a'; i <= 'z'; i++) {
-	    dontNeedEncoding.set(i);
-	}
-	for (i = 'A'; i <= 'Z'; i++) {
-	    dontNeedEncoding.set(i);
-	}
-	for (i = '0'; i <= '9'; i++) {
-	    dontNeedEncoding.set(i);
-	}
-	/* encoding a space to a + is done in the encode() method */
-	dontNeedEncoding.set(' ');
-	dontNeedEncoding.set('-');
-	dontNeedEncoding.set('_');
-	dontNeedEncoding.set('.');
-	dontNeedEncoding.set('*');
+        dontNeedEncoding = new BitSet(256);
+        int i;
+        for (i = 'a'; i <= 'z'; i++) {
+            dontNeedEncoding.set(i);
+        }
+        for (i = 'A'; i <= 'Z'; i++) {
+            dontNeedEncoding.set(i);
+        }
+        for (i = '0'; i <= '9'; i++) {
+            dontNeedEncoding.set(i);
+        }
+    /* encoding a space to a + is done in the encode() method */
+        dontNeedEncoding.set(' ');
+        dontNeedEncoding.set('-');
+        dontNeedEncoding.set('_');
+        dontNeedEncoding.set('.');
+        dontNeedEncoding.set('*');
     }
 
     /**
      * Translates a string into <code>x-www-form-urlencoded</code> format.
      *
-     * @param   s   <code>String</code> to be translated.
-     * @return  the translated <code>String</code>.
+     * @param s <code>String</code> to be translated.
+     * @return the translated <code>String</code>.
      */
     static String encode(String s) {
-	if (s == null)
-	    return null;
-	// the common case is no encoding is needed
-	for (int i = 0; i < s.length(); i++) {
-	    int c = (int)s.charAt(i);
-	    if (c == ' ' || !dontNeedEncoding.get(c))
-		return _encode(s);
-	}
-	return s;
+        if (s == null)
+            return null;
+        // the common case is no encoding is needed
+        for (int i = 0; i < s.length(); i++) {
+            int c = (int) s.charAt(i);
+            if (c == ' ' || !dontNeedEncoding.get(c))
+                return _encode(s);
+        }
+        return s;
     }
 
     private static String _encode(String s) {
-	int maxBytesPerChar = 10;
+        int maxBytesPerChar = 10;
         StringBuffer out = new StringBuffer(s.length());
-	ByteArrayOutputStream buf = new ByteArrayOutputStream(maxBytesPerChar);
-	OutputStreamWriter writer = new OutputStreamWriter(buf);
+        ByteArrayOutputStream buf = new ByteArrayOutputStream(maxBytesPerChar);
+        OutputStreamWriter writer = new OutputStreamWriter(buf);
 
-	for (int i = 0; i < s.length(); i++) {
-	    int c = (int)s.charAt(i);
-	    if (dontNeedEncoding.get(c)) {
-		if (c == ' ') {
-		    c = '+';
-		}
-		out.append((char)c);
-	    } else {
-		// convert to external encoding before hex conversion
-		try {
-		    writer.write(c);
-		    writer.flush();
-		} catch(IOException e) {
-		    buf.reset();
-		    continue;
-		}
-		byte[] ba = buf.toByteArray();
-		for (int j = 0; j < ba.length; j++) {
-		    out.append('%');
-		    char ch = Character.forDigit((ba[j] >> 4) & 0xF, 16);
-		    // converting to use uppercase letter as part of
-		    // the hex value if ch is a letter.
-		    if (Character.isLetter(ch)) {
-			ch -= caseDiff;
-		    }
-		    out.append(ch);
-		    ch = Character.forDigit(ba[j] & 0xF, 16);
-		    if (Character.isLetter(ch)) {
-			ch -= caseDiff;
-		    }
-		    out.append(ch);
-		}
-		buf.reset();
-	    }
-	}
+        for (int i = 0; i < s.length(); i++) {
+            int c = (int) s.charAt(i);
+            if (dontNeedEncoding.get(c)) {
+                if (c == ' ') {
+                    c = '+';
+                }
+                out.append((char) c);
+            } else {
+                // convert to external encoding before hex conversion
+                try {
+                    writer.write(c);
+                    writer.flush();
+                } catch (IOException e) {
+                    buf.reset();
+                    continue;
+                }
+                byte[] ba = buf.toByteArray();
+                for (int j = 0; j < ba.length; j++) {
+                    out.append('%');
+                    char ch = Character.forDigit((ba[j] >> 4) & 0xF, 16);
+                    // converting to use uppercase letter as part of
+                    // the hex value if ch is a letter.
+                    if (Character.isLetter(ch)) {
+                        ch -= caseDiff;
+                    }
+                    out.append(ch);
+                    ch = Character.forDigit(ba[j] & 0xF, 16);
+                    if (Character.isLetter(ch)) {
+                        ch -= caseDiff;
+                    }
+                    out.append(ch);
+                }
+                buf.reset();
+            }
+        }
 
-	return out.toString();
+        return out.toString();
     }
 
 
@@ -620,22 +621,23 @@ public class URLName {
      * hexadecimal representation of the lower 8-bits of the character.
      * </ul>
      *
-     * @author  Mark Chamness
-     * @author  Michael McCloskey
-     * @since   1.2
+     * @author Mark Chamness
+     * @author Michael McCloskey
+     * @since 1.2
      */
 
     /**
-     * Decodes a &quot;x-www-form-urlencoded&quot; 
+     * Decodes a &quot;x-www-form-urlencoded&quot;
      * to a <tt>String</tt>.
+     *
      * @param s the <code>String</code> to decode
      * @return the newly decoded <code>String</code>
      */
     static String decode(String s) {
-	if (s == null)
-	    return null;
-	if (indexOfAny(s, "+%") == -1)
-	    return s;		// the common case
+        if (s == null)
+            return null;
+        if (indexOfAny(s, "+%") == -1)
+            return s;        // the common case
 
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < s.length(); i++) {
@@ -646,12 +648,12 @@ public class URLName {
                     break;
                 case '%':
                     try {
-                        sb.append((char)Integer.parseInt(
-                                        s.substring(i+1,i+3),16));
+                        sb.append((char) Integer.parseInt(
+                                s.substring(i + 1, i + 3), 16));
                     } catch (NumberFormatException e) {
                         throw new IllegalArgumentException(
-			    "Illegal URL encoded value: " +
-			    s.substring(i,i+3));
+                                "Illegal URL encoded value: " +
+                                        s.substring(i, i + 3));
                     }
                     i += 2;
                     break;
@@ -674,24 +676,24 @@ public class URLName {
     /**
      * Return the first index of any of the characters in "any" in "s",
      * or -1 if none are found.
-     *
+     * <p/>
      * This should be a method on String.
      */
     private static int indexOfAny(String s, String any) {
-	return indexOfAny(s, any, 0);
+        return indexOfAny(s, any, 0);
     }
 
     private static int indexOfAny(String s, String any, int start) {
-	try {
-	    int len = s.length();
-	    for (int i = start; i < len; i++) {
-		if (any.indexOf(s.charAt(i)) >= 0)
-		    return i;
-	    }
-	    return -1;
-	} catch (StringIndexOutOfBoundsException e) {
-	    return -1;
-	}
+        try {
+            int len = s.length();
+            for (int i = start; i < len; i++) {
+                if (any.indexOf(s.charAt(i)) >= 0)
+                    return i;
+            }
+            return -1;
+        } catch (StringIndexOutOfBoundsException e) {
+            return -1;
+        }
     }
 
     /*

@@ -40,28 +40,37 @@
 
 package metapi.mail.imap;
 
-import java.io.*;
-import metapi.mail.*;
-import metapi.mail.imap.protocol.*;
-import metapi.mail.iap.*;
-import metapi.mail.util.*;
+import metapi.mail.Flags;
+import metapi.mail.Folder;
+import metapi.mail.FolderClosedException;
+import metapi.mail.MessagingException;
+import metapi.mail.iap.ByteArray;
+import metapi.mail.iap.ConnectionException;
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.imap.protocol.BODY;
+import metapi.mail.imap.protocol.IMAPProtocol;
+import metapi.mail.util.FolderClosedIOException;
+import metapi.mail.util.MessageRemovedIOException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * This class implements an IMAP data stream.
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class IMAPInputStream extends InputStream {
     private IMAPMessage msg; // this message
     private String section;  // section-id
-    private int pos;	  // track the position within the IMAP datastream
+    private int pos;      // track the position within the IMAP datastream
     private int blksize;  // number of bytes to read in each FETCH request
-    private int max;	  // the total number of bytes in this section.
-			  //  -1 indicates unknown
+    private int max;      // the total number of bytes in this section.
+    //  -1 indicates unknown
     private byte[] buf;   // the buffer obtained from fetchBODY()
     private int bufcount; // The index one greater than the index of the
-			  // last valid byte in 'buf'
+    // last valid byte in 'buf'
     private int bufpos;   // The current position within 'buf'
     private boolean lastBuffer; // is this the last buffer of data?
     private boolean peek; // peek instead of fetch?
@@ -76,13 +85,13 @@ public class IMAPInputStream extends InputStream {
      * Create an IMAPInputStream.
      */
     public IMAPInputStream(IMAPMessage msg, String section, int max,
-				boolean peek) {
-	this.msg = msg;
-	this.section = section;
-	this.max = max;
-	this.peek = peek;
-	pos = 0;
-	blksize = msg.getFetchBlockSize();
+                           boolean peek) {
+        this.msg = msg;
+        this.section = section;
+        this.max = max;
+        this.peek = peek;
+        pos = 0;
+        blksize = msg.getFetchBlockSize();
     }
 
     /**
@@ -90,22 +99,22 @@ public class IMAPInputStream extends InputStream {
      * and then check if this message is expunged.
      */
     private void forceCheckExpunged()
-		    throws MessageRemovedIOException, FolderClosedIOException {
-	synchronized (msg.getMessageCacheLock()) {
-	    try {
-		msg.getProtocol().noop();
-	    } catch (ConnectionException cex) {
-		throw new FolderClosedIOException(msg.getFolder(),
-						cex.getMessage());
-	    } catch (FolderClosedException fex) {
-		throw new FolderClosedIOException(fex.getFolder(),
-						fex.getMessage());
-	    } catch (ProtocolException pex) {
-		// ignore it
-	    }
-	}
-	if (msg.isExpunged())
-	    throw new MessageRemovedIOException();
+            throws MessageRemovedIOException, FolderClosedIOException {
+        synchronized (msg.getMessageCacheLock()) {
+            try {
+                msg.getProtocol().noop();
+            } catch (ConnectionException cex) {
+                throw new FolderClosedIOException(msg.getFolder(),
+                        cex.getMessage());
+            } catch (FolderClosedException fex) {
+                throw new FolderClosedIOException(fex.getFolder(),
+                        fex.getMessage());
+            } catch (ProtocolException pex) {
+                // ignore it
+            }
+        }
+        if (msg.isExpunged())
+            throw new MessageRemovedIOException();
     }
 
     /**
@@ -113,69 +122,69 @@ public class IMAPInputStream extends InputStream {
      * data has already been read in, hence bufpos > bufcount.
      */
     private void fill() throws IOException {
-	/*
+    /*
 	 * If we've read the last buffer, there's no more to read.
 	 * If we know the total number of bytes available from this
 	 * section, let's check if we have consumed that many bytes.
 	 */
-	if (lastBuffer || max != -1 && pos >= max) {
-	    if (pos == 0)
-		checkSeen();
-	    readbuf = null;	// XXX - return to pool?
-	    return; // the caller of fill() will return -1.
-	}
+        if (lastBuffer || max != -1 && pos >= max) {
+            if (pos == 0)
+                checkSeen();
+            readbuf = null;    // XXX - return to pool?
+            return; // the caller of fill() will return -1.
+        }
 
-	BODY b = null;
-	if (readbuf == null)
-	    readbuf = new ByteArray(blksize + slop);
+        BODY b = null;
+        if (readbuf == null)
+            readbuf = new ByteArray(blksize + slop);
 
-	ByteArray ba;
-	int cnt;
-	// Acquire MessageCacheLock, to freeze seqnum.
-	synchronized (msg.getMessageCacheLock()) {
-	    try {
-		IMAPProtocol p = msg.getProtocol();
+        ByteArray ba;
+        int cnt;
+        // Acquire MessageCacheLock, to freeze seqnum.
+        synchronized (msg.getMessageCacheLock()) {
+            try {
+                IMAPProtocol p = msg.getProtocol();
 
-		// Check whether this message is expunged
-		if (msg.isExpunged())
-		    throw new MessageRemovedIOException(
-				"No content for expunged message");
+                // Check whether this message is expunged
+                if (msg.isExpunged())
+                    throw new MessageRemovedIOException(
+                            "No content for expunged message");
 
-		int seqnum = msg.getSequenceNumber();
-		cnt = blksize;
-		if (max != -1 && pos + blksize > max)
-		    cnt = max - pos;
-		if (peek)
-		    b = p.peekBody(seqnum, section, pos, cnt, readbuf);
-		else
-		    b = p.fetchBody(seqnum, section, pos, cnt, readbuf);
-	    } catch (ProtocolException pex) {
-		forceCheckExpunged();
-		throw new IOException(pex.getMessage());
-	    } catch (FolderClosedException fex) {
-		throw new FolderClosedIOException(fex.getFolder(),
-						fex.getMessage());
-	    }
+                int seqnum = msg.getSequenceNumber();
+                cnt = blksize;
+                if (max != -1 && pos + blksize > max)
+                    cnt = max - pos;
+                if (peek)
+                    b = p.peekBody(seqnum, section, pos, cnt, readbuf);
+                else
+                    b = p.fetchBody(seqnum, section, pos, cnt, readbuf);
+            } catch (ProtocolException pex) {
+                forceCheckExpunged();
+                throw new IOException(pex.getMessage());
+            } catch (FolderClosedException fex) {
+                throw new FolderClosedIOException(fex.getFolder(),
+                        fex.getMessage());
+            }
 
-	    if (b == null || ((ba = b.getByteArray()) == null)) {
-		forceCheckExpunged();
-		throw new IOException("No content");
-	    }
-	}
+            if (b == null || ((ba = b.getByteArray()) == null)) {
+                forceCheckExpunged();
+                throw new IOException("No content");
+            }
+        }
 
-	// make sure the SEEN flag is set after reading the first chunk
-	if (pos == 0)
-	    checkSeen();
+        // make sure the SEEN flag is set after reading the first chunk
+        if (pos == 0)
+            checkSeen();
 
-	// setup new values ..
-	buf = ba.getBytes();
-	bufpos = ba.getStart();
-	int n = ba.getCount();    // will be zero, if all data has been
-				  // consumed from the server.
-	// if we got less than we asked for, this is the last buffer of data
-	lastBuffer = n < cnt;
-	bufcount = bufpos + n;
-	pos += n;
+        // setup new values ..
+        buf = ba.getBytes();
+        bufpos = ba.getStart();
+        int n = ba.getCount();    // will be zero, if all data has been
+        // consumed from the server.
+        // if we got less than we asked for, this is the last buffer of data
+        lastBuffer = n < cnt;
+        bufcount = bufpos + n;
+        pos += n;
     }
 
     /**
@@ -183,21 +192,21 @@ public class IMAPInputStream extends InputStream {
      * If no byte is available, the value <code>-1</code> is returned.
      */
     public synchronized int read() throws IOException {
-	if (bufpos >= bufcount) {
-	    fill();
-	    if (bufpos >= bufcount)
-		return -1;	// EOF
-	}
-	return buf[bufpos++] & 0xff;
+        if (bufpos >= bufcount) {
+            fill();
+            if (bufpos >= bufcount)
+                return -1;    // EOF
+        }
+        return buf[bufpos++] & 0xff;
     }
 
     /**
      * Reads up to <code>len</code> bytes of data from this
      * input stream into the given buffer. <p>
-     *
+     * <p/>
      * Returns the total number of bytes read into the buffer,
      * or <code>-1</code> if there is no more data. <p>
-     *
+     * <p/>
      * Note that this method mimics the "weird !" semantics of
      * BufferedInputStream in that the number of bytes actually
      * returned may be less that the requested value. So callers
@@ -205,29 +214,29 @@ public class IMAPInputStream extends InputStream {
      * the return value to insure that they have obtained the
      * requisite number of bytes.
      */
-    public synchronized int read(byte b[], int off, int len) 
-		throws IOException {
+    public synchronized int read(byte b[], int off, int len)
+            throws IOException {
 
-	int avail = bufcount - bufpos;
-	if (avail <= 0) {
-	    fill();
-	    avail = bufcount - bufpos;
-	    if (avail <= 0)
-		return -1; // EOF
-	}
-	int cnt = (avail < len) ? avail : len;
-	System.arraycopy(buf, bufpos, b, off, cnt);
-	bufpos += cnt;
-	return cnt;
+        int avail = bufcount - bufpos;
+        if (avail <= 0) {
+            fill();
+            avail = bufcount - bufpos;
+            if (avail <= 0)
+                return -1; // EOF
+        }
+        int cnt = (avail < len) ? avail : len;
+        System.arraycopy(buf, bufpos, b, off, cnt);
+        bufpos += cnt;
+        return cnt;
     }
 
     /**
      * Reads up to <code>b.length</code> bytes of data from this input
      * stream into an array of bytes. <p>
-     *
+     * <p/>
      * Returns the total number of bytes read into the buffer, or
      * <code>-1</code> is there is no more data. <p>
-     *
+     * <p/>
      * Note that this method mimics the "weird !" semantics of
      * BufferedInputStream in that the number of bytes actually
      * returned may be less that the requested value. So callers
@@ -236,7 +245,7 @@ public class IMAPInputStream extends InputStream {
      * requisite number of bytes.
      */
     public int read(byte b[]) throws IOException {
-	return read(b, 0, b.length);
+        return read(b, 0, b.length);
     }
 
     /**
@@ -244,7 +253,7 @@ public class IMAPInputStream extends InputStream {
      * stream without blocking.
      */
     public synchronized int available() throws IOException {
-	return (bufcount - bufpos);
+        return (bufcount - bufpos);
     }
 
     /**
@@ -255,15 +264,15 @@ public class IMAPInputStream extends InputStream {
      * don't do anything.
      */
     private void checkSeen() {
-	if (peek)	// if we're peeking, don't set the SEEN flag
-	    return;
-	try {
-	    Folder f = msg.getFolder();
-	    if (f != null && f.getMode() != Folder.READ_ONLY &&
-		    !msg.isSet(Flags.Flag.SEEN))
-		msg.setFlag(Flags.Flag.SEEN, true);
-	} catch (MessagingException ex) {
-	    // ignore it
-	}
+        if (peek)    // if we're peeking, don't set the SEEN flag
+            return;
+        try {
+            Folder f = msg.getFolder();
+            if (f != null && f.getMode() != Folder.READ_ONLY &&
+                    !msg.isSet(Flags.Flag.SEEN))
+                msg.setFlag(Flags.Flag.SEEN, true);
+        } catch (MessagingException ex) {
+            // ignore it
+        }
     }
 }

@@ -40,15 +40,17 @@
 
 package metapi.mail.iap;
 
-import java.io.*;
-import java.util.*;
-import metapi.mail.util.*;
+import metapi.mail.util.ASCIIUtility;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  * This class represents a response obtained from the input stream
  * of an IMAP server.
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class Response {
@@ -63,51 +65,52 @@ public class Response {
 
     // The first and second bits indicate whether this response
     // is a Continuation, Tagged or Untagged
-    public final static int TAG_MASK 	 = 0x03;
+    public final static int TAG_MASK = 0x03;
     public final static int CONTINUATION = 0x01;
-    public final static int TAGGED 	 = 0x02;
-    public final static int UNTAGGED 	 = 0x03;
+    public final static int TAGGED = 0x02;
+    public final static int UNTAGGED = 0x03;
 
     // The third, fourth and fifth bits indicate whether this response
     // is an OK, NO, BAD or BYE response
-    public final static int TYPE_MASK 	 = 0x1C;
-    public final static int OK 	 	 = 0x04;
-    public final static int NO 	 	 = 0x08;
-    public final static int BAD	 	 = 0x0C;
-    public final static int BYE	 	 = 0x10;
+    public final static int TYPE_MASK = 0x1C;
+    public final static int OK = 0x04;
+    public final static int NO = 0x08;
+    public final static int BAD = 0x0C;
+    public final static int BYE = 0x10;
 
     // The sixth bit indicates whether a BYE response is synthetic or real
-    public final static int SYNTHETIC 	 = 0x20;
+    public final static int SYNTHETIC = 0x20;
 
     public Response(String s) {
-	buffer = ASCIIUtility.getBytes(s);
-	size = buffer.length;
-	parse();
+        buffer = ASCIIUtility.getBytes(s);
+        size = buffer.length;
+        parse();
     }
 
-   /**
-    * Read a new Response from the given Protocol
-    * @param	p	the Protocol object
-    */
+    /**
+     * Read a new Response from the given Protocol
+     *
+     * @param    p    the Protocol object
+     */
     public Response(Protocol p) throws IOException, ProtocolException {
-	// read one response into 'buffer'
-	ByteArray ba = p.getResponseBuffer();
-	ByteArray response = p.getInputStream().readResponse(ba);
-	buffer = response.getBytes();
-	size = response.getCount() - 2; // Skip the terminating CRLF
+        // read one response into 'buffer'
+        ByteArray ba = p.getResponseBuffer();
+        ByteArray response = p.getInputStream().readResponse(ba);
+        buffer = response.getBytes();
+        size = response.getCount() - 2; // Skip the terminating CRLF
 
-	parse();
+        parse();
     }
 
     /**
      * Copy constructor.
      */
     public Response(Response r) {
-	index = r.index;
-	size = r.size;
-	buffer = r.buffer;
-	type = r.type;
-	tag = r.tag;
+        index = r.index;
+        size = r.size;
+        buffer = r.buffer;
+        type = r.type;
+        tag = r.tag;
     }
 
     /**
@@ -115,93 +118,95 @@ public class Response {
      * Include the details of the exception in the response string.
      */
     public static Response byeResponse(Exception ex) {
-	String err = "* BYE JavaMail Exception: " + ex.toString();
-	err = err.replace('\r', ' ').replace('\n', ' ');
-	Response r = new Response(err);
-	r.type |= SYNTHETIC;
-	return r;
+        String err = "* BYE JavaMail Exception: " + ex.toString();
+        err = err.replace('\r', ' ').replace('\n', ' ');
+        Response r = new Response(err);
+        r.type |= SYNTHETIC;
+        return r;
     }
 
     private void parse() {
-	index = 0; // position internal index at start
+        index = 0; // position internal index at start
 
-	if (size == 0)	// empty line
-	    return;
-	if (buffer[index] == '+') { // Continuation statement
-	    type |= CONTINUATION;
-	    index += 1; // Position beyond the '+'
-	    return;	// return
-	} else if (buffer[index] == '*') { // Untagged statement
-	    type |= UNTAGGED;
-	    index += 1; // Position beyond the '*'
-	} else {  // Tagged statement
-	    type |= TAGGED;
-	    tag = readAtom();	// read the TAG, index positioned beyond tag
-	    if (tag == null)
-		tag = "";	// avoid possible NPE
-	}
+        if (size == 0)    // empty line
+            return;
+        if (buffer[index] == '+') { // Continuation statement
+            type |= CONTINUATION;
+            index += 1; // Position beyond the '+'
+            return;    // return
+        } else if (buffer[index] == '*') { // Untagged statement
+            type |= UNTAGGED;
+            index += 1; // Position beyond the '*'
+        } else {  // Tagged statement
+            type |= TAGGED;
+            tag = readAtom();    // read the TAG, index positioned beyond tag
+            if (tag == null)
+                tag = "";    // avoid possible NPE
+        }
 
-	int mark = index; // mark
-	String s = readAtom();	// updates index
-	if (s == null)
-	    s = "";		// avoid possible NPE
-	if (s.equalsIgnoreCase("OK"))
-	    type |= OK;
-	else if (s.equalsIgnoreCase("NO"))
-	    type |= NO;
-	else if (s.equalsIgnoreCase("BAD"))
-	    type |= BAD;
-	else if (s.equalsIgnoreCase("BYE"))
-	    type |= BYE;
-	else
-	    index = mark; // reset
+        int mark = index; // mark
+        String s = readAtom();    // updates index
+        if (s == null)
+            s = "";        // avoid possible NPE
+        if (s.equalsIgnoreCase("OK"))
+            type |= OK;
+        else if (s.equalsIgnoreCase("NO"))
+            type |= NO;
+        else if (s.equalsIgnoreCase("BAD"))
+            type |= BAD;
+        else if (s.equalsIgnoreCase("BYE"))
+            type |= BYE;
+        else
+            index = mark; // reset
 
-	pindex = index;
-	return;
+        pindex = index;
+        return;
     }
 
     public void skipSpaces() {
-	while (index < size && buffer[index] == ' ')
-	    index++;
+        while (index < size && buffer[index] == ' ')
+            index++;
     }
 
     /**
      * Skip to the next space, for use in error recovery while parsing.
      */
     public void skipToken() {
-	while (index < size && buffer[index] != ' ')
-	    index++;
+        while (index < size && buffer[index] != ' ')
+            index++;
     }
 
     public void skip(int count) {
-	index += count;
+        index += count;
     }
 
     public byte peekByte() {
-	if (index < size)
-	    return buffer[index];
-	else
-	    return 0;		// XXX - how else to signal error?
+        if (index < size)
+            return buffer[index];
+        else
+            return 0;        // XXX - how else to signal error?
     }
 
     /**
      * Return the next byte from this Statement.
+     *
      * @return the next byte.
      */
     public byte readByte() {
-	if (index < size)
-	    return buffer[index++];
-	else
-	    return 0;		// XXX - how else to signal error?
+        if (index < size)
+            return buffer[index++];
+        else
+            return 0;        // XXX - how else to signal error?
     }
 
     /**
      * Extract an ATOM, starting at the current position. Updates
      * the internal index to beyond the Atom.
+     *
      * @return an Atom
      */
     public String readAtom() {
-	return readAtom('\0');
+        return readAtom('\0');
     }
 
     /**
@@ -209,24 +214,24 @@ public class Response {
      * (if not NUL).  Used to parse a response code inside [].
      */
     public String readAtom(char delim) {
-	skipSpaces();
+        skipSpaces();
 
-	if (index >= size) // already at end of response
-	    return null;
+        if (index >= size) // already at end of response
+            return null;
 
 	/*
-	 * An ATOM is any CHAR delimited by :
+     * An ATOM is any CHAR delimited by :
 	 * SPACE | CTL | '(' | ')' | '{' | '%' | '*' | '"' | '\' | ']'
 	 */
-	byte b;
-	int start = index;
-	while (index < size && ((b = buffer[index]) > ' ') &&
-	       b != '(' && b != ')' && b != '%' && b != '*' && 
-	       b != '"' && b != '\\'  && b != ']' && b != 0x7f &&
-	       (delim == '\0' || b != delim))
-	    index++;
+        byte b;
+        int start = index;
+        while (index < size && ((b = buffer[index]) > ' ') &&
+                b != '(' && b != ')' && b != '%' && b != '*' &&
+                b != '"' && b != '\\' && b != ']' && b != 0x7f &&
+                (delim == '\0' || b != delim))
+            index++;
 
-	return ASCIIUtility.toString(buffer, start, index);
+        return ASCIIUtility.toString(buffer, start, index);
     }
 
     /**
@@ -235,69 +240,70 @@ public class Response {
      * response code inside [].
      */
     public String readString(char delim) {
-	skipSpaces();
+        skipSpaces();
 
-	if (index >= size) // already at end of response
-	    return null;
+        if (index >= size) // already at end of response
+            return null;
 
-	int start = index;
-	while (index < size && buffer[index] != delim)
-	    index++;
+        int start = index;
+        while (index < size && buffer[index] != delim)
+            index++;
 
-	return ASCIIUtility.toString(buffer, start, index);
+        return ASCIIUtility.toString(buffer, start, index);
     }
 
     public String[] readStringList() {
-	return readStringList(false);
+        return readStringList(false);
     }
 
     public String[] readAtomStringList() {
-	return readStringList(true);
+        return readStringList(true);
     }
 
     private String[] readStringList(boolean atom) {
-	skipSpaces();
+        skipSpaces();
 
-	if (buffer[index] != '(') // not what we expected
-	    return null;
-	index++; // skip '('
+        if (buffer[index] != '(') // not what we expected
+            return null;
+        index++; // skip '('
 
-	Vector<String> v = new Vector<String>();
-	do {
-	    v.addElement(atom ? readAtomString() : readString());
-	} while (buffer[index++] != ')');
+        Vector<String> v = new Vector<String>();
+        do {
+            v.addElement(atom ? readAtomString() : readString());
+        } while (buffer[index++] != ')');
 
-	int size = v.size();
-	if (size > 0) {
-	    String[] s = new String[size];
-	    v.copyInto(s);
-	    return s;
-	} else  // empty list
-	    return null;
+        int size = v.size();
+        if (size > 0) {
+            String[] s = new String[size];
+            v.copyInto(s);
+            return s;
+        } else  // empty list
+            return null;
     }
 
     /**
      * Extract an integer, starting at the current position. Updates the
-     * internal index to beyond the number. Returns -1 if  a number was 
+     * internal index to beyond the number. Returns -1 if  a number was
      * not found.
      *
-     * @return  a number
+     * @return a number
      */
     public int readNumber() {
-	// Skip leading spaces
-	skipSpaces();
+        // Skip leading spaces
+        skipSpaces();
 
         int start = index;
-        while (index < size && Character.isDigit((char)buffer[index]))
+        while (index < size && Character.isDigit((char) buffer[index]))
             index++;
 
         if (index > start) {
-	    try {
-		return ASCIIUtility.parseInt(buffer, start, index);
-	    } catch (NumberFormatException nex) { }
-	}
+            try {
+                return ASCIIUtility.parseInt(buffer, start, index);
+            } catch (NumberFormatException nex) {
+            }
+        }
 
-	return -1;
+        return -1;
     }
 
     /**
@@ -305,86 +311,87 @@ public class Response {
      * internal index to beyond the number. Returns -1 if a long number
      * was not found.
      *
-     * @return  a long
+     * @return a long
      */
     public long readLong() {
-	// Skip leading spaces
-	skipSpaces();
+        // Skip leading spaces
+        skipSpaces();
 
         int start = index;
-        while (index < size && Character.isDigit((char)buffer[index]))
+        while (index < size && Character.isDigit((char) buffer[index]))
             index++;
 
         if (index > start) {
-	    try {
-		return ASCIIUtility.parseLong(buffer, start, index);
-	    } catch (NumberFormatException nex) { }
-	}
+            try {
+                return ASCIIUtility.parseLong(buffer, start, index);
+            } catch (NumberFormatException nex) {
+            }
+        }
 
-	return -1;
+        return -1;
     }
 
     /**
      * Extract a NSTRING, starting at the current position. Return it as
      * a String. The sequence 'NIL' is returned as null
-     *
+     * <p/>
      * NSTRING := QuotedString | Literal | "NIL"
      *
-     * @return  a String
+     * @return a String
      */
     public String readString() {
-	return (String)parseString(false, true);
+        return (String) parseString(false, true);
     }
 
     /**
      * Extract a NSTRING, starting at the current position. Return it as
      * a ByteArrayInputStream. The sequence 'NIL' is returned as null
-     *
+     * <p/>
      * NSTRING := QuotedString | Literal | "NIL"
      *
-     * @return  a ByteArrayInputStream
+     * @return a ByteArrayInputStream
      */
     public ByteArrayInputStream readBytes() {
-	ByteArray ba = readByteArray();
-	if (ba != null)
-	    return ba.toByteArrayInputStream();
-	else
-	    return null;
+        ByteArray ba = readByteArray();
+        if (ba != null)
+            return ba.toByteArrayInputStream();
+        else
+            return null;
     }
 
     /**
      * Extract a NSTRING, starting at the current position. Return it as
      * a ByteArray. The sequence 'NIL' is returned as null
-     *
+     * <p/>
      * NSTRING := QuotedString | Literal | "NIL"
      *
-     * @return  a ByteArray
+     * @return a ByteArray
      */
     public ByteArray readByteArray() {
 	/*
 	 * Special case, return the data after the continuation uninterpreted.
 	 * It's usually a challenge for an AUTHENTICATE command.
 	 */
-	if (isContinuation()) {
-	    skipSpaces();
-	    return new ByteArray(buffer, index, size - index);
-	}
-	return (ByteArray)parseString(false, false);
+        if (isContinuation()) {
+            skipSpaces();
+            return new ByteArray(buffer, index, size - index);
+        }
+        return (ByteArray) parseString(false, false);
     }
 
     /**
      * Extract an ASTRING, starting at the current position
      * and return as a String. An ASTRING can be a QuotedString, a
      * Literal or an Atom
-     *
+     * <p/>
      * Any errors in parsing returns null
-     *
+     * <p/>
      * ASTRING := QuotedString | Literal | Atom
      *
      * @return a String
-     */ 
+     */
     public String readAtomString() {
-	return (String)parseString(true, true);
+        return (String) parseString(true, true);
     }
 
     /**
@@ -393,118 +400,119 @@ public class Response {
      * or a ByteArray. Errors or NIL data will return null.
      */
     private Object parseString(boolean parseAtoms, boolean returnString) {
-	byte b;
+        byte b;
 
-	// Skip leading spaces
-	skipSpaces();
-	
-	b = buffer[index];
-	if (b == '"') { // QuotedString
-	    index++; // skip the quote
-	    int start = index;
-	    int copyto = index;
+        // Skip leading spaces
+        skipSpaces();
 
-	    while (index < size && (b = buffer[index]) != '"') {
-		if (b == '\\') // skip escaped byte
-		    index++;
-		if (index != copyto) { // only copy if we need to
-		    // Beware: this is a destructive copy. I'm 
-		    // pretty sure this is OK, but ... ;>
-		    buffer[copyto] = buffer[index];
-		}
-		copyto++;
-		index++;
-	    }
-	    if (index >= size) {
-		// didn't find terminating quote, something is seriously wrong
-		//throw new ArrayIndexOutOfBoundsException(
-		//		    "index = " + index + ", size = " + size);
-		return null;
-	    } else
-		index++; // skip past the terminating quote
+        b = buffer[index];
+        if (b == '"') { // QuotedString
+            index++; // skip the quote
+            int start = index;
+            int copyto = index;
 
-	    if (returnString) 
-		return ASCIIUtility.toString(buffer, start, copyto);
-	    else
-		return new ByteArray(buffer, start, copyto-start);
-	} else if (b == '{') { // Literal
-	    int start = ++index; // note the start position
+            while (index < size && (b = buffer[index]) != '"') {
+                if (b == '\\') // skip escaped byte
+                    index++;
+                if (index != copyto) { // only copy if we need to
+                    // Beware: this is a destructive copy. I'm
+                    // pretty sure this is OK, but ... ;>
+                    buffer[copyto] = buffer[index];
+                }
+                copyto++;
+                index++;
+            }
+            if (index >= size) {
+                // didn't find terminating quote, something is seriously wrong
+                //throw new ArrayIndexOutOfBoundsException(
+                //		    "index = " + index + ", size = " + size);
+                return null;
+            } else
+                index++; // skip past the terminating quote
 
-	    while (buffer[index] != '}')
-		index++;
+            if (returnString)
+                return ASCIIUtility.toString(buffer, start, copyto);
+            else
+                return new ByteArray(buffer, start, copyto - start);
+        } else if (b == '{') { // Literal
+            int start = ++index; // note the start position
 
-	    int count = 0;
-	    try {
-		count = ASCIIUtility.parseInt(buffer, start, index);
-	    } catch (NumberFormatException nex) { 
-	   	// throw new ParsingException();
-		return null;
-	    }
+            while (buffer[index] != '}')
+                index++;
 
-	    start = index + 3; // skip "}\r\n"
-	    index = start + count; // position index to beyond the literal
+            int count = 0;
+            try {
+                count = ASCIIUtility.parseInt(buffer, start, index);
+            } catch (NumberFormatException nex) {
+                // throw new ParsingException();
+                return null;
+            }
 
-	    if (returnString) // return as String
-		return ASCIIUtility.toString(buffer, start, start + count);
-	    else
-	    	return new ByteArray(buffer, start, count);
-	} else if (parseAtoms) { // parse as an ATOM
-	    int start = index;	// track this, so that we can use to
-				// creating ByteArrayInputStream below.
-	    String s = readAtom();
-	    if (returnString)
-		return s;
-	    else  // *very* unlikely
-		return new ByteArray(buffer, start, index);
-	} else if (b == 'N' || b == 'n') { // the only valid value is 'NIL'
-	    index += 3; // skip past NIL
-	    return null;
-	}
-	return null; // Error
+            start = index + 3; // skip "}\r\n"
+            index = start + count; // position index to beyond the literal
+
+            if (returnString) // return as String
+                return ASCIIUtility.toString(buffer, start, start + count);
+            else
+                return new ByteArray(buffer, start, count);
+        } else if (parseAtoms) { // parse as an ATOM
+            int start = index;    // track this, so that we can use to
+            // creating ByteArrayInputStream below.
+            String s = readAtom();
+            if (returnString)
+                return s;
+            else  // *very* unlikely
+                return new ByteArray(buffer, start, index);
+        } else if (b == 'N' || b == 'n') { // the only valid value is 'NIL'
+            index += 3; // skip past NIL
+            return null;
+        }
+        return null; // Error
     }
 
     public int getType() {
-	return type;
+        return type;
     }
 
     public boolean isContinuation() {
-	return ((type & TAG_MASK) == CONTINUATION);
+        return ((type & TAG_MASK) == CONTINUATION);
     }
 
     public boolean isTagged() {
-	return ((type & TAG_MASK) == TAGGED);
+        return ((type & TAG_MASK) == TAGGED);
     }
 
     public boolean isUnTagged() {
-	return ((type & TAG_MASK) == UNTAGGED);
+        return ((type & TAG_MASK) == UNTAGGED);
     }
 
     public boolean isOK() {
-	return ((type & TYPE_MASK) == OK);
+        return ((type & TYPE_MASK) == OK);
     }
 
     public boolean isNO() {
-	return ((type & TYPE_MASK) == NO);
+        return ((type & TYPE_MASK) == NO);
     }
 
     public boolean isBAD() {
-	return ((type & TYPE_MASK) == BAD);
+        return ((type & TYPE_MASK) == BAD);
     }
 
     public boolean isBYE() {
-	return ((type & TYPE_MASK) == BYE);
+        return ((type & TYPE_MASK) == BYE);
     }
 
     public boolean isSynthetic() {
-	return ((type & SYNTHETIC) == SYNTHETIC);
+        return ((type & SYNTHETIC) == SYNTHETIC);
     }
 
     /**
      * Return the tag, if this is a tagged statement.
+     *
      * @return tag of this tagged statement
      */
     public String getTag() {
-	return tag;
+        return tag;
     }
 
     /**
@@ -512,19 +520,19 @@ public class Response {
      * return the arbitrary message text after a NO response.
      */
     public String getRest() {
-	skipSpaces();
-	return ASCIIUtility.toString(buffer, index, size);
+        skipSpaces();
+        return ASCIIUtility.toString(buffer, index, size);
     }
 
     /**
      * Reset pointer to beginning of response.
      */
     public void reset() {
-	index = pindex;
+        index = pindex;
     }
 
     public String toString() {
-	return ASCIIUtility.toString(buffer, 0, size);
+        return ASCIIUtility.toString(buffer, 0, size);
     }
 
 }

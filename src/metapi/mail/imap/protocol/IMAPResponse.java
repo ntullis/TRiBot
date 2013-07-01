@@ -40,16 +40,19 @@
 
 package metapi.mail.imap.protocol;
 
-import java.io.*;
-import java.util.*;
-import metapi.mail.util.*;
-import metapi.mail.iap.*;
+import metapi.mail.iap.Protocol;
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.iap.Response;
+import metapi.mail.util.ASCIIUtility;
+
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  * This class represents a response obtained from the input stream
  * of an IMAP server.
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class IMAPResponse extends Response {
@@ -57,86 +60,87 @@ public class IMAPResponse extends Response {
     private int number;
 
     public IMAPResponse(Protocol c) throws IOException, ProtocolException {
-	super(c);
-	init();
+        super(c);
+        init();
     }
 
     private void init() throws IOException, ProtocolException {
-	// continue parsing if this is an untagged response
-	if (isUnTagged() && !isOK() && !isNO() && !isBAD() && !isBYE()) {
-	    key = readAtom();
+        // continue parsing if this is an untagged response
+        if (isUnTagged() && !isOK() && !isNO() && !isBAD() && !isBYE()) {
+            key = readAtom();
 
-	    // Is this response of the form "* <number> <command>"
-	    try {
-		number = Integer.parseInt(key);
-		key = readAtom();
-	    } catch (NumberFormatException ne) { }
-	}
+            // Is this response of the form "* <number> <command>"
+            try {
+                number = Integer.parseInt(key);
+                key = readAtom();
+            } catch (NumberFormatException ne) {
+            }
+        }
     }
 
     /**
      * Copy constructor.
      */
     public IMAPResponse(IMAPResponse r) {
-	super((Response)r);
-	key = r.key;
-	number = r.number;
+        super((Response) r);
+        key = r.key;
+        number = r.number;
     }
 
     /**
      * For testing.
      */
     public IMAPResponse(String r) throws IOException, ProtocolException {
-	super(r);
-	init();
+        super(r);
+        init();
     }
 
     /**
-     * Read a list of space-separated "flag_extension" sequences and 
+     * Read a list of space-separated "flag_extension" sequences and
      * return the list as a array of Strings. An empty list is returned
-     * as null.  This is an IMAP-ism, and perhaps this method should 
+     * as null.  This is an IMAP-ism, and perhaps this method should
      * moved into the IMAP layer.
      */
     public String[] readSimpleList() {
-	skipSpaces();
+        skipSpaces();
 
-	if (buffer[index] != '(') // not what we expected
-	    return null;
-	index++; // skip '('
+        if (buffer[index] != '(') // not what we expected
+            return null;
+        index++; // skip '('
 
-	Vector<String> v = new Vector<String>();
-	int start;
-	for (start = index; buffer[index] != ')'; index++) {
-	    if (buffer[index] == ' ') { // got one item
-		v.addElement(ASCIIUtility.toString(buffer, start, index));
-		start = index+1; // index gets incremented at the top
-	    }
-	}
-	if (index > start) // get the last item
-	    v.addElement(ASCIIUtility.toString(buffer, start, index));
-	index++; // skip ')'
-	
-	int size = v.size();
-	if (size > 0) {
-	    String[] s = new String[size];
-	    v.copyInto(s);
-	    return s;
-	} else  // empty list
-	    return null;
+        Vector<String> v = new Vector<String>();
+        int start;
+        for (start = index; buffer[index] != ')'; index++) {
+            if (buffer[index] == ' ') { // got one item
+                v.addElement(ASCIIUtility.toString(buffer, start, index));
+                start = index + 1; // index gets incremented at the top
+            }
+        }
+        if (index > start) // get the last item
+            v.addElement(ASCIIUtility.toString(buffer, start, index));
+        index++; // skip ')'
+
+        int size = v.size();
+        if (size > 0) {
+            String[] s = new String[size];
+            v.copyInto(s);
+            return s;
+        } else  // empty list
+            return null;
     }
 
     public String getKey() {
-	return key;
+        return key;
     }
 
     public boolean keyEquals(String k) {
-	if (key != null && key.equalsIgnoreCase(k))
-	    return true;
-	else
-	    return false;
+        if (key != null && key.equalsIgnoreCase(k))
+            return true;
+        else
+            return false;
     }
 
     public int getNumber() {
-	return number;
+        return number;
     }
 }

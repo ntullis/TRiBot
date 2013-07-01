@@ -40,17 +40,17 @@
 
 package metapi.mail.imap.protocol;
 
-import metapi.mail.iap.*;
+import metapi.mail.iap.ParsingException;
 
 /**
- * This class 
+ * This class
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class RFC822SIZE implements Item {
-    
-    static final char[] name = {'R','F','C','8','2','2','.','S','I','Z','E'};
+
+    static final char[] name = {'R', 'F', 'C', '8', '2', '2', '.', 'S', 'I', 'Z', 'E'};
     public int msgno;
 
     public int size;
@@ -59,8 +59,8 @@ public class RFC822SIZE implements Item {
      * Constructor
      */
     public RFC822SIZE(FetchResponse r) throws ParsingException {
-	msgno = r.getNumber();
-	r.skipSpaces();
-	size = r.readNumber();		
+        msgno = r.getNumber();
+        r.skipSpaces();
+        size = r.readNumber();
     }
 }

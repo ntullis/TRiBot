@@ -53,27 +53,29 @@ public class ConnectionException extends ProtocolException {
      * Constructs an ConnectionException with no detail message.
      */
     public ConnectionException() {
-	super();
+        super();
     }
 
     /**
      * Constructs an ConnectionException with the specified detail message.
-     * @param s		the detail message
+     *
+     * @param s the detail message
      */
     public ConnectionException(String s) {
-	super(s);
+        super(s);
     }
 
     /**
      * Constructs an ConnectionException with the specified Response.
-     * @param r		the Response
+     *
+     * @param r the Response
      */
     public ConnectionException(Protocol p, Response r) {
-	super(r);
-	this.p = p;
+        super(r);
+        this.p = p;
     }
 
     public Protocol getProtocol() {
-	return p;
+        return p;
     }
 }

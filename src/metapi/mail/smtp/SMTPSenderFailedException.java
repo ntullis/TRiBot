@@ -45,7 +45,7 @@ import metapi.mail.internet.InternetAddress;
 
 /**
  * This exception is thrown when the message cannot be sent. <p>
- * 
+ * <p/>
  * The exception includes the sender's address, which the javamail server
  * rejected.
  *
@@ -53,41 +53,41 @@ import metapi.mail.internet.InternetAddress;
  */
 
 public class SMTPSenderFailedException extends SendFailedException {
-    protected InternetAddress addr;	// address that failed
-    protected String cmd;		// command issued to server
-    protected int rc;			// return code from SMTP server
+    protected InternetAddress addr;    // address that failed
+    protected String cmd;        // command issued to server
+    protected int rc;            // return code from SMTP server
 
     private static final long serialVersionUID = 514540454964476947L;
 
     /**
-     * Constructs an SMTPSenderFailedException with the specified 
+     * Constructs an SMTPSenderFailedException with the specified
      * address, return code, and error string.
      *
-     * @param addr	the address that failed
-     * @param cmd	the command that was sent to the SMTP server
-     * @param rc	the SMTP return code indicating the failure
-     * @param err	the error string from the SMTP server
+     * @param addr the address that failed
+     * @param cmd  the command that was sent to the SMTP server
+     * @param rc   the SMTP return code indicating the failure
+     * @param err  the error string from the SMTP server
      */
     public SMTPSenderFailedException(InternetAddress addr, String cmd, int rc,
-				String err) {
-	super(err);
-	this.addr = addr;
-	this.cmd = cmd;
-	this.rc = rc;
+                                     String err) {
+        super(err);
+        this.addr = addr;
+        this.cmd = cmd;
+        this.rc = rc;
     }
 
     /**
      * Return the address that failed.
      */
     public InternetAddress getAddress() {
-	return addr;
+        return addr;
     }
 
     /**
      * Return the command that failed.
      */
     public String getCommand() {
-	return cmd;
+        return cmd;
     }
 
 
@@ -98,6 +98,6 @@ public class SMTPSenderFailedException extends SendFailedException {
      * for interpretation of the return code.
      */
     public int getReturnCode() {
-	return rc;
+        return rc;
     }
 }

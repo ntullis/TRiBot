@@ -45,7 +45,6 @@ package metapi.mail.event;
  *
  * @author John Mani
  * @author Max Spivak
- *
  * @see metapi.mail.Transport
  * @see metapi.mail.event.TransportEvent
  */
@@ -54,20 +53,23 @@ public interface TransportListener extends java.util.EventListener {
 
     /**
      * Invoked when a Message is succesfully delivered.
-     * @param	e TransportEvent
+     *
+     * @param    e TransportEvent
      */
     public void messageDelivered(TransportEvent e);
 
     /**
      * Invoked when a Message is not delivered.
-     * @param	e TransportEvent
+     *
+     * @param    e TransportEvent
      * @see TransportEvent
      */
     public void messageNotDelivered(TransportEvent e);
 
     /**
      * Invoked when a Message is partially delivered.
-     * @param	e TransportEvent
+     *
+     * @param    e TransportEvent
      * @see TransportEvent
      */
     public void messagePartiallyDelivered(TransportEvent e);

@@ -40,8 +40,8 @@
 
 package metapi.mail.search;
 
-import metapi.mail.Message;
 import metapi.mail.Address;
+import metapi.mail.Message;
 
 /**
  * This class implements comparisons for the From Address header.
@@ -55,42 +55,43 @@ public final class FromTerm extends AddressTerm {
 
     /**
      * Constructor
-     * @param address	The Address to be compared
+     *
+     * @param address The Address to be compared
      */
     public FromTerm(Address address) {
-	super(address);
+        super(address);
     }
 
     /**
      * The address comparator.
      *
-     * @param msg	The address comparison is applied to this Message
-     * @return		true if the comparison succeeds, otherwise false
+     * @param msg The address comparison is applied to this Message
+     * @return true if the comparison succeeds, otherwise false
      */
     public boolean match(Message msg) {
-	Address[] from;
+        Address[] from;
 
-	try {
-	    from = msg.getFrom();
-	} catch (Exception e) {
-	    return false;
-	}
+        try {
+            from = msg.getFrom();
+        } catch (Exception e) {
+            return false;
+        }
 
-	if (from == null)
-	    return false;
+        if (from == null)
+            return false;
 
-	for (int i=0; i < from.length; i++)
-	    if (super.match(from[i]))
-		return true;
-	return false;
+        for (int i = 0; i < from.length; i++)
+            if (super.match(from[i]))
+                return true;
+        return false;
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof FromTerm))
-	    return false;
-	return super.equals(obj);
+        if (!(obj instanceof FromTerm))
+            return false;
+        return super.equals(obj);
     }
 }

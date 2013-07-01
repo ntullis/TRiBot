@@ -41,11 +41,11 @@
 package metapi.mail.iap;
 
 /**
- * This class 
+ * This class
  *
- * @author  John Mani
+ * @author John Mani
  */
 
-public interface ResponseHandler { 
+public interface ResponseHandler {
     public void handleResponse(Response r);
 }

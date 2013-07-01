@@ -40,25 +40,26 @@
 
 package metapi.mail.imap.protocol;
 
-import java.util.Vector;
-import java.util.Date;
-import metapi.mail.internet.InternetAddress;
+import metapi.mail.iap.ParsingException;
+import metapi.mail.iap.Response;
 import metapi.mail.internet.AddressException;
+import metapi.mail.internet.InternetAddress;
 import metapi.mail.internet.MailDateFormat;
 
-import metapi.mail.iap.*;
+import java.util.Date;
+import java.util.Vector;
 
 /**
  * The ENEVELOPE item of an IMAP FETCH response.
  *
- * @author  John Mani
- * @author  Bill Shannon
+ * @author John Mani
+ * @author Bill Shannon
  */
 
 public class ENVELOPE implements Item {
-    
+
     // IMAP item name
-    static final char[] name = {'E','N','V','E','L','O','P','E'};
+    static final char[] name = {'E', 'N', 'V', 'E', 'L', 'O', 'P', 'E'};
     public int msgno;
 
     public Date date = null;
@@ -74,67 +75,67 @@ public class ENVELOPE implements Item {
 
     // Used to parse dates
     private static MailDateFormat mailDateFormat = new MailDateFormat();
-    
+
     public ENVELOPE(FetchResponse r) throws ParsingException {
-	msgno = r.getNumber();
+        msgno = r.getNumber();
 
-	r.skipSpaces();
+        r.skipSpaces();
 
-	if (r.readByte() != '(')
-	    throw new ParsingException("ENVELOPE parse error");
-	
-	String s = r.readString();
-	if (s != null) {
-	    try {
-		date = mailDateFormat.parse(s);
-	    } catch (Exception pex) {
-		// We need to be *very* tolerant about bogus dates (and
-		// there's lot of 'em around), so we ignore any 
-		// exception (including RunTimeExceptions) and just let 
-		// date be null.
-	    }
-	}
+        if (r.readByte() != '(')
+            throw new ParsingException("ENVELOPE parse error");
 
-	subject = r.readString();
-	from = parseAddressList(r);
-	sender = parseAddressList(r);
-	replyTo = parseAddressList(r);
-	to = parseAddressList(r);
-	cc = parseAddressList(r);
-	bcc = parseAddressList(r);
-	inReplyTo = r.readString();
-	messageId = r.readString();
+        String s = r.readString();
+        if (s != null) {
+            try {
+                date = mailDateFormat.parse(s);
+            } catch (Exception pex) {
+                // We need to be *very* tolerant about bogus dates (and
+                // there's lot of 'em around), so we ignore any
+                // exception (including RunTimeExceptions) and just let
+                // date be null.
+            }
+        }
 
-	if (r.readByte() != ')')
-	    throw new ParsingException("ENVELOPE parse error");
+        subject = r.readString();
+        from = parseAddressList(r);
+        sender = parseAddressList(r);
+        replyTo = parseAddressList(r);
+        to = parseAddressList(r);
+        cc = parseAddressList(r);
+        bcc = parseAddressList(r);
+        inReplyTo = r.readString();
+        messageId = r.readString();
+
+        if (r.readByte() != ')')
+            throw new ParsingException("ENVELOPE parse error");
     }
 
-    private InternetAddress[] parseAddressList(Response r) 
-		throws ParsingException {
-	r.skipSpaces(); // skip leading spaces
+    private InternetAddress[] parseAddressList(Response r)
+            throws ParsingException {
+        r.skipSpaces(); // skip leading spaces
 
-	byte b = r.readByte();
-	if (b == '(') {
-	    Vector<IMAPAddress> v = new Vector<IMAPAddress>();
+        byte b = r.readByte();
+        if (b == '(') {
+            Vector<IMAPAddress> v = new Vector<IMAPAddress>();
 
-	    do {
-		IMAPAddress a = new IMAPAddress(r);
-		// if we see an end-of-group address at the top, ignore it
-		if (!a.isEndOfGroup())
-		    v.addElement(a);
-	    } while (r.peekByte() != ')');
+            do {
+                IMAPAddress a = new IMAPAddress(r);
+                // if we see an end-of-group address at the top, ignore it
+                if (!a.isEndOfGroup())
+                    v.addElement(a);
+            } while (r.peekByte() != ')');
 
-	    // skip the terminating ')' at the end of the addresslist
-	    r.skip(1);
+            // skip the terminating ')' at the end of the addresslist
+            r.skip(1);
 
-	    InternetAddress[] a = new InternetAddress[v.size()];
-	    v.copyInto(a);
-	    return a;
-	} else if (b == 'N' || b == 'n') { // NIL
-	    r.skip(2); // skip 'NIL'
-	    return null;
-	} else
-	    throw new ParsingException("ADDRESS parse error");
+            InternetAddress[] a = new InternetAddress[v.size()];
+            v.copyInto(a);
+            return a;
+        } else if (b == 'N' || b == 'n') { // NIL
+            r.skip(2); // skip 'NIL'
+            return null;
+        } else
+            throw new ParsingException("ADDRESS parse error");
     }
 }
 
@@ -154,61 +155,61 @@ class IMAPAddress extends InternetAddress {
         encodedPersonal = r.readString();
 
         r.readString(); // throw away address_list
-	String mb = r.readString();
-	String host = r.readString();
-	// skip bogus spaces inserted by Yahoo IMAP server if
-	// "undisclosed-recipients" is a recipient
-	r.skipSpaces();
+        String mb = r.readString();
+        String host = r.readString();
+        // skip bogus spaces inserted by Yahoo IMAP server if
+        // "undisclosed-recipients" is a recipient
+        r.skipSpaces();
         if (r.readByte() != ')') // skip past terminating ')'
             throw new ParsingException("ADDRESS parse error");
 
-	if (host == null) {
-	    // it's a group list, start or end
-	    group = true;
-	    groupname = mb;
-	    if (groupname == null)	// end of group list
-		return;
-	    // Accumulate a group list.  The members of the group
-	    // are accumulated in a Vector and the corresponding string
-	    // representation of the group is accumulated in a StringBuffer.
-	    StringBuffer sb = new StringBuffer();
-	    sb.append(groupname).append(':');
-	    Vector<IMAPAddress> v = new Vector<IMAPAddress>();
-	    while (r.peekByte() != ')') {
-		IMAPAddress a = new IMAPAddress(r);
-		if (a.isEndOfGroup())	// reached end of group
-		    break;
-		if (v.size() != 0)	// if not first element, need a comma
-		    sb.append(',');
-		sb.append(a.toString());
-		v.addElement(a);
-	    }
-	    sb.append(';');
-	    address = sb.toString();
-	    grouplist = new IMAPAddress[v.size()];
-	    v.copyInto(grouplist);
-	} else {
-	    if (mb == null || mb.length() == 0)
-		address = host;
-	    else if (host.length() == 0)
-		address = mb;
-	    else
-		address = mb + "@" + host;
-	}
+        if (host == null) {
+            // it's a group list, start or end
+            group = true;
+            groupname = mb;
+            if (groupname == null)    // end of group list
+                return;
+            // Accumulate a group list.  The members of the group
+            // are accumulated in a Vector and the corresponding string
+            // representation of the group is accumulated in a StringBuffer.
+            StringBuffer sb = new StringBuffer();
+            sb.append(groupname).append(':');
+            Vector<IMAPAddress> v = new Vector<IMAPAddress>();
+            while (r.peekByte() != ')') {
+                IMAPAddress a = new IMAPAddress(r);
+                if (a.isEndOfGroup())    // reached end of group
+                    break;
+                if (v.size() != 0)    // if not first element, need a comma
+                    sb.append(',');
+                sb.append(a.toString());
+                v.addElement(a);
+            }
+            sb.append(';');
+            address = sb.toString();
+            grouplist = new IMAPAddress[v.size()];
+            v.copyInto(grouplist);
+        } else {
+            if (mb == null || mb.length() == 0)
+                address = host;
+            else if (host.length() == 0)
+                address = mb;
+            else
+                address = mb + "@" + host;
+        }
 
     }
 
     boolean isEndOfGroup() {
-	return group && groupname == null;
+        return group && groupname == null;
     }
 
     public boolean isGroup() {
-	return group;
+        return group;
     }
 
     public InternetAddress[] getGroup(boolean strict) throws AddressException {
-	if (grouplist == null)
-	    return null;
-	return (InternetAddress[])grouplist.clone();
+        if (grouplist == null)
+            return null;
+        return (InternetAddress[]) grouplist.clone();
     }
 }

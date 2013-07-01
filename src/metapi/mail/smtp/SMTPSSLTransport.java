@@ -40,7 +40,8 @@
 
 package metapi.mail.smtp;
 
-import metapi.mail.*;
+import metapi.mail.Session;
+import metapi.mail.URLName;
 
 /**
  * This class implements the Transport abstract class using SMTP
@@ -51,8 +52,10 @@ import metapi.mail.*;
 
 public class SMTPSSLTransport extends SMTPTransport {
 
-    /** Constructor */
+    /**
+     * Constructor
+     */
     public SMTPSSLTransport(Session session, URLName urlname) {
-	super(session, urlname, "smtps", true);
+        super(session, urlname, "smtps", true);
     }
 }

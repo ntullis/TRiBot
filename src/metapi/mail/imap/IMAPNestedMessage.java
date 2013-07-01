@@ -41,13 +41,15 @@
 package metapi.mail.imap;
 
 import metapi.mail.*;
-import metapi.mail.imap.protocol.*;
 import metapi.mail.iap.ProtocolException;
+import metapi.mail.imap.protocol.BODYSTRUCTURE;
+import metapi.mail.imap.protocol.ENVELOPE;
+import metapi.mail.imap.protocol.IMAPProtocol;
 
 /**
  * This class implements a nested IMAP message
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class IMAPNestedMessage extends IMAPMessage {
@@ -55,17 +57,17 @@ public class IMAPNestedMessage extends IMAPMessage {
 
     /**
      * Package private constructor. <p>
-     *
-     * Note that nested messages have no containing folder, nor 
+     * <p/>
+     * Note that nested messages have no containing folder, nor
      * a message number.
      */
     IMAPNestedMessage(IMAPMessage m, BODYSTRUCTURE b, ENVELOPE e, String sid) {
-	super(m._getSession());
-	msg = m;
-	bs = b;
-	envelope = e;
-	sectionId = sid;
-	setPeek(m.getPeek());
+        super(m._getSession());
+        msg = m;
+        bs = b;
+        envelope = e;
+        sectionId = sid;
+        setPeek(m.getPeek());
     }
 
     /*
@@ -73,15 +75,15 @@ public class IMAPNestedMessage extends IMAPMessage {
      * IMAPMessage.getProtocol().
      */
     protected IMAPProtocol getProtocol()
-			throws ProtocolException, FolderClosedException {
-	return msg.getProtocol();
+            throws ProtocolException, FolderClosedException {
+        return msg.getProtocol();
     }
 
     /*
      * Is this an IMAP4 REV1 server?
      */
     protected boolean isREV1() throws FolderClosedException {
-	return msg.isREV1();
+        return msg.isREV1();
     }
 
     /*
@@ -89,7 +91,7 @@ public class IMAPNestedMessage extends IMAPMessage {
      * IMAPMessage.getMessageCacheLock().
      */
     protected Object getMessageCacheLock() {
-	return msg.getMessageCacheLock();
+        return msg.getMessageCacheLock();
     }
 
     /*
@@ -97,7 +99,7 @@ public class IMAPNestedMessage extends IMAPMessage {
      * IMAPMessage.getSequenceNumber().
      */
     protected int getSequenceNumber() {
-	return msg.getSequenceNumber();
+        return msg.getSequenceNumber();
     }
 
     /*
@@ -105,7 +107,7 @@ public class IMAPNestedMessage extends IMAPMessage {
      * IMAPMessage.checkExpunged().
      */
     protected void checkExpunged() throws MessageRemovedException {
-	msg.checkExpunged();
+        msg.checkExpunged();
     }
 
     /*
@@ -113,21 +115,21 @@ public class IMAPNestedMessage extends IMAPMessage {
      * Message.isExpunged().
      */
     public boolean isExpunged() {
-	return msg.isExpunged();
+        return msg.isExpunged();
     }
 
     /*
      * Get the enclosing message's fetchBlockSize. 
      */
     protected int getFetchBlockSize() {
-	return msg.getFetchBlockSize();
+        return msg.getFetchBlockSize();
     }
 
     /*
      * Get the enclosing message's ignoreBodyStructureSize. 
      */
     protected boolean ignoreBodyStructureSize() {
-	return msg.ignoreBodyStructureSize();
+        return msg.ignoreBodyStructureSize();
     }
 
     /*
@@ -135,16 +137,16 @@ public class IMAPNestedMessage extends IMAPMessage {
      * our BODYSTRUCTURE.
      */
     public int getSize() throws MessagingException {
-	return bs.size;
+        return bs.size;
     }
 
     /*
      * Disallow setting flags on nested messages
      */
-    public synchronized void setFlags(Flags flag, boolean set) 
-			throws MessagingException {
-	// Cannot set FLAGS on a nested IMAP message	
-	throw new MethodNotSupportedException(
-		"Cannot set flags on this nested message");
+    public synchronized void setFlags(Flags flag, boolean set)
+            throws MessagingException {
+        // Cannot set FLAGS on a nested IMAP message
+        throw new MethodNotSupportedException(
+                "Cannot set flags on this nested message");
     }
 }

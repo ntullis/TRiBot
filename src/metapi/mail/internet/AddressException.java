@@ -68,38 +68,40 @@ public class AddressException extends ParseException {
      * Constructs an AddressException with no detail message.
      */
     public AddressException() {
-	super();
+        super();
     }
 
     /**
      * Constructs an AddressException with the specified detail message.
-     * @param s		the detail message
+     *
+     * @param s the detail message
      */
     public AddressException(String s) {
-	super(s);
+        super(s);
     }
 
     /**
      * Constructs an AddressException with the specified detail message
      * and reference info.
      *
-     * @param s		the detail message
+     * @param s the detail message
      */
 
     public AddressException(String s, String ref) {
-	super(s);
-	this.ref = ref;
+        super(s);
+        this.ref = ref;
     }
+
     /**
      * Constructs an AddressException with the specified detail message
      * and reference info.
      *
-     * @param s		the detail message
+     * @param s the detail message
      */
     public AddressException(String s, String ref, int pos) {
-	super(s);
-	this.ref = ref;
-	this.pos = pos;
+        super(s);
+        this.ref = ref;
+        this.pos = pos;
     }
 
     /**
@@ -107,7 +109,7 @@ public class AddressException extends ParseException {
      * (null if not relevant).
      */
     public String getRef() {
-	return ref;
+        return ref;
     }
 
     /**
@@ -115,16 +117,16 @@ public class AddressException extends ParseException {
      * detected (-1 if not relevant).
      */
     public int getPos() {
-	return pos;
+        return pos;
     }
 
     public String toString() {
-	String s = super.toString();
-	if (ref == null)
-	    return s;
-	s += " in string ``" + ref + "''";
-	if (pos < 0)
-	    return s;
-	return s + " at position " + pos;
+        String s = super.toString();
+        if (ref == null)
+            return s;
+        s += " in string ``" + ref + "''";
+        if (pos < 0)
+            return s;
+        return s + " at position " + pos;
     }
 }

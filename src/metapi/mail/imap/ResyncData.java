@@ -54,11 +54,11 @@ import metapi.mail.imap.protocol.UIDSet;
  * A <CODE>ResyncData</CODE> instance with uidvalidity and modseq values
  * is used to enable the QRESYNC extension.
  *
- * @since	JavaMail 1.5.1
- * @author	Bill Shannon
+ * @since JavaMail 1.5.1
+ * @author Bill Shannon
  */
 
-public class ResyncData { 
+public class ResyncData {
     private long uidvalidity = -1;
     private long modseq = -1;
     private UIDSet[] uids = null;
@@ -76,9 +76,9 @@ public class ResyncData {
      * the expected folder.
      */
     public ResyncData(long uidvalidity, long modseq) {
-	this.uidvalidity = uidvalidity;
-	this.modseq = modseq;
-	this.uids = null;
+        this.uidvalidity = uidvalidity;
+        this.modseq = modseq;
+        this.uids = null;
     }
 
     /**
@@ -86,10 +86,10 @@ public class ResyncData {
      * in the specified range.
      */
     public ResyncData(long uidvalidity, long modseq,
-				long uidFirst, long uidLast) {
-	this.uidvalidity = uidvalidity;
-	this.modseq = modseq;
-	this.uids = new UIDSet[] { new UIDSet(uidFirst, uidLast) };
+                      long uidFirst, long uidLast) {
+        this.uidvalidity = uidvalidity;
+        this.modseq = modseq;
+        this.uids = new UIDSet[]{new UIDSet(uidFirst, uidLast)};
     }
 
     /**
@@ -97,23 +97,23 @@ public class ResyncData {
      * specified UIDs.
      */
     public ResyncData(long uidvalidity, long modseq, long[] uids) {
-	this.uidvalidity = uidvalidity;
-	this.modseq = modseq;
-	this.uids = UIDSet.createUIDSets(uids);
+        this.uidvalidity = uidvalidity;
+        this.modseq = modseq;
+        this.uids = UIDSet.createUIDSets(uids);
     }
 
     /**
      * Get the UIDVALIDITY value specified when this instance was created.
      */
     public long getUIDValidity() {
-	return uidvalidity;
+        return uidvalidity;
     }
 
     /**
      * Get the MODSEQ value specified when this instance was created.
      */
     public long getModSeq() {
-	return modseq;
+        return modseq;
     }
 
     /*
@@ -121,6 +121,6 @@ public class ResyncData {
      * using Utility.getResyncUIDSet().
      */
     UIDSet[] getUIDSet() {
-	return uids;
+        return uids;
     }
 }

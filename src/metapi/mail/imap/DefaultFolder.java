@@ -40,97 +40,100 @@
 
 package metapi.mail.imap;
 
-import metapi.mail.*;
-
-import metapi.mail.iap.*;
-import metapi.mail.imap.protocol.*;
+import metapi.mail.Folder;
+import metapi.mail.Message;
+import metapi.mail.MessagingException;
+import metapi.mail.MethodNotSupportedException;
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.imap.protocol.IMAPProtocol;
+import metapi.mail.imap.protocol.ListInfo;
 
 /**
  * The default IMAP folder (root of the naming hierarchy).
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class DefaultFolder extends IMAPFolder {
-    
+
     protected DefaultFolder(IMAPStore store) {
-	super("", UNKNOWN_SEPARATOR, store, null);
-	exists = true; // of course
-	type = HOLDS_FOLDERS; // obviously
+        super("", UNKNOWN_SEPARATOR, store, null);
+        exists = true; // of course
+        type = HOLDS_FOLDERS; // obviously
     }
 
     public synchronized String getName() {
-	return fullName;
+        return fullName;
     }
 
     public Folder getParent() {
-	return null;
+        return null;
     }
 
     public synchronized Folder[] list(final String pattern)
-				throws MessagingException {
-	ListInfo[] li = null;
+            throws MessagingException {
+        ListInfo[] li = null;
 
-	li = (ListInfo[])doCommand(new ProtocolCommand() {
-	    public Object doCommand(IMAPProtocol p) throws ProtocolException {
-		return p.list("", pattern);
-	    }
-	});
+        li = (ListInfo[]) doCommand(new ProtocolCommand() {
+            public Object doCommand(IMAPProtocol p) throws ProtocolException {
+                return p.list("", pattern);
+            }
+        });
 
-	if (li == null)
-	    return new Folder[0];
+        if (li == null)
+            return new Folder[0];
 
-	IMAPFolder[] folders = new IMAPFolder[li.length];
-	for (int i = 0; i < folders.length; i++)
-	    folders[i] = ((IMAPStore)store).newIMAPFolder(li[i]);
-	return folders;
+        IMAPFolder[] folders = new IMAPFolder[li.length];
+        for (int i = 0; i < folders.length; i++)
+            folders[i] = ((IMAPStore) store).newIMAPFolder(li[i]);
+        return folders;
     }
 
     public synchronized Folder[] listSubscribed(final String pattern)
-				throws MessagingException {
-	ListInfo[] li = null;
+            throws MessagingException {
+        ListInfo[] li = null;
 
-	li = (ListInfo[])doCommand(new ProtocolCommand() {
-	    public Object doCommand(IMAPProtocol p) throws ProtocolException {
-		return p.lsub("", pattern);
-	    }
-	});
+        li = (ListInfo[]) doCommand(new ProtocolCommand() {
+            public Object doCommand(IMAPProtocol p) throws ProtocolException {
+                return p.lsub("", pattern);
+            }
+        });
 
-	if (li == null)
-	    return new Folder[0];
+        if (li == null)
+            return new Folder[0];
 
-	IMAPFolder[] folders = new IMAPFolder[li.length];
-	for (int i = 0; i < folders.length; i++)
-	    folders[i] = ((IMAPStore)store).newIMAPFolder(li[i]);
-	return folders;
+        IMAPFolder[] folders = new IMAPFolder[li.length];
+        for (int i = 0; i < folders.length; i++)
+            folders[i] = ((IMAPStore) store).newIMAPFolder(li[i]);
+        return folders;
     }
 
     public boolean hasNewMessages() throws MessagingException {
-	// Not applicable on DefaultFolder
-	return false;
+        // Not applicable on DefaultFolder
+        return false;
     }
 
     public Folder getFolder(String name) throws MessagingException {
-	return ((IMAPStore)store).newIMAPFolder(name, UNKNOWN_SEPARATOR);
+        return ((IMAPStore) store).newIMAPFolder(name, UNKNOWN_SEPARATOR);
     }
 
-    public boolean delete(boolean recurse) throws MessagingException {  
-	// Not applicable on DefaultFolder
-	throw new MethodNotSupportedException("Cannot delete Default Folder");
+    public boolean delete(boolean recurse) throws MessagingException {
+        // Not applicable on DefaultFolder
+        throw new MethodNotSupportedException("Cannot delete Default Folder");
     }
 
     public boolean renameTo(Folder f) throws MessagingException {
-	// Not applicable on DefaultFolder
-	throw new MethodNotSupportedException("Cannot rename Default Folder");
+        // Not applicable on DefaultFolder
+        throw new MethodNotSupportedException("Cannot rename Default Folder");
     }
 
     public void appendMessages(Message[] msgs) throws MessagingException {
-	// Not applicable on DefaultFolder
-	throw new MethodNotSupportedException("Cannot append to Default Folder");
+        // Not applicable on DefaultFolder
+        throw new MethodNotSupportedException("Cannot append to Default Folder");
     }
 
     public Message[] expunge() throws MessagingException {
-	// Not applicable on DefaultFolder
-	throw new MethodNotSupportedException("Cannot expunge Default Folder");
+        // Not applicable on DefaultFolder
+        throw new MethodNotSupportedException("Cannot expunge Default Folder");
     }
 }

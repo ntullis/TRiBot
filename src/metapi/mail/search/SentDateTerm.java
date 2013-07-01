@@ -40,8 +40,9 @@
 
 package metapi.mail.search;
 
-import java.util.Date;
 import metapi.mail.Message;
+
+import java.util.Date;
 
 /**
  * This class implements comparisons for the Message SentDate.
@@ -56,41 +57,41 @@ public final class SentDateTerm extends DateTerm {
     /**
      * Constructor.
      *
-     * @param comparison	the Comparison type
-     * @param date		the date to be compared
+     * @param comparison the Comparison type
+     * @param date       the date to be compared
      */
     public SentDateTerm(int comparison, Date date) {
-	super(comparison, date);
+        super(comparison, date);
     }
 
     /**
      * The match method.
      *
-     * @param msg	the date comparator is applied to this Message's
-     *			sent date
-     * @return		true if the comparison succeeds, otherwise false
+     * @param msg the date comparator is applied to this Message's
+     *            sent date
+     * @return true if the comparison succeeds, otherwise false
      */
     public boolean match(Message msg) {
-	Date d;
+        Date d;
 
-	try {
-	    d = msg.getSentDate();
-	} catch (Exception e) {
-	    return false;
-	}
+        try {
+            d = msg.getSentDate();
+        } catch (Exception e) {
+            return false;
+        }
 
-	if (d == null)
-	    return false;
+        if (d == null)
+            return false;
 
-	return super.match(d);
+        return super.match(d);
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof SentDateTerm))
-	    return false;
-	return super.equals(obj);
+        if (!(obj instanceof SentDateTerm))
+            return false;
+        return super.equals(obj);
     }
 }

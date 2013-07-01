@@ -40,13 +40,15 @@
 
 package metapi.mail.util;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * This class is to support writing out Strings as a sequence of bytes
  * terminated by a CRLF sequence. The String must contain only US-ASCII
  * characters.<p>
- *
+ * <p/>
  * The expected use is to write out RFC822 style headers to an output
  * stream. <p>
  *
@@ -57,22 +59,22 @@ public class LineOutputStream extends FilterOutputStream {
     private static byte[] newline;
 
     static {
-	newline = new byte[2];
-	newline[0] = (byte)'\r';
-	newline[1] = (byte)'\n';
+        newline = new byte[2];
+        newline[0] = (byte) '\r';
+        newline[1] = (byte) '\n';
     }
 
     public LineOutputStream(OutputStream out) {
-	super(out);
+        super(out);
     }
 
     public void writeln(String s) throws IOException {
-	byte[] bytes = ASCIIUtility.getBytes(s);
-	out.write(bytes);
-	out.write(newline);
+        byte[] bytes = ASCIIUtility.getBytes(s);
+        out.write(bytes);
+        out.write(newline);
     }
 
     public void writeln() throws IOException {
-	out.write(newline);
+        out.write(newline);
     }
 }

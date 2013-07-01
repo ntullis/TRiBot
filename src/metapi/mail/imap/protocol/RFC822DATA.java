@@ -40,18 +40,20 @@
 
 package metapi.mail.imap.protocol;
 
+import metapi.mail.iap.ByteArray;
+import metapi.mail.iap.ParsingException;
+
 import java.io.ByteArrayInputStream;
-import metapi.mail.iap.*;
 
 /**
- * This class 
+ * This class
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class RFC822DATA implements Item {
-   
-    static final char[] name = {'R','F','C','8','2','2'};
+
+    static final char[] name = {'R', 'F', 'C', '8', '2', '2'};
     public int msgno;
     public ByteArray data;
 
@@ -59,19 +61,19 @@ public class RFC822DATA implements Item {
      * Constructor
      */
     public RFC822DATA(FetchResponse r) throws ParsingException {
-	msgno = r.getNumber();
-	r.skipSpaces();
-	data = r.readByteArray();
+        msgno = r.getNumber();
+        r.skipSpaces();
+        data = r.readByteArray();
     }
 
     public ByteArray getByteArray() {
-	return data;
+        return data;
     }
 
     public ByteArrayInputStream getByteArrayInputStream() {
-	if (data != null)
-	    return data.toByteArrayInputStream();
-	else
-	    return null;
+        if (data != null)
+            return data.toByteArrayInputStream();
+        else
+            return null;
     }
 }

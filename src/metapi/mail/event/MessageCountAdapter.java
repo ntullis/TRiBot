@@ -49,6 +49,9 @@ package metapi.mail.event;
  * @author John Mani
  */
 public abstract class MessageCountAdapter implements MessageCountListener {
-    public void messagesAdded(MessageCountEvent e) {}
-    public void messagesRemoved(MessageCountEvent e) {}
+    public void messagesAdded(MessageCountEvent e) {
+    }
+
+    public void messagesRemoved(MessageCountEvent e) {
+    }
 }

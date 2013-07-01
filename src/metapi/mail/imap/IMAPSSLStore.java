@@ -40,19 +40,20 @@
 
 package metapi.mail.imap;
 
-import metapi.mail.*;
+import metapi.mail.Session;
+import metapi.mail.URLName;
 
 /**
  * This class provides access to an IMAP message store over SSL. <p>
  */
 
 public class IMAPSSLStore extends IMAPStore {
-    
+
     /**
      * Constructor that takes a Session object and a URLName that
      * represents a specific IMAP server.
      */
     public IMAPSSLStore(Session session, URLName url) {
-	super(session, url, "imaps", true); // call super constructor
+        super(session, url, "imaps", true); // call super constructor
     }
 }

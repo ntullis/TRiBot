@@ -48,6 +48,6 @@ import metapi.mail.iap.ProtocolException;
 
 public interface SaslAuthenticator {
     public boolean authenticate(String[] mechs, String realm, String authzid,
-				String u, String p) throws ProtocolException;
+                                String u, String p) throws ProtocolException;
 
 }

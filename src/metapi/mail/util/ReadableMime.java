@@ -40,9 +40,9 @@
 
 package metapi.mail.util;
 
-import java.io.InputStream;
-
 import metapi.mail.MessagingException;
+
+import java.io.InputStream;
 
 /**
  * A Message or message Part whose data can be read as a MIME format
@@ -50,14 +50,14 @@ import metapi.mail.MessagingException;
  * and the body of the message or part.  This should be the same data
  * that is produced by the writeTo method, but in a readable form.
  *
- * @author	Bill Shannon
- * @since	JavaMail 1.4.5
+ * @author Bill Shannon
+ * @since JavaMail 1.4.5
  */
 public interface ReadableMime {
     /**
      * Return the MIME format stream corresponding to this message part.
      *
-     * @return	the MIME format stream
+     * @return the MIME format stream
      */
     public InputStream getMimeStream() throws MessagingException;
 }

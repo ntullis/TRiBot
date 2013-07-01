@@ -40,18 +40,18 @@
 
 package metapi.mail.imap.protocol;
 
-import metapi.mail.iap.*;
+import metapi.mail.iap.ParsingException;
 
 /**
  * This class represents the MODSEQ data item.
  *
- * @since	JavaMail 1.5.1
- * @author	Bill Shannon
+ * @since JavaMail 1.5.1
+ * @author Bill Shannon
  */
 
 public class MODSEQ implements Item {
-    
-    static final char[] name = {'M','O','D','S','E','Q'};
+
+    static final char[] name = {'M', 'O', 'D', 'S', 'E', 'Q'};
     public int seqnum;
 
     public long modseq;
@@ -60,15 +60,15 @@ public class MODSEQ implements Item {
      * Constructor
      */
     public MODSEQ(FetchResponse r) throws ParsingException {
-	seqnum = r.getNumber();
-	r.skipSpaces();
+        seqnum = r.getNumber();
+        r.skipSpaces();
 
-	if (r.readByte() != '(')
-	    throw new ParsingException("MODSEQ parse error");
+        if (r.readByte() != '(')
+            throw new ParsingException("MODSEQ parse error");
 
-	modseq = r.readLong();
+        modseq = r.readLong();
 
-	if (r.readByte() != ')')
-	    throw new ParsingException("MODSEQ parse error");
+        if (r.readByte() != ')')
+            throw new ParsingException("MODSEQ parse error");
     }
 }

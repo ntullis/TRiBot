@@ -40,17 +40,18 @@
 
 package metapi.mail.gimap;
 
-import metapi.mail.*;
-
-import metapi.mail.imap.*;
-import metapi.mail.imap.protocol.*;
+import metapi.mail.FetchProfile;
+import metapi.mail.imap.IMAPFolder;
+import metapi.mail.imap.IMAPMessage;
+import metapi.mail.imap.IMAPStore;
+import metapi.mail.imap.protocol.ListInfo;
 
 /**
  * A Gmail folder.  Defines new FetchProfile items and
  * uses GmailMessage to store additional Gmail message attributes.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public class GmailFolder extends IMAPFolder {
@@ -62,89 +63,89 @@ public class GmailFolder extends IMAPFolder {
      * @see FetchProfile
      */
     public static class FetchProfileItem extends FetchProfile.Item {
-	protected FetchProfileItem(String name) {
-	    super(name);
-	}
+        protected FetchProfileItem(String name) {
+            super(name);
+        }
 
-	/**
-	 * MSGID is a fetch profile item that can be included in a
-	 * <code>FetchProfile</code> during a fetch request to a Folder.
-	 * This item indicates that the Gmail unique message ID for messages
-	 * in the specified range are desired to be prefetched. <p>
-	 * 
-	 * An example of how a client uses this is below: <p>
-	 * <blockquote><pre>
-	 *
-	 * 	FetchProfile fp = new FetchProfile();
-	 *	fp.add(GmailFolder.FetchProfileItem.MSGID);
-	 *	folder.fetch(msgs, fp);
-	 *
-	 * </pre></blockquote><p>
-	 */ 
-	public static final FetchProfileItem MSGID = 
-		new FetchProfileItem("X-GM-MSGID");
+        /**
+         * MSGID is a fetch profile item that can be included in a
+         * <code>FetchProfile</code> during a fetch request to a Folder.
+         * This item indicates that the Gmail unique message ID for messages
+         * in the specified range are desired to be prefetched. <p>
+         * <p/>
+         * An example of how a client uses this is below: <p>
+         * <blockquote><pre>
+         * <p/>
+         * 	FetchProfile fp = new FetchProfile();
+         * 	fp.add(GmailFolder.FetchProfileItem.MSGID);
+         * 	folder.fetch(msgs, fp);
+         * <p/>
+         * </pre></blockquote><p>
+         */
+        public static final FetchProfileItem MSGID =
+                new FetchProfileItem("X-GM-MSGID");
 
-	/**
-	 * THRID is a fetch profile item that can be included in a
-	 * <code>FetchProfile</code> during a fetch request to a Folder.
-	 * This item indicates that the Gmail unique thread ID for messages
-	 * in the specified range are desired to be prefetched. <p>
-	 * 
-	 * An example of how a client uses this is below: <p>
-	 * <blockquote><pre>
-	 *
-	 * 	FetchProfile fp = new FetchProfile();
-	 *	fp.add(GmailFolder.FetchProfileItem.THRID);
-	 *	folder.fetch(msgs, fp);
-	 *
-	 * </pre></blockquote><p>
-	 */ 
-	public static final FetchProfileItem THRID = 
-		new FetchProfileItem("X-GM-THRID");
+        /**
+         * THRID is a fetch profile item that can be included in a
+         * <code>FetchProfile</code> during a fetch request to a Folder.
+         * This item indicates that the Gmail unique thread ID for messages
+         * in the specified range are desired to be prefetched. <p>
+         * <p/>
+         * An example of how a client uses this is below: <p>
+         * <blockquote><pre>
+         * <p/>
+         * 	FetchProfile fp = new FetchProfile();
+         * 	fp.add(GmailFolder.FetchProfileItem.THRID);
+         * 	folder.fetch(msgs, fp);
+         * <p/>
+         * </pre></blockquote><p>
+         */
+        public static final FetchProfileItem THRID =
+                new FetchProfileItem("X-GM-THRID");
 
-	/**
-	 * LABELS is a fetch profile item that can be included in a
-	 * <code>FetchProfile</code> during a fetch request to a Folder.
-	 * This item indicates that the Gmail labels for messages
-	 * in the specified range are desired to be prefetched. <p>
-	 * 
-	 * An example of how a client uses this is below: <p>
-	 * <blockquote><pre>
-	 *
-	 * 	FetchProfile fp = new FetchProfile();
-	 *	fp.add(GmailFolder.FetchProfileItem.LABELS);
-	 *	folder.fetch(msgs, fp);
-	 *
-	 * </pre></blockquote><p>
-	 */ 
-	public static final FetchProfileItem LABELS = 
-		new FetchProfileItem("X-GM-LABELS");
+        /**
+         * LABELS is a fetch profile item that can be included in a
+         * <code>FetchProfile</code> during a fetch request to a Folder.
+         * This item indicates that the Gmail labels for messages
+         * in the specified range are desired to be prefetched. <p>
+         * <p/>
+         * An example of how a client uses this is below: <p>
+         * <blockquote><pre>
+         * <p/>
+         * 	FetchProfile fp = new FetchProfile();
+         * 	fp.add(GmailFolder.FetchProfileItem.LABELS);
+         * 	folder.fetch(msgs, fp);
+         * <p/>
+         * </pre></blockquote><p>
+         */
+        public static final FetchProfileItem LABELS =
+                new FetchProfileItem("X-GM-LABELS");
     }
 
     /**
      * Constructor used to create a possibly non-existent folder.
      *
-     * @param fullName	fullname of this folder
-     * @param separator the default separator character for this 
-     *			folder's namespace
-     * @param store	the Store
+     * @param fullName  fullname of this folder
+     * @param separator the default separator character for this
+     *                  folder's namespace
+     * @param store     the Store
      */
     protected GmailFolder(String fullName, char separator, IMAPStore store,
-				Boolean isNamespace) {
-	super(fullName, separator, store, isNamespace);
+                          Boolean isNamespace) {
+        super(fullName, separator, store, isNamespace);
     }
 
     /**
      * Constructor used to create an existing folder.
      */
     protected GmailFolder(ListInfo li, IMAPStore store) {
-	super(li, store);
+        super(li, store);
     }
 
     /**
      * Create a new IMAPMessage object to represent the given message number.
      */
     protected IMAPMessage newIMAPMessage(int msgnum) {
-	return new GmailMessage(this, msgnum);
+        return new GmailMessage(this, msgnum);
     }
 }

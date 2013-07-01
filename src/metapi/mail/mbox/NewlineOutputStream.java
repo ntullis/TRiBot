@@ -40,7 +40,9 @@
 
 package metapi.mail.mbox;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Convert the various newline conventions to the local platform's
@@ -51,41 +53,41 @@ public class NewlineOutputStream extends FilterOutputStream {
     private static final byte[] newline;
 
     static {
-	String s = null;
-	try {
-	    s = System.getProperty("line.separator");
-	} catch (SecurityException sex) {
-	    // ignore, should never happen
-	}
-	if (s == null || s.length() <= 0)
-	    s = "\n";
-	newline = new byte[s.length()];
-	s.getBytes(0, s.length(), newline, 0);
+        String s = null;
+        try {
+            s = System.getProperty("line.separator");
+        } catch (SecurityException sex) {
+            // ignore, should never happen
+        }
+        if (s == null || s.length() <= 0)
+            s = "\n";
+        newline = new byte[s.length()];
+        s.getBytes(0, s.length(), newline, 0);
     }
 
     public NewlineOutputStream(OutputStream os) {
-	super(os);
+        super(os);
     }
 
     public void write(int b) throws IOException {
-	if (b == '\r') {
-	    out.write(newline);
-	} else if (b == '\n') {
-	    if (lastb != '\r')
-		out.write(newline);
-	} else {
-	    out.write(b);
-	}
-	lastb = b;
+        if (b == '\r') {
+            out.write(newline);
+        } else if (b == '\n') {
+            if (lastb != '\r')
+                out.write(newline);
+        } else {
+            out.write(b);
+        }
+        lastb = b;
     }
 
     public void write(byte b[]) throws IOException {
-	write(b, 0, b.length);
+        write(b, 0, b.length);
     }
 
     public void write(byte b[], int off, int len) throws IOException {
-	for (int i = 0 ; i < len ; i++) {
-	    write(b[off + i]);
-	}
+        for (int i = 0; i < len; i++) {
+            write(b[off + i]);
+        }
     }
 }

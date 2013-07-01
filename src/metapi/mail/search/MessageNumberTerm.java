@@ -55,36 +55,36 @@ public final class MessageNumberTerm extends IntegerComparisonTerm {
     /**
      * Constructor.
      *
-     * @param number  the Message number
+     * @param number the Message number
      */
     public MessageNumberTerm(int number) {
-	super(EQ, number);
+        super(EQ, number);
     }
 
     /**
      * The match method.
      *
-     * @param msg	the Message number is matched with this Message
-     * @return		true if the match succeeds, otherwise false
+     * @param msg the Message number is matched with this Message
+     * @return true if the match succeeds, otherwise false
      */
     public boolean match(Message msg) {
-	int msgno;
+        int msgno;
 
-	try {
-	    msgno = msg.getMessageNumber();
-	} catch (Exception e) {
-	    return false;
-	}
-	
-	return super.match(msgno);
+        try {
+            msgno = msg.getMessageNumber();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return super.match(msgno);
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof MessageNumberTerm))
-	    return false;
-	return super.equals(obj);
+        if (!(obj instanceof MessageNumberTerm))
+            return false;
+        return super.equals(obj);
     }
 }

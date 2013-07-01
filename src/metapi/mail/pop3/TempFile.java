@@ -40,16 +40,16 @@
 
 package metapi.mail.pop3;
 
-import java.io.*;
-
 import metapi.mail.util.SharedFileInputStream;
+
+import java.io.*;
 
 /**
  * A temporary file used to cache POP3 messages.
  */
 class TempFile {
 
-    private File file;	// the temp file name
+    private File file;    // the temp file name
     private WritableSharedFile sf;
 
     /**
@@ -57,34 +57,34 @@ class TempFile {
      * The file will be deleted when the JVM exits.
      */
     public TempFile(File dir) throws IOException {
-	file = File.createTempFile("pop3.", ".mbox", dir);
-	// XXX - need JDK 6 to set permissions on the file to owner-only
-	file.deleteOnExit();
-	sf = new WritableSharedFile(file);
+        file = File.createTempFile("pop3.", ".mbox", dir);
+        // XXX - need JDK 6 to set permissions on the file to owner-only
+        file.deleteOnExit();
+        sf = new WritableSharedFile(file);
     }
 
     /**
      * Return a stream for appending to the temp file.
      */
     public AppendStream getAppendStream() throws IOException {
-	return sf.getAppendStream();
+        return sf.getAppendStream();
     }
 
     /**
      * Close and remove this temp file.
      */
     public void close() {
-	try {
-	    sf.close();
-	} catch (IOException ex) {
-	    // ignore it
-	}
-	file.delete();
+        try {
+            sf.close();
+        } catch (IOException ex) {
+            // ignore it
+        }
+        file.delete();
     }
 
     protected void finalize() throws Throwable {
-	super.finalize();
-	close();
+        super.finalize();
+        close();
     }
 }
 
@@ -96,32 +96,32 @@ class WritableSharedFile extends SharedFileInputStream {
     private AppendStream af;
 
     public WritableSharedFile(File file) throws IOException {
-	super(file);
-	try {
-	    raf = new RandomAccessFile(file, "rw");
-	} catch (IOException ex) {
-	    // if anything goes wrong opening the writable file,
-	    // close the readable file too
-	    super.close();
-	}
+        super(file);
+        try {
+            raf = new RandomAccessFile(file, "rw");
+        } catch (IOException ex) {
+            // if anything goes wrong opening the writable file,
+            // close the readable file too
+            super.close();
+        }
     }
 
     /**
      * Return the writable version of this file.
      */
     public RandomAccessFile getWritableFile() {
-	return raf;
+        return raf;
     }
 
     /**
      * Close the readable and writable files.
      */
     public void close() throws IOException {
-	try {
-	    super.close();
-	} finally {
-	    raf.close();
-	}
+        try {
+            super.close();
+        } finally {
+            raf.close();
+        }
     }
 
     /**
@@ -130,20 +130,20 @@ class WritableSharedFile extends SharedFileInputStream {
      * size of the file.
      */
     synchronized long updateLength() throws IOException {
-	datalen = in.length();
-	af = null;
-	return datalen;
+        datalen = in.length();
+        af = null;
+        return datalen;
     }
 
     /**
      * Return a new AppendStream, but only if one isn't in active use.
      */
     public synchronized AppendStream getAppendStream() throws IOException {
-	if (af != null)
-	    throw new IOException(
-		"POP3 file cache only supports single threaded access");
-	af = new AppendStream(this);
-	return af;
+        if (af != null)
+            throw new IOException(
+                    "POP3 file cache only supports single threaded access");
+        af = new AppendStream(this);
+        return af;
     }
 }
 
@@ -160,30 +160,30 @@ class AppendStream extends OutputStream {
     private long end;
 
     public AppendStream(WritableSharedFile tf) throws IOException {
-	this.tf = tf;
-	raf = tf.getWritableFile();
-	start = raf.length();
-	raf.seek(start);
+        this.tf = tf;
+        raf = tf.getWritableFile();
+        start = raf.length();
+        raf.seek(start);
     }
 
     public void write(int b) throws IOException {
-	raf.write(b);
+        raf.write(b);
     }
 
     public void write(byte[] b) throws IOException {
-	raf.write(b);
+        raf.write(b);
     }
 
     public void write(byte[] b, int off, int len) throws IOException {
-	raf.write(b, off, len);
+        raf.write(b, off, len);
     }
 
     public synchronized void close() throws IOException {
-	end = tf.updateLength();
-	raf = null;	// no more writing allowed
+        end = tf.updateLength();
+        raf = null;    // no more writing allowed
     }
 
     public synchronized InputStream getInputStream() throws IOException {
-	return tf.newStream(start, end);
+        return tf.newStream(start, end);
     }
 }

@@ -45,8 +45,8 @@ import metapi.mail.search.SearchTerm;
 /**
  * This class implements a long integer search term.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 abstract class LongTerm extends SearchTerm {
@@ -60,34 +60,34 @@ abstract class LongTerm extends SearchTerm {
     private static final long serialVersionUID = 5285147193246128043L;
 
     protected LongTerm(long number) {
-	this.number = number;
+        this.number = number;
     }
 
     /**
      * Return the number to compare with.
      */
     public long getNumber() {
-	return number;
+        return number;
     }
 
     protected boolean match(long i) {
-	return i == number;
+        return i == number;
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof LongTerm))
-	    return false;
-	LongTerm t = (LongTerm)obj;
-	return t.number == this.number && super.equals(obj);
+        if (!(obj instanceof LongTerm))
+            return false;
+        LongTerm t = (LongTerm) obj;
+        return t.number == this.number && super.equals(obj);
     }
 
     /**
      * Compute a hashCode for this object.
      */
     public int hashCode() {
-	return (int)number + super.hashCode();
+        return (int) number + super.hashCode();
     }
 }

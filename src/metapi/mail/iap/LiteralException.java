@@ -52,7 +52,7 @@ public class LiteralException extends ProtocolException {
      * Constructs a LiteralException with the specified Response object.
      */
     public LiteralException(Response r) {
-	super(r.toString());
-	response = r;
+        super(r.toString());
+        response = r;
     }
 }

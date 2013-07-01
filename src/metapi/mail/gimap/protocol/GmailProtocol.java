@@ -40,50 +40,53 @@
 
 package metapi.mail.gimap.protocol;
 
-import java.io.*;
-import java.util.*;
-
-import metapi.mail.iap.*;
-import metapi.mail.imap.protocol.*;
 import metapi.mail.gimap.GmailFolder.FetchProfileItem;
-
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.imap.protocol.FetchItem;
+import metapi.mail.imap.protocol.FetchResponse;
+import metapi.mail.imap.protocol.IMAPProtocol;
+import metapi.mail.imap.protocol.SearchSequence;
 import metapi.mail.util.MailLogger;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Properties;
 
 /**
  * Extend IMAP support to handle Gmail-specific protocol extensions.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public class GmailProtocol extends IMAPProtocol {
-    
+
     /*
      * Define the Gmail-specific FETCH items.
      */
     public static final FetchItem MSGID_ITEM =
-	new FetchItem("X-GM-MSGID", FetchProfileItem.MSGID) {
-	    public Serializable parseItem(FetchResponse r) {
-		return new Long(r.readLong());
-	    }
-	};
+            new FetchItem("X-GM-MSGID", FetchProfileItem.MSGID) {
+                public Serializable parseItem(FetchResponse r) {
+                    return new Long(r.readLong());
+                }
+            };
     public static final FetchItem THRID_ITEM =
-	new FetchItem("X-GM-THRID", FetchProfileItem.THRID) {
-	    public Serializable parseItem(FetchResponse r) {
-		return new Long(r.readLong());
-	    }
-	};
+            new FetchItem("X-GM-THRID", FetchProfileItem.THRID) {
+                public Serializable parseItem(FetchResponse r) {
+                    return new Long(r.readLong());
+                }
+            };
     public static final FetchItem LABELS_ITEM =
-	new FetchItem("X-GM-LABELS", FetchProfileItem.LABELS) {
-	    public Serializable parseItem(FetchResponse r) {
-		return r.readAtomStringList();
-	    }
-	};
+            new FetchItem("X-GM-LABELS", FetchProfileItem.LABELS) {
+                public Serializable parseItem(FetchResponse r) {
+                    return r.readAtomStringList();
+                }
+            };
 
     private static final FetchItem[] myFetchItems = {
-	MSGID_ITEM,
-	THRID_ITEM,
-	LABELS_ITEM
+            MSGID_ITEM,
+            THRID_ITEM,
+            LABELS_ITEM
     };
 
     private FetchItem[] fetchItems = null;
@@ -91,24 +94,24 @@ public class GmailProtocol extends IMAPProtocol {
     /**
      * Connect to Gmail.
      *
-     * @param host	host to connect to
-     * @param port	portnumber to connect to
-     * @param props	Properties object used by this protocol
-     * @param isSSL	use SSL?
-     * @param logger	for log messages
+     * @param host   host to connect to
+     * @param port   portnumber to connect to
+     * @param props  Properties object used by this protocol
+     * @param isSSL  use SSL?
+     * @param logger for log messages
      */
-    public GmailProtocol(String name, String host, int port, 
-			Properties props, boolean isSSL, MailLogger logger)
-			throws IOException, ProtocolException {
-	super(name, host, port, props, isSSL, logger);
+    public GmailProtocol(String name, String host, int port,
+                         Properties props, boolean isSSL, MailLogger logger)
+            throws IOException, ProtocolException {
+        super(name, host, port, props, isSSL, logger);
 
-	// check to see if this is really Gmail
-	if (!hasCapability("X-GM-EXT-1")) {
-	    logger.fine("WARNING! Not connected to Gmail!");
-	    // XXX - could call "disconnect()" here and make this a fatal error
-	} else {
-	    logger.fine("connected to Gmail");
-	}
+        // check to see if this is really Gmail
+        if (!hasCapability("X-GM-EXT-1")) {
+            logger.fine("WARNING! Not connected to Gmail!");
+            // XXX - could call "disconnect()" here and make this a fatal error
+        } else {
+            logger.fine("connected to Gmail");
+        }
     }
 
     /**
@@ -116,26 +119,26 @@ public class GmailProtocol extends IMAPProtocol {
      * Combines our fetch items with those supported by the superclass.
      */
     public FetchItem[] getFetchItems() {
-	if (fetchItems != null)
-	    return fetchItems;
-	FetchItem[] sfi = super.getFetchItems();
-	if (sfi == null || sfi.length == 0)
-	    fetchItems = myFetchItems;
-	else {
-	    fetchItems = new FetchItem[sfi.length + myFetchItems.length];
-	    System.arraycopy(sfi, 0, fetchItems, 0, sfi.length);
-	    System.arraycopy(myFetchItems, 0, fetchItems, sfi.length,
-							myFetchItems.length);
-	}
-	return fetchItems;
+        if (fetchItems != null)
+            return fetchItems;
+        FetchItem[] sfi = super.getFetchItems();
+        if (sfi == null || sfi.length == 0)
+            fetchItems = myFetchItems;
+        else {
+            fetchItems = new FetchItem[sfi.length + myFetchItems.length];
+            System.arraycopy(sfi, 0, fetchItems, 0, sfi.length);
+            System.arraycopy(myFetchItems, 0, fetchItems, sfi.length,
+                    myFetchItems.length);
+        }
+        return fetchItems;
     }
 
     /**
      * Return a GmailSearchSequence.
      */
     protected SearchSequence getSearchSequence() {
-	if (searchSequence == null)
-	    searchSequence = new GmailSearchSequence();
-	return searchSequence;
+        if (searchSequence == null)
+            searchSequence = new GmailSearchSequence();
+        return searchSequence;
     }
 }

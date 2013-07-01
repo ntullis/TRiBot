@@ -40,36 +40,39 @@
 
 package metapi.mail.handlers;
 
-import java.io.*;
+import metapi.mail.internet.ContentType;
+import metapi.mail.internet.MimeUtility;
+
+import javax.activation.ActivationDataFlavor;
+import javax.activation.DataContentHandler;
+import javax.activation.DataSource;
 import java.awt.datatransfer.DataFlavor;
-import javax.activation.*;
-import metapi.mail.internet.*;
+import java.io.*;
 
 /**
  * DataContentHandler for text/plain.
- *
  */
 public class text_plain implements DataContentHandler {
     private static ActivationDataFlavor myDF = new ActivationDataFlavor(
-	java.lang.String.class,
-	"text/plain",
-	"Text String");
+            java.lang.String.class,
+            "text/plain",
+            "Text String");
 
     /**
      * An OuputStream wrapper that doesn't close the underlying stream.
      */
     private static class NoCloseOutputStream extends FilterOutputStream {
-	public NoCloseOutputStream(OutputStream os) {
-	    super(os);
-	}
+        public NoCloseOutputStream(OutputStream os) {
+            super(os);
+        }
 
-	public void close() {
-	    // do nothing
-	}
+        public void close() {
+            // do nothing
+        }
     }
 
     protected ActivationDataFlavor getDF() {
-	return myDF;
+        return myDF;
     }
 
     /**
@@ -78,7 +81,7 @@ public class text_plain implements DataContentHandler {
      * @return The DataFlavors
      */
     public DataFlavor[] getTransferDataFlavors() {
-	return new DataFlavor[] { getDF() };
+        return new DataFlavor[]{getDF()};
     }
 
     /**
@@ -88,25 +91,25 @@ public class text_plain implements DataContentHandler {
      * @param ds The DataSource corresponding to the data
      * @return String object
      */
-    public Object getTransferData(DataFlavor df, DataSource ds) 
-			throws IOException {
-	// use myDF.equals to be sure to get ActivationDataFlavor.equals,
-	// which properly ignores Content-Type parameters in comparison
-	if (getDF().equals(df))
-	    return getContent(ds);
-	else
-	    return null;
+    public Object getTransferData(DataFlavor df, DataSource ds)
+            throws IOException {
+        // use myDF.equals to be sure to get ActivationDataFlavor.equals,
+        // which properly ignores Content-Type parameters in comparison
+        if (getDF().equals(df))
+            return getContent(ds);
+        else
+            return null;
     }
 
     public Object getContent(DataSource ds) throws IOException {
-	String enc = null;
-	InputStreamReader is = null;
-	
-	try {
-	    enc = getCharset(ds.getContentType());
-	    is = new InputStreamReader(ds.getInputStream(), enc);
-	} catch (IllegalArgumentException iex) {
-	    /*
+        String enc = null;
+        InputStreamReader is = null;
+
+        try {
+            enc = getCharset(ds.getContentType());
+            is = new InputStreamReader(ds.getInputStream(), enc);
+        } catch (IllegalArgumentException iex) {
+        /*
 	     * An unknown charset of the form ISO-XXX-XXX will cause
 	     * the JDK to throw an IllegalArgumentException.  The
 	     * JDK will attempt to create a classname using this string,
@@ -114,52 +117,53 @@ public class text_plain implements DataContentHandler {
 	     * and this results in an IllegalArgumentException, rather than
 	     * the expected UnsupportedEncodingException.  Yikes.
 	     */
-	    throw new UnsupportedEncodingException(enc);
-	}
+            throw new UnsupportedEncodingException(enc);
+        }
 
-	try {
-	    int pos = 0;
-	    int count;
-	    char buf[] = new char[1024];
+        try {
+            int pos = 0;
+            int count;
+            char buf[] = new char[1024];
 
-	    while ((count = is.read(buf, pos, buf.length - pos)) != -1) {
-		pos += count;
-		if (pos >= buf.length) {
-		    int size = buf.length;
-		    if (size < 256*1024)
-			size += size;
-		    else
-			size += 256*1024;
-		    char tbuf[] = new char[size];
-		    System.arraycopy(buf, 0, tbuf, 0, pos);
-		    buf = tbuf;
-		}
-	    }
-	    return new String(buf, 0, pos);
-	} finally {
-	    try {
-		is.close();
-	    } catch (IOException ex) { }
-	}
+            while ((count = is.read(buf, pos, buf.length - pos)) != -1) {
+                pos += count;
+                if (pos >= buf.length) {
+                    int size = buf.length;
+                    if (size < 256 * 1024)
+                        size += size;
+                    else
+                        size += 256 * 1024;
+                    char tbuf[] = new char[size];
+                    System.arraycopy(buf, 0, tbuf, 0, pos);
+                    buf = tbuf;
+                }
+            }
+            return new String(buf, 0, pos);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException ex) {
+            }
+        }
     }
-    
+
     /**
      * Write the object to the output stream, using the specified MIME type.
      */
-    public void writeTo(Object obj, String type, OutputStream os) 
-			throws IOException {
-	if (!(obj instanceof String))
-	    throw new IOException("\"" + getDF().getMimeType() +
-		"\" DataContentHandler requires String object, " +
-		"was given object of type " + obj.getClass().toString());
+    public void writeTo(Object obj, String type, OutputStream os)
+            throws IOException {
+        if (!(obj instanceof String))
+            throw new IOException("\"" + getDF().getMimeType() +
+                    "\" DataContentHandler requires String object, " +
+                    "was given object of type " + obj.getClass().toString());
 
-	String enc = null;
-	OutputStreamWriter osw = null;
+        String enc = null;
+        OutputStreamWriter osw = null;
 
-	try {
-	    enc = getCharset(type);
-	    osw = new OutputStreamWriter(new NoCloseOutputStream(os), enc);
-	} catch (IllegalArgumentException iex) {
+        try {
+            enc = getCharset(type);
+            osw = new OutputStreamWriter(new NoCloseOutputStream(os), enc);
+        } catch (IllegalArgumentException iex) {
 	    /*
 	     * An unknown charset of the form ISO-XXX-XXX will cause
 	     * the JDK to throw an IllegalArgumentException.  The
@@ -168,11 +172,11 @@ public class text_plain implements DataContentHandler {
 	     * and this results in an IllegalArgumentException, rather than
 	     * the expected UnsupportedEncodingException.  Yikes.
 	     */
-	    throw new UnsupportedEncodingException(enc);
-	}
+            throw new UnsupportedEncodingException(enc);
+        }
 
-	String s = (String)obj;
-	osw.write(s, 0, s.length());
+        String s = (String) obj;
+        osw.write(s, 0, s.length());
 	/*
 	 * Have to call osw.close() instead of osw.flush() because
 	 * some charset converts, such as the iso-2022-jp converter,
@@ -180,19 +184,19 @@ public class text_plain implements DataContentHandler {
 	 * The NoCloseOutputStream wrapper prevents the underlying
 	 * stream from being closed.
 	 */
-	osw.close();
+        osw.close();
     }
 
     private String getCharset(String type) {
-	try {
-	    ContentType ct = new ContentType(type);
-	    String charset = ct.getParameter("charset");
-	    if (charset == null)
-		// If the charset parameter is absent, use US-ASCII.
-		charset = "us-ascii";
-	    return MimeUtility.javaCharset(charset);
-	} catch (Exception ex) {
-	    return null;
-	}
+        try {
+            ContentType ct = new ContentType(type);
+            String charset = ct.getParameter("charset");
+            if (charset == null)
+                // If the charset parameter is absent, use US-ASCII.
+                charset = "us-ascii";
+            return MimeUtility.javaCharset(charset);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

@@ -46,7 +46,7 @@ import java.net.InetAddress;
  * The class Authenticator represents an object that knows how to obtain
  * authentication for a network connection.  Usually, it will do this
  * by prompting the user for information.
- * <p>
+ * <p/>
  * Applications use this class by creating a subclass, and registering
  * an instance of that subclass with the session when it is created.
  * When authentication is required, the system will invoke a method
@@ -54,20 +54,19 @@ import java.net.InetAddress;
  * method can query about the authentication being requested with a
  * number of inherited methods (getRequestingXXX()), and form an
  * appropriate message for the user.
- * <p>
+ * <p/>
  * All methods that request authentication have a default implementation
  * that fails.
  *
+ * @author Bill Foote
+ * @author Bill Shannon
  * @see java.net.Authenticator
  * @see metapi.mail.Session#getInstance(java.util.Properties,
- *					metapi.mail.Authenticator)
+ *      metapi.mail.Authenticator)
  * @see metapi.mail.Session#getDefaultInstance(java.util.Properties,
- *					metapi.mail.Authenticator)
+ *      metapi.mail.Authenticator)
  * @see metapi.mail.Session#requestPasswordAuthentication
  * @see metapi.mail.PasswordAuthentication
- *
- * @author  Bill Foote
- * @author  Bill Shannon
  */
 
 // There are no abstract methods, but to be useful the user must
@@ -81,52 +80,51 @@ public abstract class Authenticator {
     private String requestingUserName;
 
     private void reset() {
-	requestingSite = null;
-	requestingPort = -1;
-	requestingProtocol = null;
-	requestingPrompt = null;
-	requestingUserName = null;
+        requestingSite = null;
+        requestingPort = -1;
+        requestingProtocol = null;
+        requestingPrompt = null;
+        requestingUserName = null;
     }
 
     /**
      * Ask the authenticator for a password.
-     * <p>
+     * <p/>
      *
-     * @param addr The InetAddress of the site requesting authorization,
-     *             or null if not known.
-     * @param port the port for the requested connection
+     * @param addr     The InetAddress of the site requesting authorization,
+     *                 or null if not known.
+     * @param port     the port for the requested connection
      * @param protocol The protocol that's requesting the connection
-     *          (@see java.net.Authenticator.getProtocol())
-     * @param prompt A prompt string for the user
-     *
+     *                 (@see java.net.Authenticator.getProtocol())
+     * @param prompt   A prompt string for the user
      * @return The username/password, or null if one can't be gotten.
      */
     final PasswordAuthentication requestPasswordAuthentication(
-				InetAddress addr, int port, String protocol,
-				String prompt, String defaultUserName) {
+            InetAddress addr, int port, String protocol,
+            String prompt, String defaultUserName) {
 
-	reset();
-	requestingSite = addr;
-	requestingPort = port;
-	requestingProtocol = protocol;
-	requestingPrompt = prompt;
-	requestingUserName = defaultUserName;
-	return getPasswordAuthentication();
+        reset();
+        requestingSite = addr;
+        requestingPort = port;
+        requestingProtocol = protocol;
+        requestingPrompt = prompt;
+        requestingUserName = defaultUserName;
+        return getPasswordAuthentication();
     }
 
     /**
      * @return the InetAddress of the site requesting authorization, or null
-     *		if it's not available.
+     *         if it's not available.
      */
     protected final InetAddress getRequestingSite() {
-	return requestingSite;
+        return requestingSite;
     }
 
     /**
      * @return the port for the requested connection
      */
     protected final int getRequestingPort() {
-	return requestingPort;
+        return requestingPort;
     }
 
     /**
@@ -134,39 +132,39 @@ public abstract class Authenticator {
      * will be based on a URLName.
      *
      * @return the protcol
-     *
      * @see metapi.mail.URLName#getProtocol
      */
     protected final String getRequestingProtocol() {
-	return requestingProtocol;
+        return requestingProtocol;
     }
 
     /**
      * @return the prompt string given by the requestor
      */
     protected final String getRequestingPrompt() {
-	return requestingPrompt;
+        return requestingPrompt;
     }
 
     /**
      * @return the default user name given by the requestor
      */
     protected final String getDefaultUserName() {
-	return requestingUserName;
+        return requestingUserName;
     }
 
     /**
      * Called when password authentication is needed.  Subclasses should
      * override the default implementation, which returns null. <p>
-     *
+     * <p/>
      * Note that if this method uses a dialog to prompt the user for this
      * information, the dialog needs to block until the user supplies the
      * information.  This method can not simply return after showing the
      * dialog.
+     *
      * @return The PasswordAuthentication collected from the
-     *		user, or null if none is provided.
+     *         user, or null if none is provided.
      */
     protected PasswordAuthentication getPasswordAuthentication() {
-	return null;
+        return null;
     }
 }

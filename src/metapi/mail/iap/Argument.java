@@ -40,14 +40,15 @@
 
 package metapi.mail.iap;
 
-import java.util.List;
-import java.util.ArrayList;
+import metapi.mail.util.ASCIIUtility;
+
 import java.io.*;
-import metapi.mail.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author  John Mani
- * @author  Bill Shannon
+ * @author John Mani
+ * @author Bill Shannon
  */
 
 public class Argument {
@@ -57,7 +58,7 @@ public class Argument {
      * Constructor
      */
     public Argument() {
-	items = new ArrayList(1);
+        items = new ArrayList(1);
     }
 
     /**
@@ -66,22 +67,22 @@ public class Argument {
      * argument.
      */
     public Argument append(Argument arg) {
-	items.addAll(arg.items);
-	return this;
+        items.addAll(arg.items);
+        return this;
     }
 
     /**
      * Write out given string as an ASTRING, depending on the type
      * of the characters inside the string. The string should
      * contain only ASCII characters. <p>
-     *
+     * <p/>
      * XXX: Hmm .. this should really be called writeASCII()
      *
-     * @param s  String to write out
+     * @param s String to write out
      */
     public Argument writeString(String s) {
-	items.add(new AString(ASCIIUtility.getBytes(s)));
-	return this;
+        items.add(new AString(ASCIIUtility.getBytes(s)));
+        return this;
     }
 
     /**
@@ -89,147 +90,153 @@ public class Argument {
      * charset, and write the bytes out as an ASTRING
      */
     public Argument writeString(String s, String charset)
-		throws UnsupportedEncodingException {
-	if (charset == null) // convenience
-	    writeString(s);
-	else
-	    items.add(new AString(s.getBytes(charset)));
-	return this;
+            throws UnsupportedEncodingException {
+        if (charset == null) // convenience
+            writeString(s);
+        else
+            items.add(new AString(s.getBytes(charset)));
+        return this;
     }
 
     /**
      * Write out given byte[] as a Literal.
-     * @param b  byte[] to write out
+     *
+     * @param b byte[] to write out
      */
-    public Argument writeBytes(byte[] b)  {
-	items.add(b);
-	return this;
+    public Argument writeBytes(byte[] b) {
+        items.add(b);
+        return this;
     }
 
     /**
      * Write out given ByteArrayOutputStream as a Literal.
-     * @param b  ByteArrayOutputStream to be written out.
+     *
+     * @param b ByteArrayOutputStream to be written out.
      */
-    public Argument writeBytes(ByteArrayOutputStream b)  {
-	items.add(b);
-	return this;
+    public Argument writeBytes(ByteArrayOutputStream b) {
+        items.add(b);
+        return this;
     }
 
     /**
      * Write out given data as a literal.
-     * @param b  Literal representing data to be written out.
+     *
+     * @param b Literal representing data to be written out.
      */
-    public Argument writeBytes(Literal b)  {
-	items.add(b);
-	return this;
+    public Argument writeBytes(Literal b) {
+        items.add(b);
+        return this;
     }
 
     /**
      * Write out given string as an Atom. Note that an Atom can contain only
-     * certain US-ASCII characters.  No validation is done on the characters 
+     * certain US-ASCII characters.  No validation is done on the characters
      * in the string.
-     * @param s  String
+     *
+     * @param s String
      */
     public Argument writeAtom(String s) {
-	items.add(new Atom(s));
-	return this;
+        items.add(new Atom(s));
+        return this;
     }
 
     /**
      * Write out number.
+     *
      * @param i number
      */
     public Argument writeNumber(int i) {
-	items.add(new Integer(i));
-	return this;
+        items.add(new Integer(i));
+        return this;
     }
 
     /**
      * Write out number.
+     *
      * @param i number
      */
     public Argument writeNumber(long i) {
-	items.add(new Long(i));
-	return this;
+        items.add(new Long(i));
+        return this;
     }
 
     /**
      * Write out as parenthesised list.
      */
     public Argument writeArgument(Argument c) {
-	items.add(c);
-	return this;
+        items.add(c);
+        return this;
     }
 
     /*
      * Write out all the buffered items into the output stream.
      */
-    public void write(Protocol protocol) 
-		throws IOException, ProtocolException {
-	int size = items != null ? items.size() : 0;
-	DataOutputStream os = (DataOutputStream)protocol.getOutputStream();
+    public void write(Protocol protocol)
+            throws IOException, ProtocolException {
+        int size = items != null ? items.size() : 0;
+        DataOutputStream os = (DataOutputStream) protocol.getOutputStream();
 
-	for (int i=0; i < size; i++) {
-	    if (i > 0)	// write delimiter if not the first item
-		os.write(' ');
+        for (int i = 0; i < size; i++) {
+            if (i > 0)    // write delimiter if not the first item
+                os.write(' ');
 
-	    Object o = items.get(i);
-	    if (o instanceof Atom) {
-		os.writeBytes(((Atom)o).string);
-	    } else if (o instanceof Number) {
-		os.writeBytes(((Number)o).toString());
-	    } else if (o instanceof AString) {
-		astring(((AString)o).bytes, protocol);
-	    } else if (o instanceof byte[]) {
-		literal((byte[])o, protocol);
-	    } else if (o instanceof ByteArrayOutputStream) {
-		literal((ByteArrayOutputStream)o, protocol);
-	    } else if (o instanceof Literal) {
-		literal((Literal)o, protocol);
-	    } else if (o instanceof Argument) {
-		os.write('('); // open parans
-		((Argument)o).write(protocol);
-		os.write(')'); // close parans
-	    }
-	}
+            Object o = items.get(i);
+            if (o instanceof Atom) {
+                os.writeBytes(((Atom) o).string);
+            } else if (o instanceof Number) {
+                os.writeBytes(((Number) o).toString());
+            } else if (o instanceof AString) {
+                astring(((AString) o).bytes, protocol);
+            } else if (o instanceof byte[]) {
+                literal((byte[]) o, protocol);
+            } else if (o instanceof ByteArrayOutputStream) {
+                literal((ByteArrayOutputStream) o, protocol);
+            } else if (o instanceof Literal) {
+                literal((Literal) o, protocol);
+            } else if (o instanceof Argument) {
+                os.write('('); // open parans
+                ((Argument) o).write(protocol);
+                os.write(')'); // close parans
+            }
+        }
     }
 
     /**
      * Write out given String as either an Atom, QuotedString or Literal
      */
-    private void astring(byte[] bytes, Protocol protocol) 
-			throws IOException, ProtocolException {
-	DataOutputStream os = (DataOutputStream)protocol.getOutputStream();
-	int len = bytes.length;
+    private void astring(byte[] bytes, Protocol protocol)
+            throws IOException, ProtocolException {
+        DataOutputStream os = (DataOutputStream) protocol.getOutputStream();
+        int len = bytes.length;
 
-	// If length is greater than 1024 bytes, send as literal
-	if (len > 1024) {
-	    literal(bytes, protocol);
-	    return;
-	}
+        // If length is greater than 1024 bytes, send as literal
+        if (len > 1024) {
+            literal(bytes, protocol);
+            return;
+        }
 
         // if 0 length, send as quoted-string
-        boolean quote = len == 0 ? true: false;
-	boolean escape = false;
- 	
-	byte b;
-	for (int i = 0; i < len; i++) {
-	    b = bytes[i];
-	    if (b == '\0' || b == '\r' || b == '\n' || ((b & 0xff) > 0177)) {
-		// NUL, CR or LF means the bytes need to be sent as literals
-		literal(bytes, protocol);
-		return;
-	    }
-	    if (b == '*' || b == '%' || b == '(' || b == ')' || b == '{' ||
-		b == '"' || b == '\\' || ((b & 0xff) <= ' ')) {
-		quote = true;
-		if (b == '"' || b == '\\') // need to escape these characters
-		    escape = true;
-	    }
-	}
+        boolean quote = len == 0 ? true : false;
+        boolean escape = false;
 
-	if (quote) // start quote
-	    os.write('"');
+        byte b;
+        for (int i = 0; i < len; i++) {
+            b = bytes[i];
+            if (b == '\0' || b == '\r' || b == '\n' || ((b & 0xff) > 0177)) {
+                // NUL, CR or LF means the bytes need to be sent as literals
+                literal(bytes, protocol);
+                return;
+            }
+            if (b == '*' || b == '%' || b == '(' || b == ')' || b == '{' ||
+                    b == '"' || b == '\\' || ((b & 0xff) <= ' ')) {
+                quote = true;
+                if (b == '"' || b == '\\') // need to escape these characters
+                    escape = true;
+            }
+        }
+
+        if (quote) // start quote
+            os.write('"');
 
         if (escape) {
             // already quoted
@@ -239,65 +246,65 @@ public class Argument {
                     os.write('\\');
                 os.write(b);
             }
-        } else 
+        } else
             os.write(bytes);
- 
 
-	if (quote) // end quote
-	    os.write('"');
+
+        if (quote) // end quote
+            os.write('"');
     }
 
     /**
      * Write out given byte[] as a literal
      */
-    private void literal(byte[] b, Protocol protocol) 
-			throws IOException, ProtocolException {
-	startLiteral(protocol, b.length).write(b);
+    private void literal(byte[] b, Protocol protocol)
+            throws IOException, ProtocolException {
+        startLiteral(protocol, b.length).write(b);
     }
 
     /**
      * Write out given ByteArrayOutputStream as a literal.
      */
-    private void literal(ByteArrayOutputStream b, Protocol protocol) 
-			throws IOException, ProtocolException {
-	b.writeTo(startLiteral(protocol, b.size()));
+    private void literal(ByteArrayOutputStream b, Protocol protocol)
+            throws IOException, ProtocolException {
+        b.writeTo(startLiteral(protocol, b.size()));
     }
 
     /**
      * Write out given Literal as a literal.
      */
-    private void literal(Literal b, Protocol protocol) 
-			throws IOException, ProtocolException {
-	b.writeTo(startLiteral(protocol, b.size()));
+    private void literal(Literal b, Protocol protocol)
+            throws IOException, ProtocolException {
+        b.writeTo(startLiteral(protocol, b.size()));
     }
 
-    private OutputStream startLiteral(Protocol protocol, int size) 
-			throws IOException, ProtocolException {
-	DataOutputStream os = (DataOutputStream)protocol.getOutputStream();
-	boolean nonSync = protocol.supportsNonSyncLiterals();
+    private OutputStream startLiteral(Protocol protocol, int size)
+            throws IOException, ProtocolException {
+        DataOutputStream os = (DataOutputStream) protocol.getOutputStream();
+        boolean nonSync = protocol.supportsNonSyncLiterals();
 
-	os.write('{');
-	os.writeBytes(Integer.toString(size));
-	if (nonSync) // server supports non-sync literals
-	    os.writeBytes("+}\r\n");
-	else
-	    os.writeBytes("}\r\n");
-	os.flush();
+        os.write('{');
+        os.writeBytes(Integer.toString(size));
+        if (nonSync) // server supports non-sync literals
+            os.writeBytes("+}\r\n");
+        else
+            os.writeBytes("}\r\n");
+        os.flush();
 
-	// If we are using synchronized literals, wait for the server's
-	// continuation signal
-	if (!nonSync) {
-	    for (; ;) {
-		Response r = protocol.readResponse();
-		if (r.isContinuation())
-		    break;
-		if (r.isTagged())
-		    throw new LiteralException(r);
-		// XXX - throw away untagged responses;
-		//	 violates IMAP spec, hope no servers do this
-	    }
-	}
-	return os;
+        // If we are using synchronized literals, wait for the server's
+        // continuation signal
+        if (!nonSync) {
+            for (; ; ) {
+                Response r = protocol.readResponse();
+                if (r.isContinuation())
+                    break;
+                if (r.isTagged())
+                    throw new LiteralException(r);
+                // XXX - throw away untagged responses;
+                //	 violates IMAP spec, hope no servers do this
+            }
+        }
+        return os;
     }
 }
 
@@ -305,7 +312,7 @@ class Atom {
     String string;
 
     Atom(String s) {
-	string = s;
+        string = s;
     }
 }
 
@@ -313,6 +320,6 @@ class AString {
     byte[] bytes;
 
     AString(byte[] b) {
-	bytes = b;
+        bytes = b;
     }
 }

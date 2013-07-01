@@ -40,16 +40,17 @@
 
 package metapi.mail.gimap;
 
-import metapi.mail.*;
-
-import metapi.mail.imap.*;
-import metapi.mail.gimap.protocol.*;
+import metapi.mail.MessagingException;
+import metapi.mail.Session;
+import metapi.mail.gimap.protocol.GmailProtocol;
+import metapi.mail.imap.IMAPFolder;
+import metapi.mail.imap.IMAPMessage;
 
 /**
  * A Gmail message.  Adds methods to access Gmail-specific per-message data.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public class GmailMessage extends IMAPMessage {
@@ -57,47 +58,47 @@ public class GmailMessage extends IMAPMessage {
      * Constructor.
      */
     protected GmailMessage(IMAPFolder folder, int msgnum) {
-	super(folder, msgnum);
+        super(folder, msgnum);
     }
 
     /**
      * Constructor, for use by IMAPNestedMessage.
      */
     protected GmailMessage(Session session) {
-	super(session);
+        super(session);
     }
 
     /**
      * Return the Gmail unique message ID.
      */
     public long getMsgId() throws MessagingException {
-	Long msgid = (Long)getItem(GmailProtocol.MSGID_ITEM);
-	if (msgid != null)
-	    return msgid.longValue();
-	else
-	    return -1;
+        Long msgid = (Long) getItem(GmailProtocol.MSGID_ITEM);
+        if (msgid != null)
+            return msgid.longValue();
+        else
+            return -1;
     }
 
     /**
      * Return the Gmail unique thread ID.
      */
     public long getThrId() throws MessagingException {
-	Long thrid = (Long)getItem(GmailProtocol.THRID_ITEM);
-	if (thrid != null)
-	    return thrid.longValue();
-	else
-	    return -1;
+        Long thrid = (Long) getItem(GmailProtocol.THRID_ITEM);
+        if (thrid != null)
+            return thrid.longValue();
+        else
+            return -1;
     }
 
     /**
      * Return the Gmail labels associated with this message.
      */
     public String[] getLabels() throws MessagingException {
-	String[] labels = (String[])getItem(GmailProtocol.LABELS_ITEM);
-	if (labels != null)
-	    return (String[])(labels.clone());
-	else
-	    return null;
+        String[] labels = (String[]) getItem(GmailProtocol.LABELS_ITEM);
+        if (labels != null)
+            return (String[]) (labels.clone());
+        else
+            return null;
     }
 
 }

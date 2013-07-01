@@ -40,17 +40,17 @@
 
 package metapi.mail.imap.protocol;
 
-import metapi.mail.iap.*;
+import metapi.mail.iap.ParsingException;
 
 /**
  * This class represents the UID data item
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class UID implements Item {
-    
-    static final char[] name = {'U','I','D'};
+
+    static final char[] name = {'U', 'I', 'D'};
     public int seqnum;
 
     public long uid;
@@ -59,8 +59,8 @@ public class UID implements Item {
      * Constructor
      */
     public UID(FetchResponse r) throws ParsingException {
-	seqnum = r.getNumber();
-	r.skipSpaces();
-	uid = r.readLong();
+        seqnum = r.getNumber();
+        r.skipSpaces();
+        uid = r.readLong();
     }
 }

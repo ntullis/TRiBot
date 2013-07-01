@@ -40,16 +40,26 @@
 
 package metapi.mail.util;
 
-import java.security.*;
-import java.net.*;
-import java.io.*;
-import java.lang.reflect.*;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.security.AccessController;
+import java.security.GeneralSecurityException;
+import java.security.PrivilegedAction;
+import java.security.cert.CertificateParsingException;
+import java.security.cert.X509Certificate;
 import java.util.*;
-import java.util.regex.*;
 import java.util.logging.Level;
-import java.security.cert.*;
-import javax.net.*;
-import javax.net.ssl.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is used to get Sockets. Depending on the arguments passed
@@ -63,11 +73,11 @@ import javax.net.ssl.*;
 public class SocketFetcher {
 
     private static MailLogger logger = new MailLogger(
-	SocketFetcher.class,
-	"socket",
-	"DEBUG SocketFetcher",
-	PropUtil.getBooleanSystemProperty("javamail.socket.debug", false),
-	System.out);
+            SocketFetcher.class,
+            "socket",
+            "DEBUG SocketFetcher",
+            PropUtil.getBooleanSystemProperty("javamail.socket.debug", false),
+            System.out);
 
     // No one should instantiate this class.
     private SocketFetcher() {
@@ -92,7 +102,7 @@ public class SocketFetcher {
      * </ul> <p>
      * If we're making an SSL connection, the ssl.socketFactory
      * properties are used first, if set. <p>
-     *
+     * <p/>
      * If the socketFactory property is set, the value is an
      * instance of a SocketFactory class, not a string.  The
      * instance is used directly.  If the socketFactory property
@@ -100,7 +110,7 @@ public class SocketFetcher {
      * (Note that the SocketFactory property must be set using the
      * <code>put</code> method, not the <code>setProperty</code>
      * method.) <p>
-     *
+     * <p/>
      * If the socketFactory.class property isn't set, the socket
      * returned is an instance of java.net.Socket connected to the
      * given host and port. If the socketFactory.class property is set,
@@ -108,137 +118,137 @@ public class SocketFetcher {
      * javax.net.SocketFactory subclass.  In this case, the class is
      * dynamically instantiated and a socket created by that
      * SocketFactory is returned. <p>
-     *
+     * <p/>
      * If the socketFactory.fallback property is set to false, don't
      * fall back to using regular sockets if the socket factory fails. <p>
-     *
+     * <p/>
      * The socketFactory.port specifies a port to use when connecting
      * through the socket factory.  If unset, the port argument will be
      * used.  <p>
-     *
+     * <p/>
      * If the connectiontimeout property is set, the timeout is passed
      * to the socket connect method. <p>
-     *
+     * <p/>
      * If the timeout property is set, it is used to set the socket timeout.
-     * <p>
-     *
+     * <p/>
+     * <p/>
      * If the localaddress property is set, it's used as the local address
      * to bind to.  If the localport property is also set, it's used as the
      * local port number to bind to.
      *
-     * @param host The host to connect to
-     * @param port The port to connect to at the host
-     * @param props Properties object containing socket properties
+     * @param host   The host to connect to
+     * @param port   The port to connect to at the host
+     * @param props  Properties object containing socket properties
      * @param prefix Property name prefix, e.g., "javamail.imap"
      * @param useSSL use the SSL socket factory as the default
      */
     public static Socket getSocket(String host, int port, Properties props,
-				String prefix, boolean useSSL)
-				throws IOException {
+                                   String prefix, boolean useSSL)
+            throws IOException {
 
-	if (logger.isLoggable(Level.FINER))
-	    logger.finer("getSocket" + ", host " + host + ", port " + port +
-				", prefix " + prefix + ", useSSL " + useSSL);
-	if (prefix == null)
-	    prefix = "socket";
-	if (props == null)
-	    props = new Properties();	// empty
-	int cto = PropUtil.getIntProperty(props,
-					prefix + ".connectiontimeout", -1);
-	Socket socket = null;
-	String localaddrstr = props.getProperty(prefix + ".localaddress", null);
-	InetAddress localaddr = null;
-	if (localaddrstr != null)
-	    localaddr = InetAddress.getByName(localaddrstr);
-	int localport = PropUtil.getIntProperty(props,
-					prefix + ".localport", 0);
+        if (logger.isLoggable(Level.FINER))
+            logger.finer("getSocket" + ", host " + host + ", port " + port +
+                    ", prefix " + prefix + ", useSSL " + useSSL);
+        if (prefix == null)
+            prefix = "socket";
+        if (props == null)
+            props = new Properties();    // empty
+        int cto = PropUtil.getIntProperty(props,
+                prefix + ".connectiontimeout", -1);
+        Socket socket = null;
+        String localaddrstr = props.getProperty(prefix + ".localaddress", null);
+        InetAddress localaddr = null;
+        if (localaddrstr != null)
+            localaddr = InetAddress.getByName(localaddrstr);
+        int localport = PropUtil.getIntProperty(props,
+                prefix + ".localport", 0);
 
-	boolean fb = PropUtil.getBooleanProperty(props,
-				prefix + ".socketFactory.fallback", true);
+        boolean fb = PropUtil.getBooleanProperty(props,
+                prefix + ".socketFactory.fallback", true);
 
-	int sfPort = -1;
-	String sfErr = "unknown socket factory";
-	int to = PropUtil.getIntProperty(props, prefix + ".timeout", -1);
-	try {
-	    /*
+        int sfPort = -1;
+        String sfErr = "unknown socket factory";
+        int to = PropUtil.getIntProperty(props, prefix + ".timeout", -1);
+        try {
+        /*
 	     * If using SSL, first look for SSL-specific class name or
 	     * factory instance.
 	     */
-	    SocketFactory sf = null;
-	    String sfPortName = null;
-	    if (useSSL) {
-		Object sfo = props.get(prefix + ".ssl.socketFactory");
-		if (sfo instanceof SocketFactory) {
-		    sf = (SocketFactory)sfo;
-		    sfErr = "SSL socket factory instance " + sf;
-		}
-		if (sf == null) {
-		    String sfClass =
-			props.getProperty(prefix + ".ssl.socketFactory.class");
-		    sf = getSocketFactory(sfClass);
-		    sfErr = "SSL socket factory class " + sfClass;
-		}
-		sfPortName = ".ssl.socketFactory.port";
-	    }
+            SocketFactory sf = null;
+            String sfPortName = null;
+            if (useSSL) {
+                Object sfo = props.get(prefix + ".ssl.socketFactory");
+                if (sfo instanceof SocketFactory) {
+                    sf = (SocketFactory) sfo;
+                    sfErr = "SSL socket factory instance " + sf;
+                }
+                if (sf == null) {
+                    String sfClass =
+                            props.getProperty(prefix + ".ssl.socketFactory.class");
+                    sf = getSocketFactory(sfClass);
+                    sfErr = "SSL socket factory class " + sfClass;
+                }
+                sfPortName = ".ssl.socketFactory.port";
+            }
 
-	    if (sf == null) {
-		Object sfo = props.get(prefix + ".socketFactory");
-		if (sfo instanceof SocketFactory) {
-		    sf = (SocketFactory)sfo;
-		    sfErr = "socket factory instance " + sf;
-		}
-		if (sf == null) {
-		    String sfClass =
-			props.getProperty(prefix + ".socketFactory.class");
-		    sf = getSocketFactory(sfClass);
-		    sfErr = "socket factory class " + sfClass;
-		}
-		sfPortName = ".socketFactory.port";
-	    }
+            if (sf == null) {
+                Object sfo = props.get(prefix + ".socketFactory");
+                if (sfo instanceof SocketFactory) {
+                    sf = (SocketFactory) sfo;
+                    sfErr = "socket factory instance " + sf;
+                }
+                if (sf == null) {
+                    String sfClass =
+                            props.getProperty(prefix + ".socketFactory.class");
+                    sf = getSocketFactory(sfClass);
+                    sfErr = "socket factory class " + sfClass;
+                }
+                sfPortName = ".socketFactory.port";
+            }
 
-	    // if we now have a socket factory, use it
-	    if (sf != null) {
-		sfPort = PropUtil.getIntProperty(props,
-						prefix + sfPortName, -1);
+            // if we now have a socket factory, use it
+            if (sf != null) {
+                sfPort = PropUtil.getIntProperty(props,
+                        prefix + sfPortName, -1);
 
-		// if port passed in via property isn't valid, use param
-		if (sfPort == -1)
-		    sfPort = port;
-		socket = createSocket(localaddr, localport,
-		    host, sfPort, cto, to, props, prefix, sf, useSSL);
-	    }
-	} catch (SocketTimeoutException sex) {
-	    throw sex;
-	} catch (Exception ex) {
-	    if (!fb) {
-		if (ex instanceof InvocationTargetException) {
-		    Throwable t =
-		      ((InvocationTargetException)ex).getTargetException();
-		    if (t instanceof Exception)
-			ex = (Exception)t;
-		}
-		if (ex instanceof IOException)
-		    throw (IOException)ex;
-		throw new SocketConnectException("Using " + sfErr, ex,
-						host, sfPort, cto);
-	    }
-	}
+                // if port passed in via property isn't valid, use param
+                if (sfPort == -1)
+                    sfPort = port;
+                socket = createSocket(localaddr, localport,
+                        host, sfPort, cto, to, props, prefix, sf, useSSL);
+            }
+        } catch (SocketTimeoutException sex) {
+            throw sex;
+        } catch (Exception ex) {
+            if (!fb) {
+                if (ex instanceof InvocationTargetException) {
+                    Throwable t =
+                            ((InvocationTargetException) ex).getTargetException();
+                    if (t instanceof Exception)
+                        ex = (Exception) t;
+                }
+                if (ex instanceof IOException)
+                    throw (IOException) ex;
+                throw new SocketConnectException("Using " + sfErr, ex,
+                        host, sfPort, cto);
+            }
+        }
 
-	if (socket == null) {
-	    socket = createSocket(localaddr, localport,
-		    host, port, cto, to, props, prefix, null, useSSL);
+        if (socket == null) {
+            socket = createSocket(localaddr, localport,
+                    host, port, cto, to, props, prefix, null, useSSL);
 
-	} else {
-	    if (to >= 0)
-		socket.setSoTimeout(to);
-	}
+        } else {
+            if (to >= 0)
+                socket.setSoTimeout(to);
+        }
 
-	return socket;
+        return socket;
     }
 
     public static Socket getSocket(String host, int port, Properties props,
-				String prefix) throws IOException {
-	return getSocket(host, port, props, prefix, false);
+                                   String prefix) throws IOException {
+        return getSocket(host, port, props, prefix, false);
     }
 
     /**
@@ -249,123 +259,124 @@ public class SocketFetcher {
      * SSLSocketFactory if useSSL is true.
      */
     private static Socket createSocket(InetAddress localaddr, int localport,
-				String host, int port, int cto, int to,
-				Properties props, String prefix,
-				SocketFactory sf, boolean useSSL)
-				throws IOException {
-	Socket socket = null;
+                                       String host, int port, int cto, int to,
+                                       Properties props, String prefix,
+                                       SocketFactory sf, boolean useSSL)
+            throws IOException {
+        Socket socket = null;
 
-	String socksHost = props.getProperty(prefix + ".socks.host", null);
-	int socksPort = 1080;
-	String err = null;
-	if (socksHost != null) {
-	    int i = socksHost.indexOf(':');
-	    if (i >= 0) {
-		socksHost = socksHost.substring(0, i);
-		try {
-		    socksPort = Integer.parseInt(socksHost.substring(i + 1));
-		} catch (NumberFormatException ex) {
-		    // ignore it
-		}
-	    }
-	    socksPort = PropUtil.getIntProperty(props,
-					prefix + ".socks.port", socksPort);
-	    err = "Using SOCKS host, port: " + socksHost + ", " + socksPort;
-	    if (logger.isLoggable(Level.FINER))
-		logger.finer("socks host " + socksHost + ", port " + socksPort);
-	}
+        String socksHost = props.getProperty(prefix + ".socks.host", null);
+        int socksPort = 1080;
+        String err = null;
+        if (socksHost != null) {
+            int i = socksHost.indexOf(':');
+            if (i >= 0) {
+                socksHost = socksHost.substring(0, i);
+                try {
+                    socksPort = Integer.parseInt(socksHost.substring(i + 1));
+                } catch (NumberFormatException ex) {
+                    // ignore it
+                }
+            }
+            socksPort = PropUtil.getIntProperty(props,
+                    prefix + ".socks.port", socksPort);
+            err = "Using SOCKS host, port: " + socksHost + ", " + socksPort;
+            if (logger.isLoggable(Level.FINER))
+                logger.finer("socks host " + socksHost + ", port " + socksPort);
+        }
 
-	if (sf != null)
-	    socket = sf.createSocket();
-	if (socket == null) {
-	    if (socksHost != null)
-		socket = new Socket(
-				new java.net.Proxy(java.net.Proxy.Type.SOCKS,
-				new InetSocketAddress(socksHost, socksPort)));
-	    else
-		socket = new Socket();
-	}
-	if (to >= 0)
-	    socket.setSoTimeout(to);
-	int writeTimeout = PropUtil.getIntProperty(props,
-						prefix + ".writetimeout", -1);
-	if (writeTimeout != -1)	// wrap original
-	    socket = new WriteTimeoutSocket(socket, writeTimeout);
-	if (localaddr != null)
-	    socket.bind(new InetSocketAddress(localaddr, localport));
-	try {
-	    if (cto >= 0)
-		socket.connect(new InetSocketAddress(host, port), cto);
-	    else
-		socket.connect(new InetSocketAddress(host, port));
-	} catch (IOException ex) {
-	    throw new SocketConnectException(err, ex, host, port, cto);
-	}
+        if (sf != null)
+            socket = sf.createSocket();
+        if (socket == null) {
+            if (socksHost != null)
+                socket = new Socket(
+                        new java.net.Proxy(java.net.Proxy.Type.SOCKS,
+                                new InetSocketAddress(socksHost, socksPort)));
+            else
+                socket = new Socket();
+        }
+        if (to >= 0)
+            socket.setSoTimeout(to);
+        int writeTimeout = PropUtil.getIntProperty(props,
+                prefix + ".writetimeout", -1);
+        if (writeTimeout != -1)    // wrap original
+            socket = new WriteTimeoutSocket(socket, writeTimeout);
+        if (localaddr != null)
+            socket.bind(new InetSocketAddress(localaddr, localport));
+        try {
+            if (cto >= 0)
+                socket.connect(new InetSocketAddress(host, port), cto);
+            else
+                socket.connect(new InetSocketAddress(host, port));
+        } catch (IOException ex) {
+            throw new SocketConnectException(err, ex, host, port, cto);
+        }
 
 	/*
 	 * If we want an SSL connection and we didn't get an SSLSocket,
 	 * wrap our plain Socket with an SSLSocket.
 	 */
-	if (useSSL && !(socket instanceof SSLSocket)) {
-	    String trusted;
-	    SSLSocketFactory ssf;
-	    if ((trusted = props.getProperty(prefix + ".ssl.trust")) != null) {
-		try {
-		    MailSSLSocketFactory msf = new MailSSLSocketFactory();
-		    if (trusted.equals("*"))
-			msf.setTrustAllHosts(true);
-		    else
-			msf.setTrustedHosts(trusted.split("\\s+"));
-		    ssf = msf;
-		} catch (GeneralSecurityException gex) {
-		    IOException ioex = new IOException(
-				    "Can't create MailSSLSocketFactory");
-		    ioex.initCause(gex);
-		    throw ioex;
-		}
-	    } else
-		ssf = (SSLSocketFactory)SSLSocketFactory.getDefault();
-	    socket = ssf.createSocket(socket, host, port, true);
-	    sf = ssf;
-	}
+        if (useSSL && !(socket instanceof SSLSocket)) {
+            String trusted;
+            SSLSocketFactory ssf;
+            if ((trusted = props.getProperty(prefix + ".ssl.trust")) != null) {
+                try {
+                    MailSSLSocketFactory msf = new MailSSLSocketFactory();
+                    if (trusted.equals("*"))
+                        msf.setTrustAllHosts(true);
+                    else
+                        msf.setTrustedHosts(trusted.split("\\s+"));
+                    ssf = msf;
+                } catch (GeneralSecurityException gex) {
+                    IOException ioex = new IOException(
+                            "Can't create MailSSLSocketFactory");
+                    ioex.initCause(gex);
+                    throw ioex;
+                }
+            } else
+                ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            socket = ssf.createSocket(socket, host, port, true);
+            sf = ssf;
+        }
 
 	/*
 	 * No matter how we created the socket, if it turns out to be an
 	 * SSLSocket, configure it.
 	 */
-	configureSSLSocket(socket, host, props, prefix, sf);
+        configureSSLSocket(socket, host, props, prefix, sf);
 
-	return socket;
+        return socket;
     }
 
     /**
      * Return a socket factory of the specified class.
      */
     private static SocketFactory getSocketFactory(String sfClass)
-				throws ClassNotFoundException,
-				    NoSuchMethodException,
-				    IllegalAccessException,
-				    InvocationTargetException {
-	if (sfClass == null || sfClass.length() == 0)
-	    return null;
+            throws ClassNotFoundException,
+            NoSuchMethodException,
+            IllegalAccessException,
+            InvocationTargetException {
+        if (sfClass == null || sfClass.length() == 0)
+            return null;
 
-	// dynamically load the class 
+        // dynamically load the class
 
-	ClassLoader cl = getContextClassLoader();
-	Class clsSockFact = null;
-	if (cl != null) {
-	    try {
-		clsSockFact = Class.forName(sfClass, false, cl);
-	    } catch (ClassNotFoundException cex) { }
-	}
-	if (clsSockFact == null)
-	    clsSockFact = Class.forName(sfClass);
-	// get & invoke the getDefault() method
-	Method mthGetDefault = clsSockFact.getMethod("getDefault", 
-						     new Class[]{});
-	SocketFactory sf = (SocketFactory)
-	    mthGetDefault.invoke(new Object(), new Object[]{});
-	return sf;
+        ClassLoader cl = getContextClassLoader();
+        Class clsSockFact = null;
+        if (cl != null) {
+            try {
+                clsSockFact = Class.forName(sfClass, false, cl);
+            } catch (ClassNotFoundException cex) {
+            }
+        }
+        if (clsSockFact == null)
+            clsSockFact = Class.forName(sfClass);
+        // get & invoke the getDefault() method
+        Method mthGetDefault = clsSockFact.getMethod("getDefault",
+                new Class[]{});
+        SocketFactory sf = (SocketFactory)
+                mthGetDefault.invoke(new Object(), new Object[]{});
+        return sf;
     }
 
     /**
@@ -375,7 +386,7 @@ public class SocketFetcher {
      * that might've used this API even though it shouldn't.
      */
     public static Socket startTLS(Socket socket) throws IOException {
-	return startTLS(socket, new Properties(), "socket");
+        return startTLS(socket, new Properties(), "socket");
     }
 
     /**
@@ -385,10 +396,10 @@ public class SocketFetcher {
      * that might've used this API even though it shouldn't.
      */
     public static Socket startTLS(Socket socket, Properties props,
-				String prefix) throws IOException {
-	InetAddress a = socket.getInetAddress();
-	String host = a.getHostName();
-	return startTLS(socket, host, props, prefix);
+                                  String prefix) throws IOException {
+        InetAddress a = socket.getInetAddress();
+        String host = a.getHostName();
+        return startTLS(socket, host, props, prefix);
     }
 
     /**
@@ -396,95 +407,95 @@ public class SocketFetcher {
      * Supports the "STARTTLS" command in many protocols.
      */
     public static Socket startTLS(Socket socket, String host, Properties props,
-				String prefix) throws IOException {
-	int port = socket.getPort();
-	if (logger.isLoggable(Level.FINER))
-	    logger.finer("startTLS host " + host + ", port " + port);
+                                  String prefix) throws IOException {
+        int port = socket.getPort();
+        if (logger.isLoggable(Level.FINER))
+            logger.finer("startTLS host " + host + ", port " + port);
 
-	String sfErr = "unknown socket factory";
-	try {
-	    SSLSocketFactory ssf = null;
-	    SocketFactory sf = null;
+        String sfErr = "unknown socket factory";
+        try {
+            SSLSocketFactory ssf = null;
+            SocketFactory sf = null;
 
-	    // first, look for an SSL socket factory
-	    Object sfo = props.get(prefix + ".ssl.socketFactory");
-	    if (sfo instanceof SocketFactory) {
-		sf = (SocketFactory)sfo;
-		sfErr = "SSL socket factory instance " + sf;
-	    }
-	    if (sf == null) {
-		String sfClass =
-		    props.getProperty(prefix + ".ssl.socketFactory.class");
-		sf = getSocketFactory(sfClass);
-		sfErr = "SSL socket factory class " + sfClass;
-	    }
-	    if (sf != null && sf instanceof SSLSocketFactory)
-		ssf = (SSLSocketFactory)sf;
+            // first, look for an SSL socket factory
+            Object sfo = props.get(prefix + ".ssl.socketFactory");
+            if (sfo instanceof SocketFactory) {
+                sf = (SocketFactory) sfo;
+                sfErr = "SSL socket factory instance " + sf;
+            }
+            if (sf == null) {
+                String sfClass =
+                        props.getProperty(prefix + ".ssl.socketFactory.class");
+                sf = getSocketFactory(sfClass);
+                sfErr = "SSL socket factory class " + sfClass;
+            }
+            if (sf != null && sf instanceof SSLSocketFactory)
+                ssf = (SSLSocketFactory) sf;
 
-	    // next, look for a regular socket factory that happens to be
-	    // an SSL socket factory
-	    if (ssf == null) {
-		sfo = props.get(prefix + ".socketFactory");
-		if (sfo instanceof SocketFactory) {
-		    sf = (SocketFactory)sfo;
-		    sfErr = "socket factory instance " + sf;
-		}
-		if (sf == null) {
-		    String sfClass =
-			props.getProperty(prefix + ".socketFactory.class");
-		    sf = getSocketFactory(sfClass);
-		    sfErr = "socket factory class " + sfClass;
-		}
-		if (sf != null && sf instanceof SSLSocketFactory)
-		    ssf = (SSLSocketFactory)sf;
-	    }
+            // next, look for a regular socket factory that happens to be
+            // an SSL socket factory
+            if (ssf == null) {
+                sfo = props.get(prefix + ".socketFactory");
+                if (sfo instanceof SocketFactory) {
+                    sf = (SocketFactory) sfo;
+                    sfErr = "socket factory instance " + sf;
+                }
+                if (sf == null) {
+                    String sfClass =
+                            props.getProperty(prefix + ".socketFactory.class");
+                    sf = getSocketFactory(sfClass);
+                    sfErr = "socket factory class " + sfClass;
+                }
+                if (sf != null && sf instanceof SSLSocketFactory)
+                    ssf = (SSLSocketFactory) sf;
+            }
 
-	    // finally, use the default SSL socket factory
-	    if (ssf == null) {
-		String trusted;
-		if ((trusted = props.getProperty(prefix + ".ssl.trust")) !=
-			null) {
-		    try {
-			MailSSLSocketFactory msf = new MailSSLSocketFactory();
-			if (trusted.equals("*"))
-			    msf.setTrustAllHosts(true);
-			else
-			    msf.setTrustedHosts(trusted.split("\\s+"));
-			ssf = msf;
-			sfErr = "javamail SSL socket factory";
-		    } catch (GeneralSecurityException gex) {
-			IOException ioex = new IOException(
-					"Can't create MailSSLSocketFactory");
-			ioex.initCause(gex);
-			throw ioex;
-		    }
-		} else {
-		    ssf = (SSLSocketFactory)SSLSocketFactory.getDefault();
-		    sfErr = "default SSL socket factory";
-		}
-	    }
+            // finally, use the default SSL socket factory
+            if (ssf == null) {
+                String trusted;
+                if ((trusted = props.getProperty(prefix + ".ssl.trust")) !=
+                        null) {
+                    try {
+                        MailSSLSocketFactory msf = new MailSSLSocketFactory();
+                        if (trusted.equals("*"))
+                            msf.setTrustAllHosts(true);
+                        else
+                            msf.setTrustedHosts(trusted.split("\\s+"));
+                        ssf = msf;
+                        sfErr = "javamail SSL socket factory";
+                    } catch (GeneralSecurityException gex) {
+                        IOException ioex = new IOException(
+                                "Can't create MailSSLSocketFactory");
+                        ioex.initCause(gex);
+                        throw ioex;
+                    }
+                } else {
+                    ssf = (SSLSocketFactory) SSLSocketFactory.getDefault();
+                    sfErr = "default SSL socket factory";
+                }
+            }
 
-	    socket = ssf.createSocket(socket, host, port, true);
-	    configureSSLSocket(socket, host, props, prefix, ssf);
-	} catch (Exception ex) {
-	    if (ex instanceof InvocationTargetException) {
-		Throwable t =
-		  ((InvocationTargetException)ex).getTargetException();
-		if (t instanceof Exception)
-		    ex = (Exception)t;
-	    }
-	    if (ex instanceof IOException)
-		throw (IOException)ex;
-	    // wrap anything else before sending it on
-	    IOException ioex = new IOException(
-				"Exception in startTLS using " + sfErr +
-				": host, port: " +
-				host + ", " + port +
-				"; Exception: " + ex);
-	    ioex.initCause(ex);
-	    throw ioex;
-	}
-	return socket;
+            socket = ssf.createSocket(socket, host, port, true);
+            configureSSLSocket(socket, host, props, prefix, ssf);
+        } catch (Exception ex) {
+            if (ex instanceof InvocationTargetException) {
+                Throwable t =
+                        ((InvocationTargetException) ex).getTargetException();
+                if (t instanceof Exception)
+                    ex = (Exception) t;
+            }
+            if (ex instanceof IOException)
+                throw (IOException) ex;
+            // wrap anything else before sending it on
+            IOException ioex = new IOException(
+                    "Exception in startTLS using " + sfErr +
+                            ": host, port: " +
+                            host + ", " + port +
+                            "; Exception: " + ex);
+            ioex.initCause(ex);
+            throw ioex;
+        }
+        return socket;
     }
 
     /**
@@ -495,103 +506,103 @@ public class SocketFetcher {
      * javamail.<protocol>.ssl.checkserveridentity property.
      */
     private static void configureSSLSocket(Socket socket, String host,
-			Properties props, String prefix, SocketFactory sf)
-			throws IOException {
-	if (!(socket instanceof SSLSocket))
-	    return;
-	SSLSocket sslsocket = (SSLSocket)socket;
+                                           Properties props, String prefix, SocketFactory sf)
+            throws IOException {
+        if (!(socket instanceof SSLSocket))
+            return;
+        SSLSocket sslsocket = (SSLSocket) socket;
 
-	String protocols = props.getProperty(prefix + ".ssl.protocols", null);
-	if (protocols != null)
-	    sslsocket.setEnabledProtocols(stringArray(protocols));
-	else {
+        String protocols = props.getProperty(prefix + ".ssl.protocols", null);
+        if (protocols != null)
+            sslsocket.setEnabledProtocols(stringArray(protocols));
+        else {
 	    /*
 	     * At least the UW IMAP server insists on only the TLSv1
 	     * protocol for STARTTLS, and won't accept the old SSLv2
 	     * or SSLv3 protocols.  Here we enable only the TLSv1
 	     * protocol.  XXX - this should probably be parameterized.
 	     */
-	    sslsocket.setEnabledProtocols(new String[] {"TLSv1"});
-	}
-	String ciphers = props.getProperty(prefix + ".ssl.ciphersuites", null);
-	if (ciphers != null)
-	    sslsocket.setEnabledCipherSuites(stringArray(ciphers));
-	if (logger.isLoggable(Level.FINER)) {
-	    logger.finer("SSL protocols after " +
-		Arrays.asList(sslsocket.getEnabledProtocols()));
-	    logger.finer("SSL ciphers after " +
-		Arrays.asList(sslsocket.getEnabledCipherSuites()));
-	}
+            sslsocket.setEnabledProtocols(new String[]{"TLSv1"});
+        }
+        String ciphers = props.getProperty(prefix + ".ssl.ciphersuites", null);
+        if (ciphers != null)
+            sslsocket.setEnabledCipherSuites(stringArray(ciphers));
+        if (logger.isLoggable(Level.FINER)) {
+            logger.finer("SSL protocols after " +
+                    Arrays.asList(sslsocket.getEnabledProtocols()));
+            logger.finer("SSL ciphers after " +
+                    Arrays.asList(sslsocket.getEnabledCipherSuites()));
+        }
 
 	/*
 	 * Force the handshake to be done now so that we can report any
 	 * errors (e.g., certificate errors) to the caller of the startTLS
 	 * method.
 	 */
-	sslsocket.startHandshake();
+        sslsocket.startHandshake();
 
 	/*
 	 * Check server identity and trust.
 	 */
-	boolean idCheck = PropUtil.getBooleanProperty(props,
-			    prefix + ".ssl.checkserveridentity", false);
-	if (idCheck)
-	    checkServerIdentity(host, sslsocket);
-	if (sf instanceof MailSSLSocketFactory) {
-	    MailSSLSocketFactory msf = (MailSSLSocketFactory)sf;
-	    if (!msf.isServerTrusted(host, sslsocket)) {
-		try {
-		    sslsocket.close();
-		} finally {
-		    throw new IOException("Server is not trusted: " + host);
-		}
-	    }
-	}
+        boolean idCheck = PropUtil.getBooleanProperty(props,
+                prefix + ".ssl.checkserveridentity", false);
+        if (idCheck)
+            checkServerIdentity(host, sslsocket);
+        if (sf instanceof MailSSLSocketFactory) {
+            MailSSLSocketFactory msf = (MailSSLSocketFactory) sf;
+            if (!msf.isServerTrusted(host, sslsocket)) {
+                try {
+                    sslsocket.close();
+                } finally {
+                    throw new IOException("Server is not trusted: " + host);
+                }
+            }
+        }
     }
 
     /**
      * Check the server from the Socket connection against the server name(s)
      * as expressed in the server certificate (RFC 2595 check).
-     * 
-     * @param	server		name of the server expected
-     * @param   sslSocket	SSLSocket connected to the server
-     * @return  true if the RFC 2595 check passes
+     *
+     * @param sslSocket SSLSocket connected to the server
+     * @return true if the RFC 2595 check passes
+     * @param    server        name of the server expected
      */
     private static void checkServerIdentity(String server, SSLSocket sslSocket)
-				throws IOException {
+            throws IOException {
 
-	// Check against the server name(s) as expressed in server certificate
-	try {
-	    java.security.cert.Certificate[] certChain =
-		      sslSocket.getSession().getPeerCertificates();
-	    if (certChain != null && certChain.length > 0 &&
-		    certChain[0] instanceof X509Certificate &&
-		    matchCert(server, (X509Certificate)certChain[0]))
-		return;
-	} catch (SSLPeerUnverifiedException e) {
-	    sslSocket.close();
-	    IOException ioex = new IOException(
-		"Can't verify identity of server: " + server);
-	    ioex.initCause(e);
-	    throw ioex;
-	}
+        // Check against the server name(s) as expressed in server certificate
+        try {
+            java.security.cert.Certificate[] certChain =
+                    sslSocket.getSession().getPeerCertificates();
+            if (certChain != null && certChain.length > 0 &&
+                    certChain[0] instanceof X509Certificate &&
+                    matchCert(server, (X509Certificate) certChain[0]))
+                return;
+        } catch (SSLPeerUnverifiedException e) {
+            sslSocket.close();
+            IOException ioex = new IOException(
+                    "Can't verify identity of server: " + server);
+            ioex.initCause(e);
+            throw ioex;
+        }
 
-	// If we get here, there is nothing to consider the server as trusted.
-	sslSocket.close();
-	throw new IOException("Can't verify identity of server: " + server);
+        // If we get here, there is nothing to consider the server as trusted.
+        sslSocket.close();
+        throw new IOException("Can't verify identity of server: " + server);
     }
 
     /**
      * Do any of the names in the cert match the server name?
-     *  
-     * @param	server	name of the server expected
-     * @param   cert	X509Certificate to get the subject's name from
-     * @return  true if it matches
+     *
+     * @param cert X509Certificate to get the subject's name from
+     * @return true if it matches
+     * @param    server    name of the server expected
      */
     private static boolean matchCert(String server, X509Certificate cert) {
-	if (logger.isLoggable(Level.FINER))
-	    logger.finer("matchCert server " +
-		server + ", cert " + cert);
+        if (logger.isLoggable(Level.FINER))
+            logger.finer("matchCert server " +
+                    server + ", cert " + cert);
 
 	/*
 	 * First, try to use sun.security.util.HostnameChecker,
@@ -599,98 +610,98 @@ public class SocketFetcher {
 	 * We use reflection to access it in case it's not available
 	 * in the JDK we're running on.
 	 */
-	try {
-	    Class hnc = Class.forName("sun.security.util.HostnameChecker");
-	    // invoke HostnameChecker.getInstance(HostnameChecker.TYPE_LDAP)
-	    // HostnameChecker.TYPE_LDAP == 2
-	    // LDAP requires the same regex handling as we need
-	    Method getInstance = hnc.getMethod("getInstance", 
-					new Class[] { byte.class });
-	    Object hostnameChecker = getInstance.invoke(new Object(),
-					new Object[] { new Byte((byte)2) });
+        try {
+            Class hnc = Class.forName("sun.security.util.HostnameChecker");
+            // invoke HostnameChecker.getInstance(HostnameChecker.TYPE_LDAP)
+            // HostnameChecker.TYPE_LDAP == 2
+            // LDAP requires the same regex handling as we need
+            Method getInstance = hnc.getMethod("getInstance",
+                    new Class[]{byte.class});
+            Object hostnameChecker = getInstance.invoke(new Object(),
+                    new Object[]{new Byte((byte) 2)});
 
-	    // invoke hostnameChecker.match( server, cert)
-	    if (logger.isLoggable(Level.FINER))
-		logger.finer("using sun.security.util.HostnameChecker");
-	    Method match = hnc.getMethod("match",
-			new Class[] { String.class, X509Certificate.class });
-	    try {
-		match.invoke(hostnameChecker, new Object[] { server, cert });
-		return true;
-	    } catch (InvocationTargetException cex) {
-		logger.log(Level.FINER, "FAIL", cex);
-		return false;
-	    }
-	} catch (Exception ex) {
-	    logger.log(Level.FINER, "NO sun.security.util.HostnameChecker", ex);
-	    // ignore failure and continue below
-	}
+            // invoke hostnameChecker.match( server, cert)
+            if (logger.isLoggable(Level.FINER))
+                logger.finer("using sun.security.util.HostnameChecker");
+            Method match = hnc.getMethod("match",
+                    new Class[]{String.class, X509Certificate.class});
+            try {
+                match.invoke(hostnameChecker, new Object[]{server, cert});
+                return true;
+            } catch (InvocationTargetException cex) {
+                logger.log(Level.FINER, "FAIL", cex);
+                return false;
+            }
+        } catch (Exception ex) {
+            logger.log(Level.FINER, "NO sun.security.util.HostnameChecker", ex);
+            // ignore failure and continue below
+        }
 
 	/*
 	 * Lacking HostnameChecker, we implement a crude version of
 	 * the same checks ourselves.
 	 */
-	try {
+        try {
 	    /*
 	     * Check each of the subjectAltNames.
 	     * XXX - only checks DNS names, should also handle
 	     * case where server name is a literal IP address
 	     */
-	    Collection names = cert.getSubjectAlternativeNames();
-	    if (names != null) {
-		boolean foundName = false;
-		for (Iterator it = names.iterator(); it.hasNext(); ) {
-		    List nameEnt = (List)it.next();
-		    Integer type = (Integer)nameEnt.get(0);
-		    if (type.intValue() == 2) {	// 2 == dNSName
-			foundName = true;
-			String name = (String)nameEnt.get(1);
-			if (logger.isLoggable(Level.FINER))
-			    logger.finer("found name: " + name);
-			if (matchServer(server, name))
-			    return true;
-		    }
-		}
-		if (foundName)	// found a name, but no match
-		    return false;
-	    }
-	} catch (CertificateParsingException ex) {
-	    // ignore it
-	}
+            Collection names = cert.getSubjectAlternativeNames();
+            if (names != null) {
+                boolean foundName = false;
+                for (Iterator it = names.iterator(); it.hasNext(); ) {
+                    List nameEnt = (List) it.next();
+                    Integer type = (Integer) nameEnt.get(0);
+                    if (type.intValue() == 2) {    // 2 == dNSName
+                        foundName = true;
+                        String name = (String) nameEnt.get(1);
+                        if (logger.isLoggable(Level.FINER))
+                            logger.finer("found name: " + name);
+                        if (matchServer(server, name))
+                            return true;
+                    }
+                }
+                if (foundName)    // found a name, but no match
+                    return false;
+            }
+        } catch (CertificateParsingException ex) {
+            // ignore it
+        }
 
-	// XXX - following is a *very* crude parse of the name and ignores
-	//	 all sorts of important issues such as quoting
-	Pattern p = Pattern.compile("CN=([^,]*)");
-	Matcher m = p.matcher(cert.getSubjectX500Principal().getName());
-	if (m.find() && matchServer(server, m.group(1).trim()))
-	    return true;
+        // XXX - following is a *very* crude parse of the name and ignores
+        //	 all sorts of important issues such as quoting
+        Pattern p = Pattern.compile("CN=([^,]*)");
+        Matcher m = p.matcher(cert.getSubjectX500Principal().getName());
+        if (m.find() && matchServer(server, m.group(1).trim()))
+            return true;
 
-	return false;
+        return false;
     }
 
     /**
      * Does the server we're expecting to connect to match the
      * given name from the server's certificate?
      *
-     * @param	server		name of the server expected
-     * @param	name		name from the server's certificate
+     * @param    server        name of the server expected
+     * @param    name        name from the server's certificate
      */
     private static boolean matchServer(String server, String name) {
-	if (logger.isLoggable(Level.FINER))
-	    logger.finer("match server " + server + " with " + name);
-	if (name.startsWith("*.")) {
-	    // match "foo.example.com" with "*.example.com"
-	    String tail = name.substring(2);
-	    if (tail.length() == 0)
-		return false;
-	    int off = server.length() - tail.length();
-	    if (off < 1)
-		return false;
-	    // if tail matches and is preceeded by "."
-	    return server.charAt(off - 1) == '.' &&
-		    server.regionMatches(true, off, tail, 0, tail.length());
-	} else
-	    return server.equalsIgnoreCase(name);
+        if (logger.isLoggable(Level.FINER))
+            logger.finer("match server " + server + " with " + name);
+        if (name.startsWith("*.")) {
+            // match "foo.example.com" with "*.example.com"
+            String tail = name.substring(2);
+            if (tail.length() == 0)
+                return false;
+            int off = server.length() - tail.length();
+            if (off < 1)
+                return false;
+            // if tail matches and is preceeded by "."
+            return server.charAt(off - 1) == '.' &&
+                    server.regionMatches(true, off, tail, 0, tail.length());
+        } else
+            return server.equalsIgnoreCase(name);
     }
 
     /**
@@ -698,11 +709,11 @@ public class SocketFetcher {
      * and return the tokens in an array.
      */
     private static String[] stringArray(String s) {
-	StringTokenizer st = new StringTokenizer(s);
-	List<String> tokens = new ArrayList<String>();
-	while (st.hasMoreTokens())
-	    tokens.add(st.nextToken());
-	return (String[])tokens.toArray(new String[tokens.size()]);
+        StringTokenizer st = new StringTokenizer(s);
+        List<String> tokens = new ArrayList<String>();
+        while (st.hasMoreTokens())
+            tokens.add(st.nextToken());
+        return (String[]) tokens.toArray(new String[tokens.size()]);
     }
 
     /**
@@ -711,15 +722,16 @@ public class SocketFetcher {
      * Thread.getContextClassLoader method.
      */
     private static ClassLoader getContextClassLoader() {
-	return (ClassLoader)
-		AccessController.doPrivileged(new PrivilegedAction() {
-	    public Object run() {
-		ClassLoader cl = null;
-		try {
-		    cl = Thread.currentThread().getContextClassLoader();
-		} catch (SecurityException ex) { }
-		return cl;
-	    }
-	});
+        return (ClassLoader)
+                AccessController.doPrivileged(new PrivilegedAction() {
+                    public Object run() {
+                        ClassLoader cl = null;
+                        try {
+                            cl = Thread.currentThread().getContextClassLoader();
+                        } catch (SecurityException ex) {
+                        }
+                        return cl;
+                    }
+                });
     }
 }

@@ -40,13 +40,14 @@
 
 package metapi.mail.iap;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * An interface for objects that provide data dynamically for use in
  * a literal protocol element.
  *
- * @author  Bill Shannon
+ * @author Bill Shannon
  */
 
 public interface Literal {

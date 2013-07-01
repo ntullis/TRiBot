@@ -45,8 +45,8 @@ import metapi.mail.Message;
 /**
  * This class implements searching for the Gmail message ID.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public final class GmailMsgIdTerm extends LongTerm {
@@ -56,36 +56,36 @@ public final class GmailMsgIdTerm extends LongTerm {
     /**
      * Constructor.
      *
-     * @param msgId  the message ID
+     * @param msgId the message ID
      */
     public GmailMsgIdTerm(long msgId) {
-	super(msgId);
+        super(msgId);
     }
 
     /**
      * The match method.
      *
-     * @param msg	the Message number is matched with this Message
-     * @return		true if the match succeeds, otherwise false
+     * @param msg the Message number is matched with this Message
+     * @return true if the match succeeds, otherwise false
      */
     public boolean match(Message msg) {
-	long msgId;
+        long msgId;
 
-	try {
-	    msgId = ((GmailMessage)msg).getMsgId();
-	} catch (Exception e) {
-	    return false;
-	}
+        try {
+            msgId = ((GmailMessage) msg).getMsgId();
+        } catch (Exception e) {
+            return false;
+        }
 
-	return super.match(msgId);
+        return super.match(msgId);
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof GmailMsgIdTerm))
-	    return false;
-	return super.equals(obj);
+        if (!(obj instanceof GmailMsgIdTerm))
+            return false;
+        return super.equals(obj);
     }
 }

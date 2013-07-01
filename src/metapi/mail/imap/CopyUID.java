@@ -47,17 +47,17 @@ import metapi.mail.imap.protocol.UIDSet;
  * defined by the UIDPLUS extension -
  * <A HREF="http://www.ietf.org/rfc/rfc2359.txt">RFC 2359</A>.
  *
- * @author  Bill Shannon
+ * @author Bill Shannon
  */
 
-public class CopyUID { 
+public class CopyUID {
     public long uidvalidity = -1;
     public UIDSet[] src;
     public UIDSet[] dst;
 
     public CopyUID(long uidvalidity, UIDSet[] src, UIDSet[] dst) {
-	this.uidvalidity = uidvalidity;
-	this.src = src;
-	this.dst = dst;
+        this.uidvalidity = uidvalidity;
+        this.src = src;
+        this.dst = dst;
     }
 }

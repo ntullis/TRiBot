@@ -42,5 +42,6 @@ package metapi.mail.mbox;
 
 public interface InboxFile extends MailFile {
     public boolean openLock(String mode);
+
     public void closeLock();
 }

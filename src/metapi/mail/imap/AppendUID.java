@@ -45,15 +45,15 @@ package metapi.mail.imap;
  * defined by the UIDPLUS extension -
  * <A HREF="http://www.ietf.org/rfc/rfc2359.txt">RFC 2359</A>.
  *
- * @author  Bill Shannon
+ * @author Bill Shannon
  */
 
-public class AppendUID { 
+public class AppendUID {
     public long uidvalidity = -1;
     public long uid = -1;
 
     public AppendUID(long uidvalidity, long uid) {
-	this.uidvalidity = uidvalidity;
-	this.uid = uid;
+        this.uidvalidity = uidvalidity;
+        this.uid = uid;
     }
 }

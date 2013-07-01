@@ -46,7 +46,7 @@ import metapi.mail.internet.InternetAddress;
 
 /**
  * This exception is thrown when the message cannot be sent. <p>
- * 
+ * <p/>
  * This exception will usually appear first in a chained list of exceptions,
  * followed by SMTPAddressFailedExceptions and/or
  * SMTPAddressSucceededExceptions, * one per address.
@@ -58,32 +58,32 @@ import metapi.mail.internet.InternetAddress;
  */
 
 public class SMTPSendFailedException extends SendFailedException {
-    protected InternetAddress addr;	// address that failed
-    protected String cmd;		// command issued to server
-    protected int rc;			// return code from SMTP server
+    protected InternetAddress addr;    // address that failed
+    protected String cmd;        // command issued to server
+    protected int rc;            // return code from SMTP server
 
     private static final long serialVersionUID = 8049122628728932894L;
 
     /**
-     * Constructs an SMTPSendFailedException with the specified 
+     * Constructs an SMTPSendFailedException with the specified
      * address, return code, and error string.
      *
-     * @param cmd	the command that was sent to the SMTP server
-     * @param rc	the SMTP return code indicating the failure
-     * @param err	the error string from the SMTP server
+     * @param cmd the command that was sent to the SMTP server
+     * @param rc  the SMTP return code indicating the failure
+     * @param err the error string from the SMTP server
      */
     public SMTPSendFailedException(String cmd, int rc, String err, Exception ex,
-				Address[] vs, Address[] vus, Address[] inv) {
-	super(err, ex, vs, vus, inv);
-	this.cmd = cmd;
-	this.rc = rc;
+                                   Address[] vs, Address[] vus, Address[] inv) {
+        super(err, ex, vs, vus, inv);
+        this.cmd = cmd;
+        this.rc = rc;
     }
 
     /**
      * Return the command that failed.
      */
     public String getCommand() {
-	return cmd;
+        return cmd;
     }
 
     /**
@@ -93,6 +93,6 @@ public class SMTPSendFailedException extends SendFailedException {
      * for interpretation of the return code.
      */
     public int getReturnCode() {
-	return rc;
+        return rc;
     }
 }

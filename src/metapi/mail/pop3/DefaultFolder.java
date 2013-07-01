@@ -50,96 +50,96 @@ import metapi.mail.*;
 public class DefaultFolder extends Folder {
 
     DefaultFolder(POP3Store store) {
-	super(store);
+        super(store);
     }
 
     public String getName() {
-	return "";
+        return "";
     }
 
     public String getFullName() {
-	return "";
+        return "";
     }
 
     public Folder getParent() {
-	return null;
+        return null;
     }
 
     public boolean exists() {
-	return true;
+        return true;
     }
 
     public Folder[] list(String pattern) throws MessagingException {
-	Folder[] f = { getInbox() };
-	return f;
+        Folder[] f = {getInbox()};
+        return f;
     }
 
     public char getSeparator() {
-	return '/';
+        return '/';
     }
 
     public int getType() {
-	return HOLDS_FOLDERS;
+        return HOLDS_FOLDERS;
     }
 
     public boolean create(int type) throws MessagingException {
-	return false;
+        return false;
     }
 
     public boolean hasNewMessages() throws MessagingException {
-	return false;
+        return false;
     }
 
     public Folder getFolder(String name) throws MessagingException {
-	if (!name.equalsIgnoreCase("INBOX")) {
-	    throw new MessagingException("only INBOX supported");
-	} else {
-	    return getInbox();
-	}
+        if (!name.equalsIgnoreCase("INBOX")) {
+            throw new MessagingException("only INBOX supported");
+        } else {
+            return getInbox();
+        }
     }
 
     protected Folder getInbox() throws MessagingException {
-	return getStore().getFolder("INBOX");
+        return getStore().getFolder("INBOX");
     }
-    
+
 
     public boolean delete(boolean recurse) throws MessagingException {
-	throw new MethodNotSupportedException("delete");
+        throw new MethodNotSupportedException("delete");
     }
 
     public boolean renameTo(Folder f) throws MessagingException {
-	throw new MethodNotSupportedException("renameTo");
+        throw new MethodNotSupportedException("renameTo");
     }
 
     public void open(int mode) throws MessagingException {
-	throw new MethodNotSupportedException("open");
+        throw new MethodNotSupportedException("open");
     }
 
     public void close(boolean expunge) throws MessagingException {
-	throw new MethodNotSupportedException("close");
+        throw new MethodNotSupportedException("close");
     }
 
     public boolean isOpen() {
-	return false;
+        return false;
     }
 
     public Flags getPermanentFlags() {
-	return new Flags(); // empty flags object
+        return new Flags(); // empty flags object
     }
 
     public int getMessageCount() throws MessagingException {
-	return 0;
+        return 0;
     }
 
     public Message getMessage(int msgno) throws MessagingException {
-	throw new MethodNotSupportedException("getMessage");
+        throw new MethodNotSupportedException("getMessage");
     }
 
     public void appendMessages(Message[] msgs) throws MessagingException {
-	throw new MethodNotSupportedException("Append not supported");	
+        throw new MethodNotSupportedException("Append not supported");
     }
 
     public Message[] expunge() throws MessagingException {
-	throw new MethodNotSupportedException("expunge");	
+        throw new MethodNotSupportedException("expunge");
     }
 }

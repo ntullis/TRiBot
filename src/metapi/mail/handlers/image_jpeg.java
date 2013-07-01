@@ -40,18 +40,18 @@
 
 package metapi.mail.handlers;
 
-import javax.activation.*;
+import javax.activation.ActivationDataFlavor;
 
 /**
  * DataContentHandler for image/jpeg.
  */
 public class image_jpeg extends image_gif {
     private static ActivationDataFlavor myDF = new ActivationDataFlavor(
-	java.awt.Image.class,
-	"image/jpeg",
-	"JPEG Image");
+            java.awt.Image.class,
+            "image/jpeg",
+            "JPEG Image");
 
     protected ActivationDataFlavor getDF() {
-	return myDF;
+        return myDF;
     }
 }

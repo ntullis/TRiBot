@@ -49,7 +49,12 @@ package metapi.mail.event;
  * @author John Mani
  */
 public abstract class FolderAdapter implements FolderListener {
-    public void folderCreated(FolderEvent e) {}
-    public void folderRenamed(FolderEvent e) {}
-    public void folderDeleted(FolderEvent e) {}
+    public void folderCreated(FolderEvent e) {
+    }
+
+    public void folderRenamed(FolderEvent e) {
+    }
+
+    public void folderDeleted(FolderEvent e) {
+    }
 }

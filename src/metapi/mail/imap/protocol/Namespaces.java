@@ -40,13 +40,15 @@
 
 package metapi.mail.imap.protocol;
 
-import java.util.*;
-import metapi.mail.iap.*;
+import metapi.mail.iap.ProtocolException;
+import metapi.mail.iap.Response;
+
+import java.util.Vector;
 
 /**
  * This class and its inner class represent the response to the
  * NAMESPACE command. <p>
- *
+ * <p/>
  * See <A HREF="http://www.ietf.org/rfc/rfc2342.txt">RFC 2342</A>.
  *
  * @author Bill Shannon
@@ -58,59 +60,61 @@ public class Namespaces {
      * A single namespace entry.
      */
     public static class Namespace {
-	/**
-	 * Prefix string for the namespace.
-	 */
-	public String prefix;
+        /**
+         * Prefix string for the namespace.
+         */
+        public String prefix;
 
-	/**
-	 * Delimiter between names in this namespace.
-	 */
-	public char delimiter;
+        /**
+         * Delimiter between names in this namespace.
+         */
+        public char delimiter;
 
-	/**
-	 * Parse a namespace element out of the response.
-	 */
-	public Namespace(Response r) throws ProtocolException {
-	    // Namespace_Element = "(" string SP (<"> QUOTED_CHAR <"> / nil)
-	    //		*(Namespace_Response_Extension) ")"
-	    if (r.readByte() != '(')
-		throw new ProtocolException(
-					"Missing '(' at start of Namespace");
-	    // first, the prefix
-	    prefix = BASE64MailboxDecoder.decode(r.readString());
-	    r.skipSpaces();
-	    // delimiter is a quoted character or NIL
-	    if (r.peekByte() == '"') {
-		r.readByte();
-		delimiter = (char)r.readByte();
-		if (delimiter == '\\')
-		    delimiter = (char)r.readByte();
-		if (r.readByte() != '"')
-		    throw new ProtocolException(
-				    "Missing '\"' at end of QUOTED_CHAR");
-	    } else {
-		String s = r.readAtom();
-		if (s == null)
-		    throw new ProtocolException("Expected NIL, got null");
-		if (!s.equalsIgnoreCase("NIL"))
-		    throw new ProtocolException("Expected NIL, got " + s);
-		delimiter = 0;
-	    }
-	    // at end of Namespace data?
-	    if (r.peekByte() != ')') {
-		// otherwise, must be a Namespace_Response_Extension
-		//    Namespace_Response_Extension = SP string SP
-		//	    "(" string *(SP string) ")"
-		r.skipSpaces();
-		r.readString();
-		r.skipSpaces();
-		r.readStringList();
-	    }
-	    if (r.readByte() != ')')
-		throw new ProtocolException("Missing ')' at end of Namespace");
-	}
-    };
+        /**
+         * Parse a namespace element out of the response.
+         */
+        public Namespace(Response r) throws ProtocolException {
+            // Namespace_Element = "(" string SP (<"> QUOTED_CHAR <"> / nil)
+            //		*(Namespace_Response_Extension) ")"
+            if (r.readByte() != '(')
+                throw new ProtocolException(
+                        "Missing '(' at start of Namespace");
+            // first, the prefix
+            prefix = BASE64MailboxDecoder.decode(r.readString());
+            r.skipSpaces();
+            // delimiter is a quoted character or NIL
+            if (r.peekByte() == '"') {
+                r.readByte();
+                delimiter = (char) r.readByte();
+                if (delimiter == '\\')
+                    delimiter = (char) r.readByte();
+                if (r.readByte() != '"')
+                    throw new ProtocolException(
+                            "Missing '\"' at end of QUOTED_CHAR");
+            } else {
+                String s = r.readAtom();
+                if (s == null)
+                    throw new ProtocolException("Expected NIL, got null");
+                if (!s.equalsIgnoreCase("NIL"))
+                    throw new ProtocolException("Expected NIL, got " + s);
+                delimiter = 0;
+            }
+            // at end of Namespace data?
+            if (r.peekByte() != ')') {
+                // otherwise, must be a Namespace_Response_Extension
+                //    Namespace_Response_Extension = SP string SP
+                //	    "(" string *(SP string) ")"
+                r.skipSpaces();
+                r.readString();
+                r.skipSpaces();
+                r.readStringList();
+            }
+            if (r.readByte() != ')')
+                throw new ProtocolException("Missing ')' at end of Namespace");
+        }
+    }
+
+    ;
 
     /**
      * The personal namespaces.
@@ -134,35 +138,35 @@ public class Namespaces {
      * Parse out all the namespaces.
      */
     public Namespaces(Response r) throws ProtocolException {
-	personal = getNamespaces(r);
-	otherUsers = getNamespaces(r);
-	shared = getNamespaces(r);
+        personal = getNamespaces(r);
+        otherUsers = getNamespaces(r);
+        shared = getNamespaces(r);
     }
 
     /**
      * Parse out one of the three sets of namespaces.
      */
     private Namespace[] getNamespaces(Response r) throws ProtocolException {
-	r.skipSpaces();
-	//    Namespace = nil / "(" 1*( Namespace_Element) ")"
-	if (r.peekByte() == '(') {
-	    Vector<Namespace> v = new Vector<Namespace>();
-	    r.readByte();
-	    do {
-		Namespace ns = new Namespace(r);
-		v.addElement(ns);
-	    } while (r.peekByte() != ')');
-	    r.readByte();
-	    Namespace[] nsa = new Namespace[v.size()];
-	    v.copyInto(nsa);
-	    return nsa;
-	} else {
-	    String s = r.readAtom();
-	    if (s == null)
-		throw new ProtocolException("Expected NIL, got null");
-	    if (!s.equalsIgnoreCase("NIL"))
-		throw new ProtocolException("Expected NIL, got " + s);
-	    return null;
-	}
+        r.skipSpaces();
+        //    Namespace = nil / "(" 1*( Namespace_Element) ")"
+        if (r.peekByte() == '(') {
+            Vector<Namespace> v = new Vector<Namespace>();
+            r.readByte();
+            do {
+                Namespace ns = new Namespace(r);
+                v.addElement(ns);
+            } while (r.peekByte() != ')');
+            r.readByte();
+            Namespace[] nsa = new Namespace[v.size()];
+            v.copyInto(nsa);
+            return nsa;
+        } else {
+            String s = r.readAtom();
+            if (s == null)
+                throw new ProtocolException("Expected NIL, got null");
+            if (!s.equalsIgnoreCase("NIL"))
+                throw new ProtocolException("Expected NIL, got " + s);
+            return null;
+        }
     }
 }

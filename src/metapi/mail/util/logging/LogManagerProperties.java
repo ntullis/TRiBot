@@ -40,6 +40,8 @@
  */
 package metapi.mail.util.logging;
 
+import metapi.mail.Authenticator;
+
 import java.io.ObjectStreamException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -47,9 +49,8 @@ import java.lang.reflect.Modifier;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.*;
-import java.util.logging.Formatter;
 import java.util.logging.*;
-import metapi.mail.Authenticator;
+import java.util.logging.Formatter;
 
 /**
  * An adapter class to allow the Mail API to access the LogManager properties.
@@ -60,13 +61,13 @@ import metapi.mail.Authenticator;
  * LogManager it is then copied to this properties object with no key prefix.
  * If no value is found in the LogManager or the parent properties, then this
  * properties object is searched only by passing the key value.
- *
- * <p>
+ * <p/>
+ * <p/>
  * This class also emulates the LogManager functions for creating new objects
  * from string class names.  This is to support initial setup of objects such as
  * log filters, formatters, error managers, etc.
- *
- * <p>
+ * <p/>
+ * <p/>
  * This class should never be exposed outside of this package.  Keep this
  * class package private (default access).
  *
@@ -83,6 +84,7 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Gets the LogManger for the running JVM.
+     *
      * @return the LogManager.
      * @since JavaMail 1.4.5
      */
@@ -92,6 +94,7 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Converts a locale to a language tag.
+     *
      * @param locale the locale to convert.
      * @return the language tag.
      * @throws NullPointerException if the given locale is null.
@@ -122,18 +125,19 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new filter from the given class name.
+     *
      * @param name the fully qualified class name.
      * @return a new filter.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @since JavaMail 1.4.5
      */
     static Filter newFilter(String name) throws Exception {
@@ -142,18 +146,19 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new formatter from the given class name.
+     *
      * @param name the fully qualified class name.
      * @return a new formatter.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @since JavaMail 1.4.5
      */
     static Formatter newFormatter(String name) throws Exception {
@@ -162,20 +167,21 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new log record comparator from the given class name.
+     *
      * @param name the fully qualified class name.
      * @return a new comparator.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
-     * @since JavaMail 1.4.5
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @see java.util.logging.LogRecord
+     * @since JavaMail 1.4.5
      */
     @SuppressWarnings("unchecked")
     static Comparator<? super LogRecord> newComparator(String name) throws Exception {
@@ -190,17 +196,17 @@ final class LogManagerProperties extends Properties {
      * then a comparator wrapping the given comparator is returned.
      *
      * @param <T> the element type to be compared
-     * @param c a comparator whose ordering is to be reversed by the returned
-     * comparator
+     * @param c   a comparator whose ordering is to be reversed by the returned
+     *            comparator
      * @return A comparator that imposes the reverse ordering of the specified
-     * comparator.
+     *         comparator.
      * @throws NullPointerException if the given comparator is null.
      * @since JavaMail 1.5.0
      */
     @SuppressWarnings("unchecked")
     static <T> Comparator<T> reverseOrder(final Comparator<T> c) {
         if (c == null) {
-           throw new NullPointerException();
+            throw new NullPointerException();
         }
 
         Comparator<T> reverse = null;
@@ -234,18 +240,19 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new error manager from the given class name.
+     *
      * @param name the fully qualified class name.
      * @return a new error manager.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @since JavaMail 1.4.5
      */
     static ErrorManager newErrorManager(String name) throws Exception {
@@ -254,18 +261,19 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new authenticator from the given class name.
+     *
      * @param name the fully qualified class name.
      * @return a new authenticator.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @since JavaMail 1.4.5
      */
     static Authenticator newAuthenticator(String name) throws Exception {
@@ -274,19 +282,20 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a new object from the given class name.
+     *
      * @param name the fully qualified class name.
      * @param type the assignable type for the given name.
      * @return a new object assignable to the given type.
-     * @throws ClassCastException if class name does not match the type.
-     * @throws ClassNotFoundException if the class name was not found.
-     * @throws IllegalAccessException if the constructor is inaccessible.
-     * @throws InstantiationException if the given class name is abstract.
-     * @throws InvocationTargetException if the constructor throws an exception.
-     * @throws LinkageError if the linkage fails.
+     * @throws ClassCastException          if class name does not match the type.
+     * @throws ClassNotFoundException      if the class name was not found.
+     * @throws IllegalAccessException      if the constructor is inaccessible.
+     * @throws InstantiationException      if the given class name is abstract.
+     * @throws InvocationTargetException   if the constructor throws an exception.
+     * @throws LinkageError                if the linkage fails.
      * @throws ExceptionInInitializerError if the static initializer fails.
-     * @throws Exception to match the error method of the ErrorManager.
-     * @throws NoSuchMethodException if the class name does not have a no
-     * argument constructor.
+     * @throws Exception                   to match the error method of the ErrorManager.
+     * @throws NoSuchMethodException       if the class name does not have a no
+     *                                     argument constructor.
      * @since JavaMail 1.4.5
      */
     private static <T> T newObjectFrom(String name, Class<T> type) throws Exception {
@@ -318,10 +327,11 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Returns the given exception or throws the escaping cause.
+     *
      * @param ite any invocation target.
      * @return the exception.
      * @throws VirtualMachineError if present as cause.
-     * @throws ThreadDeath if present as cause.
+     * @throws ThreadDeath         if present as cause.
      * @since JavaMail 1.4.5
      */
     private static Exception paramOrError(InvocationTargetException ite) {
@@ -338,6 +348,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Throws the given error if the cause is an error otherwise
      * the given error is wrapped.
+     *
      * @param eiie the error.
      * @return an InvocationTargetException.
      * @since JavaMail 1.5.0
@@ -360,10 +371,11 @@ final class LogManagerProperties extends Properties {
      * searching the system class loader first, then the context class loader.
      * There is resistance (compatibility) to change this behavior to simply
      * searching the context class loader.
+     *
      * @param name full class name
      * @return the class.
-     * @throws LinkageError if the linkage fails.
-     * @throws ClassNotFoundException if the class name was not found.
+     * @throws LinkageError                if the linkage fails.
+     * @throws ClassNotFoundException      if the class name was not found.
      * @throws ExceptionInInitializerError if static initializer fails.
      */
     private static Class<?> findClass(String name) throws ClassNotFoundException {
@@ -410,6 +422,7 @@ final class LogManagerProperties extends Properties {
             }
         });
     }
+
     /**
      * The namespace prefix to search LogManager and defaults.
      */
@@ -417,10 +430,11 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Creates a log manager properties object.
+     *
      * @param parent the parent properties.
      * @param prefix the namespace prefix.
      * @throws NullPointerException if <tt>prefix</tt> or <tt>parent</tt> is
-     * <tt>null</tt>.
+     *                              <tt>null</tt>.
      */
     LogManagerProperties(final Properties parent, final String prefix) {
         super(parent);
@@ -438,6 +452,7 @@ final class LogManagerProperties extends Properties {
      * Returns a properties object that contains a snapshot of the current
      * state.  This method violates the clone contract so that no instances
      * of LogManagerProperties is exported for public use.
+     *
      * @return the snapshot.
      * @since JavaMail 1.4.4
      */
@@ -449,6 +464,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Searches defaults, then searches the log manager
      * by the prefix property, and then by the key itself.
+     *
      * @param key a non null key.
      * @return the value for that key.
      */
@@ -485,6 +501,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Calls getProperty directly.  If getProperty returns null the default
      * value is returned.
+     *
      * @param key a key to search for.
      * @param def the default value to use if not found.
      * @return the value for the key.
@@ -499,6 +516,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Required to work with PropUtil.  Calls getProperty directly if the
      * given key is a string.  Otherwise, performs a normal get operation.
+     *
      * @param key any key.
      * @return the value for the key or null.
      * @since JavaMail 1.4.5
@@ -515,6 +533,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Required to work with PropUtil.  An updated copy of the key is fetched
      * from the log manager if the key doesn't exist in this properties.
+     *
      * @param key any key.
      * @return the value for the key or the default value for the key.
      * @since JavaMail 1.4.5
@@ -528,6 +547,7 @@ final class LogManagerProperties extends Properties {
 
     /**
      * Calls the put method directly.
+     *
      * @param key any key.
      * @return the value for the key or the default value for the key.
      * @since JavaMail 1.4.5
@@ -540,6 +560,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Required to work with PropUtil.  An updated copy of the key is fetched
      * from the log manager prior to returning.
+     *
      * @param key any key.
      * @return the value for the key or null.
      * @since JavaMail 1.4.5
@@ -556,6 +577,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Required to work with PropUtil.  An updated copy of the key is fetched
      * from the log manager if the key doesn't exist in this properties.
+     *
      * @param key any key.
      * @return the value for the key or the default value for the key.
      * @since JavaMail 1.4.5
@@ -570,6 +592,7 @@ final class LogManagerProperties extends Properties {
     /**
      * It is assumed that this method will never be called.
      * No way to get the property names from LogManager.
+     *
      * @return the property names
      */
     @Override
@@ -581,6 +604,7 @@ final class LogManagerProperties extends Properties {
     /**
      * It is assumed that this method will never be called.
      * The prefix value is not used for the equals method.
+     *
      * @param o any object or null.
      * @return true if equal, otherwise false.
      */
@@ -601,6 +625,7 @@ final class LogManagerProperties extends Properties {
 
     /**
      * It is assumed that this method will never be called.  See equals.
+     *
      * @return the hash code.
      */
     @Override
@@ -614,6 +639,7 @@ final class LogManagerProperties extends Properties {
      * Caches a key read from the log manager in this properties object.
      * The key is only cached if it is an instance of a String and
      * this properties doesn't contain a copy of the key.
+     *
      * @param key the key to search.
      * @return the default value for the key.
      */
@@ -631,6 +657,7 @@ final class LogManagerProperties extends Properties {
     /**
      * Creates a public snapshot of this properties object using
      * the given parent properties.
+     *
      * @param parent the defaults to use with the snapshot.
      * @return the safe snapshot.
      */
@@ -645,6 +672,7 @@ final class LogManagerProperties extends Properties {
      * It is assumed that this method will never be called.
      * We return a safe copy for export to avoid locking this properties
      * object or the defaults during write.
+     *
      * @return the parent properties.
      * @throws ObjectStreamException if there is a problem.
      */

@@ -40,18 +40,20 @@
 
 package metapi.mail.imap.protocol;
 
+import metapi.mail.iap.ByteArray;
+import metapi.mail.iap.ParsingException;
+
 import java.io.ByteArrayInputStream;
-import metapi.mail.iap.*;
 
 /**
  * The BODY fetch response item.
  *
- * @author  John Mani
+ * @author John Mani
  */
 
 public class BODY implements Item {
-    
-    static final char[] name = {'B','O','D','Y'};
+
+    static final char[] name = {'B', 'O', 'D', 'Y'};
 
     public int msgno;
     public ByteArray data;
@@ -62,34 +64,34 @@ public class BODY implements Item {
      * Constructor
      */
     public BODY(FetchResponse r) throws ParsingException {
-	msgno = r.getNumber();
+        msgno = r.getNumber();
 
-	r.skipSpaces();
+        r.skipSpaces();
 
-	int b;
-	while ((b = r.readByte()) != ']') { // skip section
-	    if (b == 0)
-		throw new ParsingException(
-			"BODY parse error: missing ``]'' at section end");
-	}
+        int b;
+        while ((b = r.readByte()) != ']') { // skip section
+            if (b == 0)
+                throw new ParsingException(
+                        "BODY parse error: missing ``]'' at section end");
+        }
 
-	
-	if (r.readByte() == '<') { // origin
-	    origin = r.readNumber();
-	    r.skip(1); // skip '>';
-	}
 
-	data = r.readByteArray();
+        if (r.readByte() == '<') { // origin
+            origin = r.readNumber();
+            r.skip(1); // skip '>';
+        }
+
+        data = r.readByteArray();
     }
 
     public ByteArray getByteArray() {
-	return data;
+        return data;
     }
 
     public ByteArrayInputStream getByteArrayInputStream() {
-	if (data != null)
-	    return data.toByteArrayInputStream();
-	else
-	    return null;
+        if (data != null)
+            return data.toByteArrayInputStream();
+        else
+            return null;
     }
 }

@@ -40,7 +40,9 @@
 
 package metapi.mail.util;
 
-import java.io.*;
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.logging.Level;
 
 /**
@@ -61,11 +63,11 @@ public class TraceOutputStream extends FilterOutputStream {
      * Creates an output stream filter built on top of the specified
      * underlying output stream.
      *
-     * @param   out   the underlying output stream.
-     * @param	logger	log trace here
+     * @param out the underlying output stream.
+     * @param    logger    log trace here
      */
     public TraceOutputStream(OutputStream out, MailLogger logger) {
-	super(out);
+        super(out);
 
         if (logger != null) {
             this.trace = logger.isLoggable(Level.FINEST);
@@ -79,27 +81,28 @@ public class TraceOutputStream extends FilterOutputStream {
      * Creates an output stream filter built on top of the specified
      * underlying output stream.
      *
-     * @param   out   the underlying output stream.
-     * @param	traceOut	the trace stream.
+     * @param out the underlying output stream.
+     * @param    traceOut    the trace stream.
      */
     public TraceOutputStream(OutputStream out, OutputStream traceOut) {
-	super(out);
-	this.traceOut = traceOut;
+        super(out);
+        this.traceOut = traceOut;
     }
 
     /**
      * Set the trace mode.
      */
     public void setTrace(boolean trace) {
-	this.trace = trace;
+        this.trace = trace;
     }
 
     /**
      * Set quote mode.
-     * @param	quote	the quote mode
+     *
+     * @param    quote    the quote mode
      */
     public void setQuote(boolean quote) {
-	this.quote = quote;
+        this.quote = quote;
     }
 
     /**
@@ -108,56 +111,56 @@ public class TraceOutputStream extends FilterOutputStream {
      * is <code>true</code>
      */
     public void write(int b) throws IOException {
-	if (trace) {
-	    if (quote)
-		writeByte(b);
-	    else
-		traceOut.write(b);
-	}
-	out.write(b);
+        if (trace) {
+            if (quote)
+                writeByte(b);
+            else
+                traceOut.write(b);
+        }
+        out.write(b);
     }
-	    
+
     /**
      * Writes <code>b.length</code> bytes to this output stream.
      * Writes out the bytes into the trace stream if the trace
      * mode is <code>true</code>
      */
     public void write(byte b[], int off, int len) throws IOException {
-	if (trace) {
-	    if (quote) {
-		for (int i = 0; i < len; i++)
-		    writeByte(b[off + i]);
-	    } else
-		traceOut.write(b, off, len);
-	}
-	out.write(b, off, len);
+        if (trace) {
+            if (quote) {
+                for (int i = 0; i < len; i++)
+                    writeByte(b[off + i]);
+            } else
+                traceOut.write(b, off, len);
+        }
+        out.write(b, off, len);
     }
 
     /**
      * Write a byte in a way that every byte value is printable ASCII.
      */
     private final void writeByte(int b) throws IOException {
-	b &= 0xff;
-	if (b > 0x7f) {
-	    traceOut.write('M');
-	    traceOut.write('-');
-	    b &= 0x7f;
-	}
-	if (b == '\r') {
-	    traceOut.write('\\');
-	    traceOut.write('r');
-	} else if (b == '\n') {
-	    traceOut.write('\\');
-	    traceOut.write('n');
-	    traceOut.write('\n');
-	} else if (b == '\t') {
-	    traceOut.write('\\');
-	    traceOut.write('t');
-	} else if (b < ' ') {
-	    traceOut.write('^');
-	    traceOut.write('@' + b);
-	} else {
-	    traceOut.write(b);
-	}
+        b &= 0xff;
+        if (b > 0x7f) {
+            traceOut.write('M');
+            traceOut.write('-');
+            b &= 0x7f;
+        }
+        if (b == '\r') {
+            traceOut.write('\\');
+            traceOut.write('r');
+        } else if (b == '\n') {
+            traceOut.write('\\');
+            traceOut.write('n');
+            traceOut.write('\n');
+        } else if (b == '\t') {
+            traceOut.write('\\');
+            traceOut.write('t');
+        } else if (b < ' ') {
+            traceOut.write('^');
+            traceOut.write('@' + b);
+        } else {
+            traceOut.write(b);
+        }
     }
 }

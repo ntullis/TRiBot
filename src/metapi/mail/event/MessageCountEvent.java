@@ -40,11 +40,12 @@
 
 package metapi.mail.event;
 
-import metapi.mail.*;
+import metapi.mail.Folder;
+import metapi.mail.Message;
 
 /**
  * This class notifies changes in the number of messages in a folder. <p>
- *
+ * <p/>
  * Note that some folder types may only deliver MessageCountEvents at
  * certain times or after certain operations.  IMAP in particular will
  * only notify the client of MessageCountEvents when a client issues a
@@ -60,10 +61,14 @@ import metapi.mail.*;
 
 public class MessageCountEvent extends MailEvent {
 
-    /** The messages were added to their folder */
-    public static final int ADDED 		= 1;
-    /** The messages were removed from their folder */
-    public static final int REMOVED 		= 2;
+    /**
+     * The messages were added to their folder
+     */
+    public static final int ADDED = 1;
+    /**
+     * The messages were removed from their folder
+     */
+    public static final int REMOVED = 2;
 
     /**
      * The event type.
@@ -74,7 +79,7 @@ public class MessageCountEvent extends MailEvent {
 
     /**
      * If true, this event is the result of an explicit
-     * expunge by this client, and the messages in this 
+     * expunge by this client, and the messages in this
      * folder have been renumbered to account for this.
      * If false, this event is the result of an expunge
      * by external sources.
@@ -92,30 +97,31 @@ public class MessageCountEvent extends MailEvent {
 
     /**
      * Constructor.
-     * @param folder  	The containing folder
-     * @param type	The event type
-     * @param removed	If true, this event is the result of an explicit
-     *			expunge by this client, and the messages in this 
-     *			folder have been renumbered to account for this.
-     *			If false, this event is the result of an expunge
-     *			by external sources.
      *
-     * @param msgs	The messages added/removed
+     * @param folder  The containing folder
+     * @param type    The event type
+     * @param removed If true, this event is the result of an explicit
+     *                expunge by this client, and the messages in this
+     *                folder have been renumbered to account for this.
+     *                If false, this event is the result of an expunge
+     *                by external sources.
+     * @param msgs    The messages added/removed
      */
-    public MessageCountEvent(Folder folder, int type, 
-			     boolean removed, Message[] msgs) {
-	super(folder);
-	this.type = type;
-	this.removed = removed;
-	this.msgs = msgs;
+    public MessageCountEvent(Folder folder, int type,
+                             boolean removed, Message[] msgs) {
+        super(folder);
+        this.type = type;
+        this.removed = removed;
+        this.msgs = msgs;
     }
 
     /**
      * Return the type of this event.
-     * @return  type
+     *
+     * @return type
      */
     public int getType() {
-	return type;
+        return type;
     }
 
     /**
@@ -125,29 +131,30 @@ public class MessageCountEvent extends MailEvent {
      * explicit expunge and hence all remaining messages in this
      * folder have been renumbered. If <code>false</code>, this event
      * is due to an external expunge. <p>
-     *
+     * <p/>
      * Note that this method is valid only if the type of this event
      * is <code>REMOVED</code>
      */
     public boolean isRemoved() {
-	return removed;
+        return removed;
     }
 
     /**
      * Return the array of messages added or removed.
+     *
      * @return array of messages
      */
     public Message[] getMessages() {
-	return msgs;
+        return msgs;
     }
 
     /**
      * Invokes the appropriate MessageCountListener method.
      */
     public void dispatch(Object listener) {
-	if (type == ADDED)
-	    ((MessageCountListener)listener).messagesAdded(this);
-	else // REMOVED
-	    ((MessageCountListener)listener).messagesRemoved(this);
+        if (type == ADDED)
+            ((MessageCountListener) listener).messagesAdded(this);
+        else // REMOVED
+            ((MessageCountListener) listener).messagesRemoved(this);
     }
 }

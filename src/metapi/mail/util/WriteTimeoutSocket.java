@@ -40,7 +40,9 @@
 
 package metapi.mail.util;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.*;
 import java.util.concurrent.*;
 
@@ -49,7 +51,7 @@ import java.util.concurrent.*;
  * implement timeouts for writes.  The write timeout is specified
  * (in milliseconds) when the WriteTimeoutSocket is created.
  *
- * @author	Bill Shannon
+ * @author Bill Shannon
  */
 public class WriteTimeoutSocket extends Socket {
 
@@ -61,42 +63,42 @@ public class WriteTimeoutSocket extends Socket {
     private final int timeout;
 
     public WriteTimeoutSocket(Socket socket, int timeout) throws IOException {
-	this.socket = socket;
-	// XXX - could share executor with all instances?
+        this.socket = socket;
+        // XXX - could share executor with all instances?
         this.ses = Executors.newScheduledThreadPool(1);
-	this.timeout = timeout;
+        this.timeout = timeout;
     }
 
     public WriteTimeoutSocket(int timeout) throws IOException {
-	this(new Socket(), timeout);
+        this(new Socket(), timeout);
     }
 
     public WriteTimeoutSocket(InetAddress address, int port, int timeout)
-				throws IOException {
-	this(timeout);
-	socket.connect(new InetSocketAddress(address, port));
+            throws IOException {
+        this(timeout);
+        socket.connect(new InetSocketAddress(address, port));
     }
 
     public WriteTimeoutSocket(InetAddress address, int port,
-			InetAddress localAddress, int localPort, int timeout)
-			throws IOException {
-	this(timeout);
-	socket.bind(new InetSocketAddress(localAddress, localPort));
-	socket.connect(new InetSocketAddress(address, port));
+                              InetAddress localAddress, int localPort, int timeout)
+            throws IOException {
+        this(timeout);
+        socket.bind(new InetSocketAddress(localAddress, localPort));
+        socket.connect(new InetSocketAddress(address, port));
     }
 
     public WriteTimeoutSocket(String host, int port, int timeout)
-				throws IOException {
-	this(timeout);
-	socket.connect(new InetSocketAddress(host, port));
+            throws IOException {
+        this(timeout);
+        socket.connect(new InetSocketAddress(host, port));
     }
 
     public WriteTimeoutSocket(String host, int port,
-			InetAddress localAddress, int localPort, int timeout)
-			throws IOException {
-	this(timeout);
-	socket.bind(new InetSocketAddress(localAddress, localPort));
-	socket.connect(new InetSocketAddress(host, port));
+                              InetAddress localAddress, int localPort, int timeout)
+            throws IOException {
+        this(timeout);
+        socket.bind(new InetSocketAddress(localAddress, localPort));
+        socket.connect(new InetSocketAddress(host, port));
     }
 
     // override all Socket methods and delegate to underlying Socket
@@ -108,42 +110,42 @@ public class WriteTimeoutSocket extends Socket {
 
     @Override
     public void connect(SocketAddress remote, int timeout) throws IOException {
-	socket.connect(remote, timeout);
+        socket.connect(remote, timeout);
     }
 
     @Override
     public void bind(SocketAddress local) throws IOException {
-	socket.bind(local);
+        socket.bind(local);
     }
 
     @Override
     public InetAddress getInetAddress() {
-	return socket.getInetAddress();
+        return socket.getInetAddress();
     }
 
     @Override
     public InetAddress getLocalAddress() {
-	return socket.getLocalAddress();
+        return socket.getLocalAddress();
     }
 
     @Override
     public int getPort() {
-	return socket.getPort();
+        return socket.getPort();
     }
 
     @Override
     public int getLocalPort() {
-	return socket.getLocalPort();
+        return socket.getLocalPort();
     }
 
     @Override
     public InputStream getInputStream() throws IOException {
-	return socket.getInputStream();
+        return socket.getInputStream();
     }
 
     @Override
     public synchronized OutputStream getOutputStream() throws IOException {
-	// wrap the returned stream to implement write timeout
+        // wrap the returned stream to implement write timeout
         return new TimeoutOutputStream(socket.getOutputStream(), ses, timeout);
     }
 
@@ -184,7 +186,7 @@ public class WriteTimeoutSocket extends Socket {
 
     @Override
     public void setSoTimeout(int timeout) throws SocketException {
-	socket.setSoTimeout(timeout);
+        socket.setSoTimeout(timeout);
     }
 
     @Override
@@ -244,26 +246,26 @@ public class WriteTimeoutSocket extends Socket {
 
     @Override
     public void close() throws IOException {
-	try {
-	    socket.close();
-	} finally {
-	    ses.shutdownNow();
-	}
+        try {
+            socket.close();
+        } finally {
+            ses.shutdownNow();
+        }
     }
 
     @Override
     public void shutdownInput() throws IOException {
-	socket.shutdownInput();
+        socket.shutdownInput();
     }
 
     @Override
     public void shutdownOutput() throws IOException {
-	socket.shutdownOutput();
+        socket.shutdownOutput();
     }
 
     @Override
     public String toString() {
-	return socket.toString();
+        return socket.toString();
     }
 
     @Override
@@ -306,56 +308,56 @@ class TimeoutOutputStream extends OutputStream {
     private byte[] b1;
 
     public TimeoutOutputStream(OutputStream os0, ScheduledExecutorService ses,
-				int timeout) throws IOException {
-	this.os = os0;
-	this.ses = ses;
-	this.timeout = timeout;
-	timeoutTask = new Callable<Object>() {
-	    public Object call() throws Exception {
-		os.close();	// close the stream to abort the write
-		return null;
-	    }
-	};
+                               int timeout) throws IOException {
+        this.os = os0;
+        this.ses = ses;
+        this.timeout = timeout;
+        timeoutTask = new Callable<Object>() {
+            public Object call() throws Exception {
+                os.close();    // close the stream to abort the write
+                return null;
+            }
+        };
     }
 
     @Override
     public synchronized void write(int b) throws IOException {
-	if (b1 == null)
-	    b1 = new byte[1];
-	b1[0] = (byte)b;
-	this.write(b1);
+        if (b1 == null)
+            b1 = new byte[1];
+        b1[0] = (byte) b;
+        this.write(b1);
     }
 
     @Override
     public synchronized void write(byte[] bs, int off, int len)
-				throws IOException {
-	if ((off < 0) || (off > bs.length) || (len < 0) ||
-	    ((off + len) > bs.length) || ((off + len) < 0)) {
-	    throw new IndexOutOfBoundsException();
-	} else if (len == 0) {
-	    return;
-	}
+            throws IOException {
+        if ((off < 0) || (off > bs.length) || (len < 0) ||
+                ((off + len) > bs.length) || ((off + len) < 0)) {
+            throw new IndexOutOfBoundsException();
+        } else if (len == 0) {
+            return;
+        }
 
-	// Implement timeout with a scheduled task
-	ScheduledFuture<Object> sf = null;
-	try {
-	    try {
-		if (timeout > 0)
-		    sf = ses.schedule(timeoutTask,
-					timeout, TimeUnit.MILLISECONDS);
-	    } catch (RejectedExecutionException ex) {
-		// ignore it; Executor was shut down by another thread,
-		// the following write should fail with IOException
-	    }
-	    os.write(bs, off, len);
-	} finally {
-	    if (sf != null)
-		sf.cancel(true);
-	}
+        // Implement timeout with a scheduled task
+        ScheduledFuture<Object> sf = null;
+        try {
+            try {
+                if (timeout > 0)
+                    sf = ses.schedule(timeoutTask,
+                            timeout, TimeUnit.MILLISECONDS);
+            } catch (RejectedExecutionException ex) {
+                // ignore it; Executor was shut down by another thread,
+                // the following write should fail with IOException
+            }
+            os.write(bs, off, len);
+        } finally {
+            if (sf != null)
+                sf.cancel(true);
+        }
     }
 
     @Override
     public void close() throws IOException {
-	os.close();
+        os.close();
     }
 }

@@ -40,15 +40,16 @@
 
 package metapi.mail.gimap;
 
-import metapi.mail.*;
+import metapi.mail.Session;
+import metapi.mail.URLName;
 
 /**
  * Support "gimaps" protocol name.
  * Unnecessary, since Gmail always uses SSL, but someone might
  * expect this name to work.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public class GmailSSLStore extends GmailStore {
@@ -57,6 +58,6 @@ public class GmailSSLStore extends GmailStore {
      * represents a specific IMAP server.
      */
     public GmailSSLStore(Session session, URLName url) {
-	super(session, url, "gimaps", true);
+        super(session, url, "gimaps", true);
     }
 }

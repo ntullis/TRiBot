@@ -45,8 +45,8 @@ import metapi.mail.Message;
 /**
  * This class implements searching for the Gmail thread ID.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public final class GmailThrIdTerm extends LongTerm {
@@ -56,36 +56,36 @@ public final class GmailThrIdTerm extends LongTerm {
     /**
      * Constructor.
      *
-     * @param thrId  the thread ID
+     * @param thrId the thread ID
      */
     public GmailThrIdTerm(long thrId) {
-	super(thrId);
+        super(thrId);
     }
 
     /**
      * The match method.
      *
-     * @param thr	the Message number is matched with this Message
-     * @return		true if the match succeeds, otherwise false
+     * @param thr the Message number is matched with this Message
+     * @return true if the match succeeds, otherwise false
      */
     public boolean match(Message thr) {
-	long thrId;
+        long thrId;
 
-	try {
-	    thrId = ((GmailMessage)thr).getThrId();
-	} catch (Exception e) {
-	    return false;
-	}
+        try {
+            thrId = ((GmailMessage) thr).getThrId();
+        } catch (Exception e) {
+            return false;
+        }
 
-	return super.match(thrId);
+        return super.match(thrId);
     }
 
     /**
      * Equality comparison.
      */
     public boolean equals(Object obj) {
-	if (!(obj instanceof GmailThrIdTerm))
-	    return false;
-	return super.equals(obj);
+        if (!(obj instanceof GmailThrIdTerm))
+            return false;
+        return super.equals(obj);
     }
 }

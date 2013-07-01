@@ -40,34 +40,34 @@
 
 package metapi.mail.imap.protocol;
 
-import java.io.Serializable;
-
 import metapi.mail.FetchProfile;
 import metapi.mail.iap.ParsingException;
+
+import java.io.Serializable;
 
 /**
  * Metadata describing a FETCH item.
  * Note that the "name" field MUST be in uppercase. <p>
  *
- * @author  Bill Shannon
+ * @author Bill Shannon
  * @since JavaMail 1.4.6
  */
 
-public abstract class FetchItem { 
+public abstract class FetchItem {
     private String name;
     private FetchProfile.Item fetchProfileItem;
 
     public FetchItem(String name, FetchProfile.Item fetchProfileItem) {
-	this.name = name;
-	this.fetchProfileItem = fetchProfileItem;
+        this.name = name;
+        this.fetchProfileItem = fetchProfileItem;
     }
 
     public String getName() {
-	return name;
+        return name;
     }
 
     public FetchProfile.Item getFetchProfileItem() {
-	return fetchProfileItem;
+        return fetchProfileItem;
     }
 
     /**

@@ -40,55 +40,57 @@
 
 package metapi.mail.gimap.protocol;
 
-import java.io.*;
+import metapi.mail.gimap.GmailMsgIdTerm;
+import metapi.mail.gimap.GmailRawSearchTerm;
+import metapi.mail.gimap.GmailThrIdTerm;
+import metapi.mail.iap.Argument;
+import metapi.mail.imap.protocol.SearchSequence;
+import metapi.mail.search.SearchException;
+import metapi.mail.search.SearchTerm;
 
-import metapi.mail.search.*;
-
-import metapi.mail.iap.*;
-import metapi.mail.imap.protocol.*;
-import metapi.mail.gimap.*;
+import java.io.IOException;
 
 /**
  * Support Gmail-specific search extensions.
  *
- * @since JavaMail 1.4.6
  * @author Bill Shannon
+ * @since JavaMail 1.4.6
  */
 
 public class GmailSearchSequence extends SearchSequence {
     public Argument generateSequence(SearchTerm term, String charset)
-				throws SearchException, IOException {
-	if (term instanceof GmailMsgIdTerm)
-	    return gmailMsgidSearch((GmailMsgIdTerm)term);
-	else if (term instanceof GmailThrIdTerm)
-	    return gmailThridSearch((GmailThrIdTerm)term);
-	else if (term instanceof GmailRawSearchTerm)
-	    return gmailRawSearch((GmailRawSearchTerm)term, charset);
-	else
-	    return super.generateSequence(term, charset);
+            throws SearchException, IOException {
+        if (term instanceof GmailMsgIdTerm)
+            return gmailMsgidSearch((GmailMsgIdTerm) term);
+        else if (term instanceof GmailThrIdTerm)
+            return gmailThridSearch((GmailThrIdTerm) term);
+        else if (term instanceof GmailRawSearchTerm)
+            return gmailRawSearch((GmailRawSearchTerm) term, charset);
+        else
+            return super.generateSequence(term, charset);
     }
 
     protected Argument gmailMsgidSearch(GmailMsgIdTerm term)
-				throws IOException {
-	Argument result = new Argument();
-	result.writeAtom("X-GM-MSGID");
-	result.writeNumber(term.getNumber());
-	return result;
+            throws IOException {
+        Argument result = new Argument();
+        result.writeAtom("X-GM-MSGID");
+        result.writeNumber(term.getNumber());
+        return result;
     }
 
     protected Argument gmailThridSearch(GmailThrIdTerm term)
-				throws IOException {
-	Argument result = new Argument();
-	result.writeAtom("X-GM-THRID");
-	result.writeNumber(term.getNumber());
-	return result;
+            throws IOException {
+        Argument result = new Argument();
+        result.writeAtom("X-GM-THRID");
+        result.writeNumber(term.getNumber());
+        return result;
     }
 
     protected Argument gmailRawSearch(GmailRawSearchTerm term, String charset)
-				throws IOException {
-	Argument result = new Argument();
-	result.writeAtom("X-GM-RAW");
-	result.writeString(term.getPattern(), charset);
-	return result;
+            throws IOException {
+        Argument result = new Argument();
+        result.writeAtom("X-GM-RAW");
+        result.writeString(term.getPattern(), charset);
+        return result;
     }
 }

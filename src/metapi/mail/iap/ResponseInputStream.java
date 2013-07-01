@@ -40,16 +40,17 @@
 
 package metapi.mail.iap;
 
-import java.io.*;
-
 import metapi.mail.util.ASCIIUtility;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- *
  * Inputstream that is used to read a Response.
  *
- * @author  Arun Krishnan
- * @author  Bill Shannon
+ * @author Arun Krishnan
+ * @author Bill Shannon
  */
 
 public class ResponseInputStream {
@@ -65,100 +66,102 @@ public class ResponseInputStream {
      * Constructor.
      */
     public ResponseInputStream(InputStream in) {
-	bin = new BufferedInputStream(in, 2 * 1024);
+        bin = new BufferedInputStream(in, 2 * 1024);
     }
 
     /**
      * Read a Response from the InputStream.
+     *
      * @return ByteArray that contains the Response
      */
     public ByteArray readResponse() throws IOException {
-	return readResponse(null);
+        return readResponse(null);
     }
 
     /**
      * Read a Response from the InputStream.
+     *
      * @return ByteArray that contains the Response
      */
     public ByteArray readResponse(ByteArray ba) throws IOException {
-	if (ba == null)
-	    ba = new ByteArray(new byte[128], 0, 128);
+        if (ba == null)
+            ba = new ByteArray(new byte[128], 0, 128);
 
-	byte[] buffer = ba.getBytes();
-	int idx = 0;
-	for (;;) {	// read until CRLF with no preceeding literal
-	    // XXX - b needs to be an int, to handle bytes with value 0xff
-	    int b = 0;
-	    boolean gotCRLF=false;
+        byte[] buffer = ba.getBytes();
+        int idx = 0;
+        for (; ; ) {    // read until CRLF with no preceeding literal
+            // XXX - b needs to be an int, to handle bytes with value 0xff
+            int b = 0;
+            boolean gotCRLF = false;
 
-	    // Read a CRLF terminated line from the InputStream
-	    while (!gotCRLF &&
-		   ((b =  bin.read()) != -1)) {
-		switch (b) {
-		case '\n':
-		    if ((idx > 0) && buffer[idx-1] == '\r')
-			gotCRLF = true;
-		default:
-		    if (idx >= buffer.length) {
-			int incr = buffer.length;
-			if (incr > maxIncrement)
-			    incr = maxIncrement;
-			ba.grow(incr);
-			buffer = ba.getBytes();
-		    }
-		    buffer[idx++] = (byte)b;
-		}
-	    }
+            // Read a CRLF terminated line from the InputStream
+            while (!gotCRLF &&
+                    ((b = bin.read()) != -1)) {
+                switch (b) {
+                    case '\n':
+                        if ((idx > 0) && buffer[idx - 1] == '\r')
+                            gotCRLF = true;
+                    default:
+                        if (idx >= buffer.length) {
+                            int incr = buffer.length;
+                            if (incr > maxIncrement)
+                                incr = maxIncrement;
+                            ba.grow(incr);
+                            buffer = ba.getBytes();
+                        }
+                        buffer[idx++] = (byte) b;
+                }
+            }
 
-	    if (b == -1)
-		throw new IOException("Connection dropped by server?");
+            if (b == -1)
+                throw new IOException("Connection dropped by server?");
 
-	    // Now lets check for literals : {<digits>}CRLF
-	    // Note: index needs to >= 5 for the above sequence to occur
-	    if (idx < 5 || buffer[idx-3] != '}')
-		break;
+            // Now lets check for literals : {<digits>}CRLF
+            // Note: index needs to >= 5 for the above sequence to occur
+            if (idx < 5 || buffer[idx - 3] != '}')
+                break;
 
-	    int i;
-	    // look for left curly
-	    for (i = idx - 4; i >= 0; i--)
-		if (buffer[i] == '{')
-		    break;
+            int i;
+            // look for left curly
+            for (i = idx - 4; i >= 0; i--)
+                if (buffer[i] == '{')
+                    break;
 
-	    if (i < 0) // Nope, not a literal ?
-		break;
+            if (i < 0) // Nope, not a literal ?
+                break;
 
-	    int count = 0;
-	    // OK, handle the literal ..
-	    try {
-		count = ASCIIUtility.parseInt(buffer, i+1, idx-3);
-	    } catch (NumberFormatException e) {
-		break;
-	    }
+            int count = 0;
+            // OK, handle the literal ..
+            try {
+                count = ASCIIUtility.parseInt(buffer, i + 1, idx - 3);
+            } catch (NumberFormatException e) {
+                break;
+            }
 
-	    // Now read 'count' bytes. (Note: count could be 0)
-	    if (count > 0) {
-		int avail = buffer.length - idx; // available space in buffer
-		if (count + incrementSlop > avail) {
-		    // need count-avail more bytes
-		    ba.grow(minIncrement > count + incrementSlop - avail ? 
-			    minIncrement : count + incrementSlop - avail);
-		    buffer = ba.getBytes();
-		}
+            // Now read 'count' bytes. (Note: count could be 0)
+            if (count > 0) {
+                int avail = buffer.length - idx; // available space in buffer
+                if (count + incrementSlop > avail) {
+                    // need count-avail more bytes
+                    ba.grow(minIncrement > count + incrementSlop - avail ?
+                            minIncrement : count + incrementSlop - avail);
+                    buffer = ba.getBytes();
+                }
 
 		/*
-		 * read() might not return all the bytes in one shot,
+         * read() might not return all the bytes in one shot,
 		 * so call repeatedly till we are done
 		 */
-		int actual;
-		while (count > 0) {
-		    actual = bin.read(buffer, idx, count);
-		    count -= actual;
-		    idx += actual;
-		}
-	    }
-	    // back to top of loop to read until CRLF
-	}
-	ba.setCount(idx);
-	return ba;
+                int actual;
+                while (count > 0) {
+                    actual = bin.read(buffer, idx, count);
+                    count -= actual;
+                    idx += actual;
+                }
+            }
+            // back to top of loop to read until CRLF
+        }
+        ba.setCount(idx);
+        return ba;
     }
 }

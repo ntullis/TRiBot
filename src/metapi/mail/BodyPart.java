@@ -43,7 +43,7 @@ package metapi.mail;
 /**
  * This class models a Part that is contained within a Multipart.
  * This is an abstract class. Subclasses provide actual implementations.<p>
- *
+ * <p/>
  * BodyPart implements the Part interface. Thus, it contains a set of
  * attributes and a "content".
  *
@@ -56,7 +56,8 @@ public abstract class BodyPart implements Part {
     /**
      * The <code>Multipart</code> object containing this <code>BodyPart</code>,
      * if known.
-     * @since	JavaMail 1.1
+     *
+     * @since JavaMail 1.1
      */
     protected Multipart parent;
 
@@ -65,7 +66,7 @@ public abstract class BodyPart implements Part {
      * or <code>null</code> if not known.
      */
     public Multipart getParent() {
-	return parent;
+        return parent;
     }
 
     /**
@@ -74,9 +75,10 @@ public abstract class BodyPart implements Part {
      * <code>addBodyPart</code> method.  <code>parent</code> may be
      * <code>null</code> if the <code>BodyPart</code> is being removed
      * from its containing <code>Multipart</code>.
-     * @since	JavaMail 1.1
+     *
+     * @since JavaMail 1.1
      */
     void setParent(Multipart parent) {
-	this.parent = parent;
+        this.parent = parent;
     }
 }

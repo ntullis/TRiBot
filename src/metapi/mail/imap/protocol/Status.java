@@ -40,15 +40,16 @@
 
 package metapi.mail.imap.protocol;
 
-import metapi.mail.iap.*;
+import metapi.mail.iap.ParsingException;
+import metapi.mail.iap.Response;
 
 /**
  * STATUS response.
  *
- * @author  John Mani
+ * @author John Mani
  */
 
-public class Status { 
+public class Status {
     public String mbox = null;
     public int total = -1;
     public int recent = -1;
@@ -58,62 +59,62 @@ public class Status {
     public long highestmodseq = -1;
 
     static final String[] standardItems =
-	{ "MESSAGES", "RECENT", "UNSEEN", "UIDNEXT", "UIDVALIDITY" };
+            {"MESSAGES", "RECENT", "UNSEEN", "UIDNEXT", "UIDVALIDITY"};
 
     public Status(Response r) throws ParsingException {
-	mbox = r.readAtomString(); // mailbox := astring
+        mbox = r.readAtomString(); // mailbox := astring
 
-	// Workaround buggy IMAP servers that don't quote folder names
-	// with spaces.
-	final StringBuffer buffer = new StringBuffer();
-	boolean onlySpaces = true;
+        // Workaround buggy IMAP servers that don't quote folder names
+        // with spaces.
+        final StringBuffer buffer = new StringBuffer();
+        boolean onlySpaces = true;
 
-	while (r.peekByte() != '(' && r.peekByte() != 0) {
-	    final char next = (char)r.readByte();
+        while (r.peekByte() != '(' && r.peekByte() != 0) {
+            final char next = (char) r.readByte();
 
-	    buffer.append(next);
+            buffer.append(next);
 
-	    if (next != ' ') {
-		onlySpaces = false;
-	    }
-	}
+            if (next != ' ') {
+                onlySpaces = false;
+            }
+        }
 
-	if (!onlySpaces) {
-	    mbox = (mbox + buffer).trim();
-	}
+        if (!onlySpaces) {
+            mbox = (mbox + buffer).trim();
+        }
 
-	if (r.readByte() != '(')
-	    throw new ParsingException("parse error in STATUS");
-	
-	do {
-	    String attr = r.readAtom();
-	    if (attr.equalsIgnoreCase("MESSAGES"))
-		total = r.readNumber();
-	    else if (attr.equalsIgnoreCase("RECENT"))
-		recent = r.readNumber();
-	    else if (attr.equalsIgnoreCase("UIDNEXT"))
-		uidnext = r.readLong();
-	    else if (attr.equalsIgnoreCase("UIDVALIDITY"))
-		uidvalidity = r.readLong();
-	    else if (attr.equalsIgnoreCase("UNSEEN"))
-		unseen = r.readNumber();
-	    else if (attr.equalsIgnoreCase("HIGHESTMODSEQ"))
-		highestmodseq = r.readLong();
-	} while (r.readByte() != ')');
+        if (r.readByte() != '(')
+            throw new ParsingException("parse error in STATUS");
+
+        do {
+            String attr = r.readAtom();
+            if (attr.equalsIgnoreCase("MESSAGES"))
+                total = r.readNumber();
+            else if (attr.equalsIgnoreCase("RECENT"))
+                recent = r.readNumber();
+            else if (attr.equalsIgnoreCase("UIDNEXT"))
+                uidnext = r.readLong();
+            else if (attr.equalsIgnoreCase("UIDVALIDITY"))
+                uidvalidity = r.readLong();
+            else if (attr.equalsIgnoreCase("UNSEEN"))
+                unseen = r.readNumber();
+            else if (attr.equalsIgnoreCase("HIGHESTMODSEQ"))
+                highestmodseq = r.readLong();
+        } while (r.readByte() != ')');
     }
 
     public static void add(Status s1, Status s2) {
-	if (s2.total != -1)
-	    s1.total = s2.total;
-	if (s2.recent != -1)
-	    s1.recent = s2.recent;
-	if (s2.uidnext != -1)
-	    s1.uidnext = s2.uidnext;
-	if (s2.uidvalidity != -1)
-	    s1.uidvalidity = s2.uidvalidity;
-	if (s2.unseen != -1)
-	    s1.unseen = s2.unseen;
-	if (s2.highestmodseq != -1)
-	    s1.highestmodseq = s2.highestmodseq;
+        if (s2.total != -1)
+            s1.total = s2.total;
+        if (s2.recent != -1)
+            s1.recent = s2.recent;
+        if (s2.uidnext != -1)
+            s1.uidnext = s2.uidnext;
+        if (s2.uidvalidity != -1)
+            s1.uidvalidity = s2.uidvalidity;
+        if (s2.unseen != -1)
+            s1.unseen = s2.unseen;
+        if (s2.highestmodseq != -1)
+            s1.highestmodseq = s2.highestmodseq;
     }
 }

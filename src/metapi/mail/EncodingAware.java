@@ -45,25 +45,25 @@ package metapi.mail;
  * <code>EncodingAware</code> may specify the Content-Transfer-Encoding
  * to use for its data.  Valid Content-Transfer-Encoding values specified
  * by RFC 2045 are "7bit", "8bit", "quoted-printable", "base64", and "binary".
- * <p>
+ * <p/>
  * For example, a {@link javax.activation.FileDataSource FileDataSource}
  * could be created that forces all files to be base64 encoded: <p>
  * <blockquote><pre>
  *  public class Base64FileDataSource extends FileDataSource
- *					implements EncodingAware {
- *	public Base64FileDataSource(File file) {
- *	    super(file);
- *	}
- *
- *	// implements EncodingAware.getEncoding()
- *	public String getEncoding() {
- *	    return "base64";
- *	}
+ * 					implements EncodingAware {
+ * 	public Base64FileDataSource(File file) {
+ * 	    super(file);
+ *    }
+ * <p/>
+ * 	// implements EncodingAware.getEncoding()
+ * 	public String getEncoding() {
+ * 	    return "base64";
+ *    }
  *  }
  * </pre></blockquote><p>
  *
- * @since	JavaMail 1.5
- * @author	Bill Shannon
+ * @since JavaMail 1.5
+ * @author Bill Shannon
  */
 
 public interface EncodingAware {
@@ -73,7 +73,7 @@ public interface EncodingAware {
      * or null to indicate that an appropriate value should be chosen
      * by the caller.
      *
-     * @return		the Content-Transfer-Encoding value, or null
+     * @return the Content-Transfer-Encoding value, or null
      */
     public String getEncoding();
 }

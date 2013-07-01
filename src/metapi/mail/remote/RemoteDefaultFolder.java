@@ -40,8 +40,10 @@
 
 package metapi.mail.remote;
 
-import metapi.mail.*;
-import metapi.mail.mbox.*;
+import metapi.mail.Folder;
+import metapi.mail.Store;
+import metapi.mail.mbox.MboxFolder;
+import metapi.mail.mbox.MboxStore;
 
 /**
  * The default folder for the "remote" protocol.
@@ -51,7 +53,7 @@ import metapi.mail.mbox.*;
 public class RemoteDefaultFolder extends MboxFolder {
 
     protected RemoteDefaultFolder(RemoteStore store, String name) {
-	super(store, name);
+        super(store, name);
     }
 
     /**
@@ -61,14 +63,14 @@ public class RemoteDefaultFolder extends MboxFolder {
      * If the name is "INBOX" (ignoring case), create a
      * <code>RemoteInbox</code>.  Otherwise, create an <code>MboxFolder</code>.
      *
-     * @return	the new <code>Folder</code>
+     * @return the new <code>Folder</code>
      */
     protected Folder createFolder(Store store, String name) {
-	if (name == null)
-	    return new RemoteDefaultFolder((RemoteStore)store, null);
-	else if (name.equalsIgnoreCase("INBOX"))
-	    return new RemoteInbox((RemoteStore)store, name);
-	else
-	    return new MboxFolder((MboxStore)store, name);
+        if (name == null)
+            return new RemoteDefaultFolder((RemoteStore) store, null);
+        else if (name.equalsIgnoreCase("INBOX"))
+            return new RemoteInbox((RemoteStore) store, name);
+        else
+            return new MboxFolder((MboxStore) store, name);
     }
 }

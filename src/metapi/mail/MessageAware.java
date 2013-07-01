@@ -45,10 +45,10 @@ package metapi.mail;
  * supply information to a <code>DataContentHandler</code> about the
  * message context in which the data content object is operating.
  *
+ * @since JavaMail 1.1
  * @see metapi.mail.MessageContext
  * @see javax.activation.DataSource
  * @see javax.activation.DataContentHandler
- * @since	JavaMail 1.1
  */
 public interface MessageAware {
     /**

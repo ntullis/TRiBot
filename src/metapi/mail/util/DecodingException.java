@@ -58,6 +58,6 @@ public class DecodingException extends IOException {
      * Constructor
      */
     public DecodingException(String s) {
-	super(s);
+        super(s);
     }
 }

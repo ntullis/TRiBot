@@ -40,91 +40,97 @@
 
 package metapi.mail.handlers;
 
-import java.io.*;
-import java.util.Properties;
-import java.awt.datatransfer.DataFlavor;
-import javax.activation.*;
 import metapi.mail.*;
-import metapi.mail.internet.*;
+import metapi.mail.internet.MimeMessage;
+
+import javax.activation.ActivationDataFlavor;
+import javax.activation.DataContentHandler;
+import javax.activation.DataSource;
+import java.awt.datatransfer.DataFlavor;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Properties;
 
 
 /**
- * @author	Christopher Cotton
+ * @author Christopher Cotton
  */
 
 
 public class message_rfc822 implements DataContentHandler {
 
     ActivationDataFlavor ourDataFlavor = new ActivationDataFlavor(
-	metapi.mail.Message.class,
-	"message/rfc822", 
-	"Message");
+            metapi.mail.Message.class,
+            "message/rfc822",
+            "Message");
 
     /**
      * return the DataFlavors for this <code>DataContentHandler</code>
+     *
      * @return The DataFlavors.
      */
     public DataFlavor[] getTransferDataFlavors() {
-	return new DataFlavor[] { ourDataFlavor };
+        return new DataFlavor[]{ourDataFlavor};
     }
 
     /**
      * return the Transfer Data of type DataFlavor from InputStream
+     *
      * @param df The DataFlavor.
      * @param ds The DataSource corresponding to the data
      * @return a Message object
      */
     public Object getTransferData(DataFlavor df, DataSource ds)
-				throws IOException {
-	// make sure we can handle this DataFlavor
-	if (ourDataFlavor.equals(df))
-	    return getContent(ds);
-	else
-	    return null;
+            throws IOException {
+        // make sure we can handle this DataFlavor
+        if (ourDataFlavor.equals(df))
+            return getContent(ds);
+        else
+            return null;
     }
-    
+
     /**
      * Return the content.
      */
     public Object getContent(DataSource ds) throws IOException {
-	// create a new MimeMessage
-	try {
-	    Session session;
-	    if (ds instanceof MessageAware) {
-		MessageContext mc = ((MessageAware)ds).getMessageContext();
-		session = mc.getSession();
-	    } else {
-		// Hopefully a rare case.  Also hopefully the application
-		// has created a default Session that can just be returned
-		// here.  If not, the one we create here is better than
-		// nothing, but overall not a really good answer.
-		session = Session.getDefaultInstance(new Properties(), null);
-	    }
-	    return new MimeMessage(session, ds.getInputStream());
-	} catch (MessagingException me) {
-	    throw new IOException("Exception creating MimeMessage in " +
-		    "message/rfc822 DataContentHandler: " + me.toString());
-	}
+        // create a new MimeMessage
+        try {
+            Session session;
+            if (ds instanceof MessageAware) {
+                MessageContext mc = ((MessageAware) ds).getMessageContext();
+                session = mc.getSession();
+            } else {
+                // Hopefully a rare case.  Also hopefully the application
+                // has created a default Session that can just be returned
+                // here.  If not, the one we create here is better than
+                // nothing, but overall not a really good answer.
+                session = Session.getDefaultInstance(new Properties(), null);
+            }
+            return new MimeMessage(session, ds.getInputStream());
+        } catch (MessagingException me) {
+            throw new IOException("Exception creating MimeMessage in " +
+                    "message/rfc822 DataContentHandler: " + me.toString());
+        }
     }
-    
+
     /**
      * construct an object from a byte stream
      * (similar semantically to previous method, we are deciding
-     *  which one to support)
+     * which one to support)
      */
-    public void writeTo(Object obj, String mimeType, OutputStream os) 
-			throws IOException {
-	// if the object is a message, we know how to write that out
-	if (obj instanceof Message) {
-	    Message m = (Message)obj;
-	    try {
-		m.writeTo(os);
-	    } catch (MessagingException me) {
-		throw new IOException(me.toString());
-	    }
-	    
-	} else {
-	    throw new IOException("unsupported object");
-	}
+    public void writeTo(Object obj, String mimeType, OutputStream os)
+            throws IOException {
+        // if the object is a message, we know how to write that out
+        if (obj instanceof Message) {
+            Message m = (Message) obj;
+            try {
+                m.writeTo(os);
+            } catch (MessagingException me) {
+                throw new IOException(me.toString());
+            }
+
+        } else {
+            throw new IOException("unsupported object");
+        }
     }
 }

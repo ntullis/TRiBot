@@ -48,11 +48,11 @@ package metapi.mail.event;
 
 public interface StoreListener extends java.util.EventListener {
 
-   /**
-    * Invoked when the Store generates a notification event.
-    *
-    * @see StoreEvent#ALERT
-    * @see StoreEvent#NOTICE
-    */
-   public void notification(StoreEvent e);
+    /**
+     * Invoked when the Store generates a notification event.
+     *
+     * @see StoreEvent#ALERT
+     * @see StoreEvent#NOTICE
+     */
+    public void notification(StoreEvent e);
 }
