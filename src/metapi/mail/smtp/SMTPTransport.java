@@ -290,7 +290,7 @@ public class SMTPTransport extends Transport {
      * @since JavaMail 1.4.4
      */
     public synchronized String getAuthorizationId() {
-        if (authorizationID == UNKNOWN) {
+        if (authorizationID.equals(UNKNOWN)) {
             authorizationID =
                     session.getProperty("javamail." + name + ".sasl.authorizationid");
         }
@@ -335,7 +335,7 @@ public class SMTPTransport extends Transport {
      * @since JavaMail 1.3.1
      */
     public synchronized String getSASLRealm() {
-        if (saslRealm == UNKNOWN) {
+        if (saslRealm.equals(UNKNOWN)) {
             saslRealm = session.getProperty("javamail." + name + ".sasl.realm");
             if (saslRealm == null)    // try old name
                 saslRealm = session.getProperty("javamail." + name + ".saslrealm");
@@ -405,7 +405,7 @@ public class SMTPTransport extends Transport {
      * @since JavaMail 1.4.3
      */
     public synchronized String getNTLMDomain() {
-        if (ntlmDomain == UNKNOWN) {
+        if (ntlmDomain.equals(UNKNOWN)) {
             ntlmDomain =
                     session.getProperty("javamail." + name + ".auth.ntlm.domain");
         }

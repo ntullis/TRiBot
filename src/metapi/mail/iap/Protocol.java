@@ -71,7 +71,6 @@ public class Protocol {
     protected Properties props;
     protected String prefix;
 
-    private boolean connected = false;        // did constructor succeed?
     private TraceInputStream traceInput;    // the Tracer
     private volatile ResponseInputStream input;
 
@@ -109,6 +108,7 @@ public class Protocol {
                     Properties props, String prefix,
                     boolean isSSL, MailLogger logger)
             throws IOException, ProtocolException {
+        boolean connected = false;
         try {
             this.host = host;
             this.props = props;

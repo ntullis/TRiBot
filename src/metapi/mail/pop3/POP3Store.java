@@ -163,7 +163,7 @@ public class POP3Store extends Store {
      * Get the value of a boolean property.
      * Print out the value if logging is enabled.
      */
-    private final synchronized boolean getBoolProp(String prop) {
+    private synchronized boolean getBoolProp(String prop) {
         prop = "javamail." + name + "." + prop;
         boolean val = PropUtil.getBooleanSessionProperty(session, prop, false);
         if (logger.isLoggable(Level.CONFIG))

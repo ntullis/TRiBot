@@ -621,7 +621,7 @@ public class MimeUtility {
                     // possibly decode inner encoded words
                     if (!decodeStrict) {
                         String dword = decodeInnerWords(word);
-                        if (dword != word) {
+                        if (!dword.equals(word)) {
                             // if a different String object was returned,
                             // decoding was done.
                             if (prevWasEncoded && word.startsWith("=?")) {
@@ -1616,7 +1616,7 @@ class AsciiOutputStream extends OutputStream {
             check(b[i]);
     }
 
-    private final void check(int b) throws IOException {
+    private void check(int b) throws IOException {
         b &= 0xff;
         if (checkEOL &&
                 ((lastb == '\r' && b != '\n') || (lastb != '\r' && b == '\n')))

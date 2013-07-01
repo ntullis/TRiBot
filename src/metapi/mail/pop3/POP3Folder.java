@@ -454,7 +454,7 @@ public class POP3Folder extends Folder {
         try {
             if (!store.supportsUidl)
                 return null;
-            if (m.uid == POP3Message.UNKNOWN)
+            if (m.uid.equals(POP3Message.UNKNOWN))
                 m.uid = port.uidl(m.getMessageNumber());
             return m.uid;
         } catch (EOFException eex) {

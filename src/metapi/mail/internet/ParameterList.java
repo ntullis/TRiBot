@@ -136,12 +136,6 @@ public class ParameterList {
      */
     private Map slist;
 
-    /**
-     * MWB 3BView: The name of the last parameter added to the map.
-     * Used for the AppleMail hack.
-     */
-    private String lastName = null;
-
     private static final boolean encodeParameters =
             PropUtil.getBooleanSystemProperty("javamail.mime.encodeparameters", true);
     private static final boolean decodeParameters =
@@ -236,6 +230,11 @@ public class ParameterList {
             if (type == HeaderTokenizer.Token.EOF) // done
                 break;
 
+            /*
+      MWB 3BView: The name of the last parameter added to the map.
+      Used for the AppleMail hack.
+     */
+            String lastName = null;
             if ((char) type == ';') {
                 // expect parameter name
                 tk = h.next();

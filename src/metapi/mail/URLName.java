@@ -424,13 +424,13 @@ public class URLName {
             if (!host.equalsIgnoreCase(u2.host))
                 return false;
             // else, if not both null
-        } else if (host != u2.host) {
+        } else if (!host.equals(u2.host)) {
             return false;
         }
         // at this point, hosts match
 
         // compare usernames
-        if (!(username == u2.username ||
+        if (!(username.equals(u2.username) ||
                 (username != null && username.equals(u2.username))))
             return false;
 

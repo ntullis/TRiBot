@@ -61,7 +61,6 @@ import java.io.PushbackInputStream;
 public class LineInputStream extends FilterInputStream {
 
     private char[] lineBuffer = null; // reusable byte buffer
-    private static int MAX_INCR = 1024 * 1024;    // 1MB
 
     public LineInputStream(InputStream in) {
         super(in);
@@ -131,6 +130,7 @@ public class LineInputStream extends FilterInputStream {
             // Not CR, NL or CR-NL ...
             // .. Insert the byte into our byte buffer
             if (--room < 0) { // No room, need to grow.
+                int MAX_INCR = 1024 * 1024;
                 if (buf.length < MAX_INCR)
                     buf = new char[buf.length * 2];
                 else

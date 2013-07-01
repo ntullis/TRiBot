@@ -319,12 +319,12 @@ public final class MailLogger {
         return logger != null && debug || logger.isLoggable(level);
     }
 
-    private final void ifDebugOut(String msg) {
+    private void ifDebugOut(String msg) {
         if (debug)
             debugOut(msg);
     }
 
-    private final void debugOut(String msg) {
+    private void debugOut(String msg) {
         if (prefix != null)
             out.println(prefix + ": " + msg);
         else

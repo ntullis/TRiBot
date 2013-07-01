@@ -586,7 +586,7 @@ public class MboxFolder extends Folder {
      * Append the input stream to the output stream, closing the
      * input stream when done.
      */
-    private static final void appendStream(InputStream is, OutputStream os)
+    private static void appendStream(InputStream is, OutputStream os)
             throws IOException {
         try {
             byte[] buf = new byte[64 * 1024];
@@ -717,7 +717,7 @@ public class MboxFolder extends Folder {
         return m;
     }
 
-    private final int messageIndexOf(int msgno) {
+    private int messageIndexOf(int msgno) {
         return special_imap_message ? msgno : msgno - 1;
     }
 

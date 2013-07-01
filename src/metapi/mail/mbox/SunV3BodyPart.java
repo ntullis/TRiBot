@@ -312,7 +312,6 @@ public class SunV3BodyPart extends MimeBodyPart {
      * @throws IOException        if an error occurs writing to the
      *                            stream or if an error is generated
      *                            by the javax.activation layer.
-     * @see javax.activation.DataHandler#writeTo()
      */
     public void writeTo(OutputStream os)
             throws IOException, MessagingException {

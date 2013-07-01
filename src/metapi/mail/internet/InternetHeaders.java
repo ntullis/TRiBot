@@ -382,7 +382,7 @@ public class InternetHeaders {
     /**
      * Is this line an empty (blank) line?
      */
-    private static final boolean isEmpty(String line) {
+    private static boolean isEmpty(String line) {
         return line.length() == 0 ||
                 (ignoreWhitespaceLines && line.trim().length() == 0);
     }

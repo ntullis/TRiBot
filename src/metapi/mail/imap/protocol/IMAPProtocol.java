@@ -78,7 +78,6 @@ import java.util.logging.Level;
 
 public class IMAPProtocol extends Protocol {
 
-    private boolean connected = false;    // did constructor succeed?
     private boolean rev1 = false;    // REV1 server ?
     private boolean noauthdebug = true;    // hide auth info in debug output
     private boolean authenticated;    // authenticated?
@@ -113,7 +112,6 @@ public class IMAPProtocol extends Protocol {
      *
      * @param host  host to connect to
      * @param port  portnumber to connect to
-     * @param debug debug mode
      * @param props Properties object used by this protocol
      */
     public IMAPProtocol(String name, String host, int port,
@@ -121,6 +119,7 @@ public class IMAPProtocol extends Protocol {
             throws IOException, ProtocolException {
         super(host, port, props, "javamail." + name, isSSL, logger);
 
+        boolean connected = false;
         try {
             this.name = name;
             noauthdebug =

@@ -399,7 +399,7 @@ public class InternetAddress extends Address implements Cloneable {
             return false;
 
         String s = ((InternetAddress) a).getAddress();
-        if (s == address)
+        if (s.equals(address))
             return true;
         if (address != null && address.equalsIgnoreCase(s))
             return true;

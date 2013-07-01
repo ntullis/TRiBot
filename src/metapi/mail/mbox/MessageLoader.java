@@ -204,7 +204,7 @@ final class MessageLoader {
     /**
      * Does "s" start with "pre", ignoring case?
      */
-    private static final boolean isPrefix(String s, String pre) {
+    private static boolean isPrefix(String s, String pre) {
         return s.regionMatches(true, 0, pre, 0, pre.length());
     }
 
@@ -246,7 +246,7 @@ final class MessageLoader {
     /**
      * Skip "n" bytes, returning how much we were able to skip.
      */
-    private final int skip(int n) throws IOException {
+    private int skip(int n) throws IOException {
         int n0 = n;
         if (pos + n < len) {
             pos += n;    // can do it all within this buffer
@@ -268,7 +268,7 @@ final class MessageLoader {
     /**
      * Return the next byte.
      */
-    private final int get() throws IOException {
+    private int get() throws IOException {
         if (pos >= len)
             fill();
         if (pos >= len)
@@ -283,7 +283,7 @@ final class MessageLoader {
      * Fill our buffer with more data.
      * Every buffer we read is also written to the temp file.
      */
-    private final void fill() throws IOException {
+    private void fill() throws IOException {
         len = fis.read(buf);
         pos = 0;
         if (len > 0)

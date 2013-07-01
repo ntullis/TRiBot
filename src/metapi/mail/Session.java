@@ -215,7 +215,7 @@ public final class Session {
         loadAddressMap(cl);
     }
 
-    private final void initLogger() {
+    private void initLogger() {
         //logger = new MailLogger(this.getClass(), "DEBUG", debug, getDebugOut());
     }
 

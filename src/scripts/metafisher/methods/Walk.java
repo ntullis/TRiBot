@@ -23,8 +23,9 @@ public class Walk {
 
     Banks bank;
     FishPools pool;
-    AStar pf;
 
+
+    RSTile spot;
 
     public Walk(Banks chosenBank, FishPools chosenPool) {
         this.bank = chosenBank;
@@ -32,7 +33,7 @@ public class Walk {
 
         switch (bank) {
             case CATHERBY:
-                RSTile spot = new RSTile(2854, 3430, 0);
+                spot = new RSTile(2854, 3430, 0);
                 break;
             case AL_KHARID:
                 spot = new RSTile(3277, 3143, 0);
@@ -52,8 +53,6 @@ public class Walk {
         }
 
 
-        pf = new AStar();
-
 
         Walking.walking_timeout = random(2000, 4000);
 
@@ -65,15 +64,7 @@ public class Walk {
     }
 
     public boolean walkToFish() {
-
-
-        RSTile[] path = pf.findPath(Player.getPosition(), new RSTile(2854, 3430, 0));
-
-        if (path != null) {
-            println("path = " + path.length);
-        }
-
-        return false;
+        return PathFinding.aStarWalk(spot);
     }
 
     public boolean bankIsNear() {

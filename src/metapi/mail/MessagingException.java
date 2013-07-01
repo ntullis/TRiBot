@@ -166,7 +166,7 @@ public class MessagingException extends Exception {
      * Return the "toString" information for this exception,
      * without any information on nested exceptions.
      */
-    private final String superToString() {
+    private String superToString() {
         return super.toString();
     }
 }

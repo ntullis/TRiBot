@@ -46,4 +46,4 @@ package metapi.mail.pop3;
 class Status {
     int total = 0;        // number of messages in the mailbox
     int size = 0;        // size of the mailbox
-};
+}

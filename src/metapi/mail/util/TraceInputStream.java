@@ -144,7 +144,7 @@ public class TraceInputStream extends FilterInputStream {
     /**
      * Write a byte in a way that every byte value is printable ASCII.
      */
-    private final void writeByte(int b) throws IOException {
+    private void writeByte(int b) throws IOException {
         b &= 0xff;
         if (b > 0x7f) {
             traceOut.write('M');

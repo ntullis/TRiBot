@@ -151,7 +151,7 @@ class Protocol {
      * Get the value of a boolean property.
      * Print out the value if logging is enabled.
      */
-    private final synchronized boolean getBoolProp(Properties props,
+    private synchronized boolean getBoolProp(Properties props,
                                                    String prop) {
         boolean val = PropUtil.getBooleanProperty(props, prop, false);
         if (logger.isLoggable(Level.CONFIG))

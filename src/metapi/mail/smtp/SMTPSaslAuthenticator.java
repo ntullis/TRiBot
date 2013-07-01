@@ -224,7 +224,7 @@ public class SMTPSaslAuthenticator implements SaslAuthenticator {
         return true;
     }
 
-    private static final String responseText(SMTPTransport pr) {
+    private static String responseText(SMTPTransport pr) {
         String resp = pr.getLastServerResponse().trim();
         if (resp.length() > 4)
             return resp.substring(4);

@@ -39,7 +39,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.16)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.17)
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -109,9 +109,11 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         switch (scriptState) {
             case BANK:
+                println("DEPOSIT");
                 bank.deposit();
                 break;
             case WALK_TO_BANK:
+                println("WALK_TO_BANK");
                 MWalking.toggleRun(true, runTimer);
                 walk.walkToBank();
                 break;
@@ -119,6 +121,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 fish.startFishing();
                 break;
             case WALK_TO_FISH:
+                println("WALK_TO_FISH");
                 MWalking.toggleRun(true, runTimer);
                 walk.walkToFish();
                 break;
@@ -130,9 +133,11 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 newCount = Inventory.getCount(fishIDs);
                 break;
             case WITHDRAW_TOOL:
+                println("WITHDRAW_TOOL");
                 bank.withdrawTool();
                 break;
             case PICKUP_TOOL:
+                println("PICKUP_TOOL");
                 pickupTool();
                 break;
             case LOGOUT:
@@ -185,7 +190,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             if (walk.bankIsNear()) return States.BANK;
             else return States.WALK_TO_BANK;
         } else {
-            println("count = "+Inventory.getCount(toolEnum.getID()));
             if (Inventory.getCount(toolEnum.getID()) == 0 || (toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0)) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
                 if (tool.length > 0 && tool != null && !badTile(tool[0].getPosition())) {
