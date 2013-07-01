@@ -25,8 +25,11 @@ import java.net.URL;
 import java.util.HashMap;
 
 import static metapi.util.Logout.Logout;
+import static metapi.util.Logout.Logout;
+import static metapi.util.Logout.Logout;
 import static metapi.util.Timing.CSleep;
 import static org.tribot.api.General.random;
+import static org.tribot.api2007.Login.logout;
 
 
 /**
@@ -37,7 +40,7 @@ import static org.tribot.api.General.random;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.15)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.16)
 public class MetaFisher extends EnumScript<States> implements Painting {
 
     private GraphicalInterface GUI;
@@ -134,7 +137,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 pickupTool();
                 break;
             case LOGOUT:
-                if (Logout()) {
+                if (logout()) {
                     super.setLoginBotState(false);
                 }
                 break;
