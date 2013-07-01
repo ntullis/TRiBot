@@ -21,7 +21,7 @@ public class Walk {
     private Stations station;
     private Banks bank;
 
-    public Walk(final Stations station, final Banks bank)  {
+    public Walk(final Stations station, final Banks bank) {
         this.station = station;
         this.bank = bank;
     }

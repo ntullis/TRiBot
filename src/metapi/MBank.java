@@ -77,6 +77,7 @@ public class MBank {
     }
 
     public static int BANK_SECTION = 0;
+
     public static void withdraw(int count, int... ids) {
 
 
@@ -136,8 +137,6 @@ public class MBank {
         }
         return;
     }
-
-
 
 
 }

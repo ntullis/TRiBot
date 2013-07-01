@@ -28,7 +28,6 @@ import java.awt.*;
 public class MetaCrafter extends EnumScript<States> implements Painting {
 
 
-
     private Banks chosenBank = Banks.LUMBRIDGE;
     private Craftables chosenCraftable = Craftables.GOLD_RING;
     private Stations chosenStation = Stations.FURNACE;
@@ -42,29 +41,27 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
 
     public States getState() {
 
-      if (Login.getLoginState() != Login.STATE.INGAME) return null;
+        if (Login.getLoginState() != Login.STATE.INGAME) return null;
 
-      if (Player.getAnimation() == -1) {
-          if (walk.stationNear()) {
-              println("isNear");
-              if (Inventory.getCount(chosenCraftable.getRawID()) != 0) return States.CRAFT;
-          } else {
-              if (Inventory.getCount(chosenCraftable.getRawID()) != 0) return States.WALK_TO_CRAFT;
-          }
+        if (Player.getAnimation() == -1) {
+            if (walk.stationNear()) {
+                println("isNear");
+                if (Inventory.getCount(chosenCraftable.getRawID()) != 0) return States.CRAFT;
+            } else {
+                if (Inventory.getCount(chosenCraftable.getRawID()) != 0) return States.WALK_TO_CRAFT;
+            }
 
-          if (walk.bankNear()) {
-              if (Inventory.getCount(chosenCraftable.getRawID()) == 0) return States.BANK;
-          } else {
-              if (Inventory.getCount(chosenCraftable.getRawID()) == 0) return States.WALK_TO_BANK;
-          }
-
-
-      }
+            if (walk.bankNear()) {
+                if (Inventory.getCount(chosenCraftable.getRawID()) == 0) return States.BANK;
+            } else {
+                if (Inventory.getCount(chosenCraftable.getRawID()) == 0) return States.WALK_TO_BANK;
+            }
 
 
+        }
 
 
-      return null;
+        return null;
     }
 
     @Override
@@ -82,7 +79,7 @@ public class MetaCrafter extends EnumScript<States> implements Painting {
 
         scriptState = states;
 
-        switch(scriptState) {
+        switch (scriptState) {
             case BANK:
                 break;
             case WALK_TO_BANK:

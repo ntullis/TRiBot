@@ -15,7 +15,6 @@ public enum Craftables {
     private final int ID;
 
 
-
     private final int TYPE;
     private final int RAW_ID;
     private final int TOOL_ID;

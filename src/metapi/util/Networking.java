@@ -8,15 +8,10 @@ import metapi.mail.Transport;
 import metapi.mail.internet.InternetAddress;
 import metapi.mail.internet.MimeMessage;
 
-
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
-
-
-
-
+import java.util.Properties;
 
 import static org.tribot.api.General.println;
 
@@ -62,17 +57,17 @@ public class Networking {
 
     public String fetchSettings() throws Exception {
         println("Loading settings from the server...");
-        return readURL("http://www.snapbasecode.com/settings.php?action=get&script="+script);
+        return readURL("http://www.snapbasecode.com/settings.php?action=get&script=" + script);
     }
 
 
-
-    public boolean sendEmail(String email, String event, String msg) {;
+    public boolean sendEmail(String email, String event, String msg) {
+        ;
 
 
         // Sender's email ID needs to be mentioned
         String from = "MetaScripts1@gmail.com";
-        String pass ="BmXGIT4rcM6QDcu";
+        String pass = "BmXGIT4rcM6QDcu";
         // Recipient's email ID needs to be mentioned.
 
         String host = "smtp.gmail.com";
@@ -90,7 +85,7 @@ public class Networking {
         // Get the default Session object.
         Session session = Session.getDefaultInstance(properties);
 
-        try{
+        try {
             // Create a default MimeMessage object.
             MimeMessage message = new MimeMessage(session);
 
@@ -102,7 +97,7 @@ public class Networking {
                     new InternetAddress(email));
 
             // Set Subject: header field
-            message.setSubject("MetaFisher | "+event);
+            message.setSubject("MetaFisher | " + event);
 
             // Now set the actual message
             message.setText(msg);
@@ -114,7 +109,7 @@ public class Networking {
             transport.close();
             println("Sent message successfully....");
             return true;
-        }catch (MessagingException mex) {
+        } catch (MessagingException mex) {
             mex.printStackTrace();
         }
 

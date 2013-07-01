@@ -78,11 +78,8 @@ public class AStar {
     private Walking walking;
 
 
-
-
     private byte[][][] flags;
     private int off_x, off_y;
-
 
 
     public AStar() {
@@ -137,7 +134,7 @@ public class AStar {
                     boolean use_t = false;
                     if (!open.contains(next)) {
                         open.add(next);
-                        println("next = "+next.toRSTile(base_x, base_y));
+                        println("next = " + next.toRSTile(base_x, base_y));
                         use_t = true;
                     } else if (t < next.g) {
                         use_t = true;

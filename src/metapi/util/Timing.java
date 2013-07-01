@@ -19,12 +19,12 @@ public class Timing {
 
     }
 
-    public static void CSleep(final Condition c,final long timeout) {
+    public static void CSleep(final Condition c, final long timeout) {
 
         long startT = System.currentTimeMillis();
-        long timeoutT = (System.currentTimeMillis()+timeout)-startT;
+        long timeoutT = (System.currentTimeMillis() + timeout) - startT;
 
-        while ((System.currentTimeMillis() - startT) < timeoutT ) {
+        while ((System.currentTimeMillis() - startT) < timeoutT) {
             sleep(50);
             if (c.validate()) break;
         }

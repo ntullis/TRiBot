@@ -2,6 +2,10 @@ package scripts.metafisher;
 
 
 import metapi.MWalking;
+import metapi.enums.Banks;
+import metapi.util.Networking;
+import metapi.util.Timer;
+import metapi.util.Timing;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.api2007.types.RSNPC;
@@ -9,29 +13,20 @@ import org.tribot.api2007.types.RSTile;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
-import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 import scripts.metafisher.enums.States;
 import scripts.metafisher.methods.*;
-import metapi.util.Networking;
-import metapi.util.Timer;
-import metapi.util.Timing;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Properties;
 
-import static org.tribot.api.General.println;
-import static org.tribot.api.General.random;
 import static metapi.util.Logout.Logout;
 import static metapi.util.Timing.CSleep;
-
+import static org.tribot.api.General.random;
 
 
 /**
@@ -78,7 +73,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     public static boolean guiDone = false;
 
-    private RSTile[] tileBlacklist = new RSTile[]{new RSTile(2605,3395,0), new RSTile(2605,3396,0)};
+    private RSTile[] tileBlacklist = new RSTile[]{new RSTile(2605, 3395, 0), new RSTile(2605, 3396, 0)};
 
     public boolean badTile(RSTile tile) {
 
@@ -101,11 +96,11 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                     public boolean validate() {
                         return Inventory.getCount(toolEnum.getID()) > 0;
                     }
-                },random(2000,4000));
+                }, random(2000, 4000));
             }
         } else {
             Walking.walkTo(tool[0].getPosition());
-            sleep(1000,2000);
+            sleep(1000, 2000);
         }
         return false;
     }
@@ -115,7 +110,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
 
         scriptState = states;
-
 
 
         switch (scriptState) {
@@ -164,7 +158,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     }
 
 
-
     public States getState() {
 
 
@@ -207,8 +200,6 @@ public class MetaFisher extends EnumScript<States> implements Painting {
                 }
 
 
-
-
             }
 
             if (oldCount > newCount) return States.INV_CHANGE;
@@ -220,7 +211,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             if (swirlpool.length > 0 && swirlpool != null && swirlpool[0].isInteractingWithMe()) return States.FISH;
 
             if ((walk.fishIsNear()) && (Player.getAnimation() == -1)) return States.FISH;
-            else if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat()) return States.WALK_TO_FISH;
+            else if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat())
+                return States.WALK_TO_FISH;
         }
 
 
@@ -238,9 +230,10 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         try {
             settings = networking.fetchSettings();
         } catch (Exception e) {
-            println("Networking error: "+e.toString());
+            println("Networking error: " + e.toString());
             e.printStackTrace();
-        };
+        }
+        ;
 
 
         final String finalSettings = settings;
@@ -252,11 +245,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         });
 
 
-
         startTime = System.currentTimeMillis();
-
-
-
 
 
         while (true) {
@@ -285,19 +274,16 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         fish = new Fish(poolEnum, toolEnum);
 
 
-
-        while(Login.getLoginState() != Login.STATE.INGAME) {
+        while (Login.getLoginState() != Login.STATE.INGAME) {
             sleep(50);
         }
 
         newCount = Inventory.getCount(fishIDs);
 
 
-
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);
         }
-
 
 
         return getState();

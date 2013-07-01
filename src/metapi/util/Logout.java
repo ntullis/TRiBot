@@ -6,8 +6,6 @@ import org.tribot.api2007.Interfaces;
 import org.tribot.api2007.Login;
 import org.tribot.api2007.types.RSInterfaceChild;
 
-
-
 import static org.tribot.api.General.sleep;
 
 
@@ -21,10 +19,9 @@ import static org.tribot.api.General.sleep;
 public class Logout {
 
 
-
     public static boolean Logout() {
 
-        final RSInterfaceChild tab = Interfaces.get(548,33);
+        final RSInterfaceChild tab = Interfaces.get(548, 33);
 
         if (Login.getLoginState() == Login.STATE.INGAME) {
             if (GameTab.getOpen() == GameTab.TABS.INVENTORY) {
@@ -32,7 +29,7 @@ public class Logout {
             } else {
                 Login.logout();
             }
-            sleep(1000,2000);
+            sleep(1000, 2000);
         } else {
             return true;
         }

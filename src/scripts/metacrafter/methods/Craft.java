@@ -35,7 +35,7 @@ public class Craft {
 
             int size = items.length;
 
-            RSItem item = items[General.random(0,size)];
+            RSItem item = items[General.random(0, size)];
 
             if (item.click("Use")) {
                 RSObject oa[] = Objects.findNearest(station.getMaxDist(), station.getID());
@@ -45,16 +45,13 @@ public class Craft {
 
                     if (o.isOnScreen()) {
                         o.click(station.getOption());
-                        General.sleep(400,800);
+                        General.sleep(400, 800);
                     }
 
                 }
 
 
-
-
             }
-
 
 
         }
@@ -70,7 +67,7 @@ public class Craft {
 
         if (oa != null && oa.length > 0) {
             RSObject o = oa[0];
-            RSInterface menu = Interfaces.get(0,0);
+            RSInterface menu = Interfaces.get(0, 0);
 
             if (o.isOnScreen()) {
                 if (menu != null) {
@@ -93,7 +90,7 @@ public class Craft {
         switch (craftable.getType()) {
             case 1:
                 station = Stations.FURNACE;
-                    return forgeRing();
+                return forgeRing();
 
 
         }

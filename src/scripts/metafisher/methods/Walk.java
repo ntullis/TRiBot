@@ -1,16 +1,15 @@
 package scripts.metafisher.methods;
 
 import metapi.AStar;
-import metapi.MWalking;
+import metapi.enums.Banks;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSNPC;
 import org.tribot.api2007.types.RSObject;
 import org.tribot.api2007.types.RSTile;
-import metapi.enums.Banks;
 import scripts.metafisher.enums.FishPools;
 
-
-import static org.tribot.api.General.*;
+import static org.tribot.api.General.println;
+import static org.tribot.api.General.random;
 
 
 /**
@@ -27,8 +26,6 @@ public class Walk {
     AStar pf;
 
     private RSTile Spot;
-
-
 
 
     public Walk(Banks chosenBank, FishPools chosenPool) {
@@ -60,8 +57,6 @@ public class Walk {
         pf = new AStar();
 
 
-
-
         Walking.walking_timeout = random(2000, 4000);
 
     }
@@ -77,7 +72,7 @@ public class Walk {
         RSTile[] path = pf.findPath(Player.getPosition(), new RSTile(2854, 3430, 0));
 
         if (path != null) {
-            println("path = "+path.length);
+            println("path = " + path.length);
         }
 
         return false;
@@ -89,7 +84,7 @@ public class Walk {
     }
 
     public boolean boothIsNear() {
-        RSObject booth[] = Objects.findNearest(bank.getMaxDistance(),bank.getBoothID());
+        RSObject booth[] = Objects.findNearest(bank.getMaxDistance(), bank.getBoothID());
         println("boothLength = " + booth.length);
         return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) < bank.getMaxDistance();
     }

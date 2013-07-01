@@ -5,7 +5,6 @@ import org.tribot.api2007.Camera;
 import org.tribot.api2007.NPCs;
 import org.tribot.api2007.types.RSNPC;
 
-import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static org.tribot.api.General.sleep;
 
@@ -18,7 +17,7 @@ import static org.tribot.api.General.sleep;
  */
 public class Antiban {
     public Antiban() {
-        int r = random(0,4);
+        int r = random(0, 4);
 
         switch (r) {
             case 0:
@@ -27,7 +26,7 @@ public class Antiban {
                 if (n.length > 0 && n != null) {
                     for (int i = 0; i < n.length; i++) {
                         if (n[i].isValid() && n[i].isOnScreen()) {
-                           Camera.turnToTile(n[i].getPosition());
+                            Camera.turnToTile(n[i].getPosition());
                             break;
                         }
                     }
@@ -35,7 +34,7 @@ public class Antiban {
 
                 break;
             case 1:
-                Mouse.move(random(0,500), random(0,500));
+                Mouse.move(random(0, 500), random(0, 500));
                 break;
             case 2:
                 RSNPC n2[] = NPCs.getAll();
@@ -44,8 +43,8 @@ public class Antiban {
                     for (int i = 0; i < n2.length; i++) {
                         if (n2[i].isValid() && n2[i].isOnScreen()) {
                             n2[i].hover();
-                            sleep(800,1700);
-                            Mouse.move(random(0,500), random(0,500));
+                            sleep(800, 1700);
+                            Mouse.move(random(0, 500), random(0, 500));
                             break;
                         }
                     }
@@ -53,10 +52,10 @@ public class Antiban {
 
                 break;
             case 3:
-                Camera.setCameraRotation(random(0,300));
+                Camera.setCameraRotation(random(0, 300));
                 break;
             case 4:
-                Camera.setCameraAngle(random(0,600));
+                Camera.setCameraAngle(random(0, 600));
                 break;
             case 5:
                 break;

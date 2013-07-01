@@ -9,7 +9,7 @@ package scripts.metacrafter.enums;
  */
 public enum Stations {
 
-    FURNACE("Furnace",4,24009);
+    FURNACE("Furnace", 4, 24009);
 
 
     private String OPTION;
