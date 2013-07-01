@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 
 import static metapi.util.Timing.CSleep;
+import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static org.tribot.api2007.Login.logout;
 
@@ -184,7 +185,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
             if (walk.bankIsNear()) return States.BANK;
             else return States.WALK_TO_BANK;
         } else {
-            if (Inventory.getCount(toolEnum.getID()) == 0 || toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0) {
+            println("count = "+Inventory.getCount(toolEnum.getID()));
+            if (Inventory.getCount(toolEnum.getID()) == 0 || (toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0)) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
                 if (tool.length > 0 && tool != null && !badTile(tool[0].getPosition())) {
                     return States.PICKUP_TOOL;
