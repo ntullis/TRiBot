@@ -1,17 +1,15 @@
 package metapi.util;
 
 
-import metapi.javamail.mail.Message;
-import metapi.javamail.mail.MessagingException;
-import metapi.javamail.mail.Session;
-import metapi.javamail.mail.Transport;
-import metapi.javamail.mail.internet.InternetAddress;
-import metapi.javamail.mail.internet.MimeMessage;
-import sun.misc.IOUtils;
+import metapi.mail.Message;
+import metapi.mail.MessagingException;
+import metapi.mail.Session;
+import metapi.mail.Transport;
+import metapi.mail.internet.InternetAddress;
+import metapi.mail.internet.MimeMessage;
 
 
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -33,12 +31,11 @@ import static org.tribot.api.General.println;
 public class Networking {
 
     private String script;
-    private String email;
 
-    public Networking(String script, String email) {
+
+    public Networking(String script) {
         this.script = script;
 
-        if (email != null) this.email = email;
     }
 
 
@@ -64,18 +61,19 @@ public class Networking {
     }
 
     public String fetchSettings() throws Exception {
-        println("Loading settings...");
+        println("Loading settings from the server...");
         return readURL("http://www.snapbasecode.com/settings.php?action=get&script="+script);
     }
 
-    public boolean sendEmail(String event, String msg) {;
+
+
+    public boolean sendEmail(String email, String event, String msg) {;
 
 
         // Sender's email ID needs to be mentioned
         String from = "MetaScripts1@gmail.com";
         String pass ="BmXGIT4rcM6QDcu";
         // Recipient's email ID needs to be mentioned.
-        String to = email;
 
         String host = "smtp.gmail.com";
 
@@ -101,7 +99,7 @@ public class Networking {
 
             // Set To: header field of the header.
             message.addRecipient(Message.RecipientType.TO,
-                    new InternetAddress(to));
+                    new InternetAddress(email));
 
             // Set Subject: header field
             message.setSubject("MetaFisher | "+event);

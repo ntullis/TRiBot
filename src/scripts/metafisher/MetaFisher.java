@@ -230,24 +230,24 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     @Override
     public States getInitialState() {
-        Properties properties = System.getProperties();
+
+        String settings = null;
+
+        networking = new Networking(script_name);
+
+        try {
+            settings = networking.fetchSettings();
+        } catch (Exception e) {
+            println("Networking error: "+e.toString());
+            e.printStackTrace();
+        };
 
 
+        final String finalSettings = settings;
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-
-
-
-                GUI = new GraphicalInterface();
-
-
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-                GUI.setLocation((screenSize.width / 2) - (GUI.getSize().width / 2), screenSize.height / 2 - (GUI.getSize().height / 2));
-
-
-                GUI.setVisible(true);
+                GUI = new GraphicalInterface(finalSettings);
             }
         });
 
@@ -269,7 +269,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         runTimer = new Timer(random(180000, 300000));
 
-        if (GUI.logout()) {
+        if (GUI.getLogout()) {
             logoutTimer = new Timer(GUI.getLogoutMS());
         }
 
@@ -292,7 +292,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         newCount = Inventory.getCount(fishIDs);
 
-        networking = new Networking(script_name, GUI.getEmail());
+
 
         if (!dropMap.isEmpty() || GUI.powerfish) {
             drop = new Drop(dropMap, GUI.powerfish, toolEnum);

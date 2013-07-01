@@ -6,9 +6,11 @@ package scripts.metafisher;
 
 
 
+import javax.accessibility.AccessibleContext;
 import javax.swing.border.*;
 import metapi.enums.Banks;
 import metapi.util.Networking;
+import obf.T;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 
@@ -19,7 +21,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
@@ -37,11 +42,13 @@ public class GraphicalInterface extends JFrame {
     private final Banks[] alLBanks = {Banks.CATHERBY, Banks.AL_KHARID, Banks.DRAYNOR, Banks.EDGEVILLE, Banks.FISHING_GUILD, Banks.SEER_VILLAGE};
     private final FishPools[] allPools = {FishPools.MACKEREL, FishPools.TUNA, FishPools.LOBSTER, FishPools.SHRIMPS, FishPools.HERRING, FishPools.SALMON, FishPools.SHARK};
 
-    private Networking networking = null;
+    String Settings = null;
 
     private HashMap<Integer, Integer> dropList = new HashMap<Integer, Integer>();
 
     public boolean powerfish = false;
+
+    private Networking networking;
 
     public Banks getBank() {
         return chosenBank;
@@ -59,7 +66,7 @@ public class GraphicalInterface extends JFrame {
         return dropList;
     }
 
-    public boolean logout() {
+    public boolean getLogout() {
         return checkBox2.isSelected();
     }
 
@@ -70,11 +77,15 @@ public class GraphicalInterface extends JFrame {
     public String getEmail() {
 
         if (checkBox4.isSelected()) {
-            return textField3.toString();
+            return textField3.getText();
         }
 
         return null;
 
+    }
+
+    public boolean getReport() {
+        return checkBox4.isSelected();
     }
 
 
@@ -87,23 +98,164 @@ public class GraphicalInterface extends JFrame {
         return -1;
     }
 
-    public GraphicalInterface() {
-        networking = new Networking("MetaFisher", null);
+
+    public boolean saveSettings() {
+
+        int p = 0;
+        int a = 0;
+        int l = 0;
+        int r = 0;
+        if (checkBox1.isSelected()) p = 1;
+        if (checkBox3.isSelected()) a = 1;
+        if (getLogout()) l = 1;
+        if (getReport()) r = 1;
+
+        StringBuilder builder = new StringBuilder();
 
 
+
+
+        if (!dropList.isEmpty()) {
+
+
+
+            for (Map.Entry<Integer, Integer> entry : dropList.entrySet()) {
+
+                int i = dropList.size()-entry.getKey();
+
+
+                if (i != 1) {
+                    builder.append(entry.getValue()+",");
+                } else builder.append(entry.getValue());
+
+            }
+
+
+        }
+
+        String url = "http://www.snapbasecode.com/settings.php?action=post&script=MetaFisher&loc="+comboBox1.getSelectedIndex()+
+                "&fish="+comboBox2.getSelectedIndex()+"&pFish="+p+"&drops="+builder.toString()+"&aBan="+a+"&aMin="+textField4.getText()+
+                "&aMax="+textField5.getText()+"&email="+getEmail()+"&logout="+l+"&logTime="+textField2.getText()+"&report="+r;
+        try {
+            networking.readURL(url);
+        } catch (Exception e) {
+            println("Cant save settings");
+            e.printStackTrace();
+        }
+
+        println("url = "+url);
+
+        return false;
+    }
+
+
+    public boolean loadSettings() throws NumberFormatException {
+
+
+        if (Settings != null && !Settings.equals("")) {
+
+            println("Settings = "+Settings);
+
+            String settings;
+            String drops;
+
+
+
+            settings = Settings.substring(0, Settings.indexOf('|'));
+            drops = Settings.substring(Settings.indexOf('|')+1);
+
+
+
+            String temp[] = settings.split(",");
+
+            for (int i = 0; i < temp.length; i++) {
+
+                if (i == 0) comboBox1.setSelectedIndex(Integer.parseInt(temp[i]));
+                else if (i == 1) comboBox2.setSelectedIndex(Integer.parseInt(temp[i]));
+                else if (i == 2) {
+                    if (Integer.parseInt(temp[i]) == 1) {
+                        checkBox1.setSelected(true);
+                    }
+                } else if (i == 3) {
+                    checkBox3.setSelected(true);
+                    textField4.setEnabled(true);
+                    textField5.setEnabled(true);
+                } else if (i == 4) {
+                    textField4.setText(temp[i]);
+
+                } else if (i == 5) {
+                    textField5.setText(temp[i]);
+                } else if (i == 6) {
+                    textField3.setText(temp[i]);
+                } else if (i == 7) {
+                    if (Integer.parseInt(temp[i]) == 1) {
+                        checkBox2.setSelected(true);
+                        textField2.setEnabled(true);
+                    }
+                } else if (i == 8) {
+                    textField2.setText(temp[i]);
+                } else if (i == 9) {
+                    if (Integer.parseInt(temp[i]) == 1) {
+                        checkBox4.setSelected(true);
+                        textField3.setEnabled(true);
+                    }
+                }
+
+
+
+
+            }
+
+            println("drops = "+drops);
+
+           for (String s : drops.split(",")) {
+                try {
+                    listModel.addElement(Integer.parseInt(s));
+                } catch (NumberFormatException e) {
+
+                }
+
+            }
+
+
+
+            println("Settings loaded!");
+
+
+
+
+        }
+        return false;
+    }
+
+    public GraphicalInterface(String Settings) {
+
+        this.Settings = Settings;
+
+        networking = new Networking("MetaFisher");
+
+        initComponents();
 
 
 
         try {
-            String s = networking.fetchSettings();
-            println(s);
-        } catch (Exception e) {
-            println("Networking error: "+e.toString());
-            e.printStackTrace();
+            loadSettings();
+        }   catch (NumberFormatException e) {
+
         }
 
 
-        initComponents();
+
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        this.setLocation((screenSize.width / 2) - (this.getSize().width / 2), screenSize.height / 2 - (this.getSize().height / 2));
+
+
+        this.setVisible(true);
+
+
+
     }
 
     private void button1ActionPerformed(ActionEvent e) {
@@ -160,7 +312,7 @@ public class GraphicalInterface extends JFrame {
                 break;
         }
 
-        networking = null;
+        saveSettings();
 
         this.dispose();
         MetaFisher.guiDone = true;
