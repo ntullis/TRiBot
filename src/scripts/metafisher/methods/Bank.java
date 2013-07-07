@@ -1,12 +1,11 @@
 package scripts.metafisher.methods;
 
-import metapi.MBank;
+import metapi.MBanking;
 import metapi.enums.Banks;
 import org.tribot.api2007.Banking;
 import org.tribot.api2007.Inventory;
 import scripts.metafisher.enums.FishTools;
 
-import static org.tribot.api.General.println;
 import static org.tribot.api.General.sleep;
 
 /**
@@ -35,14 +34,14 @@ public class Bank {
         if (Inventory.getCount(chosenTool.getID()) == 0) tool = true;
 
         if (!Banking.isBankScreenOpen()) {
-            MBank.openBanker(chosenBank);
+            MBanking.openBanker(chosenBank);
         } else {
             if (tool) {
-                MBank.withdraw(1, chosenTool.getID());
+                MBanking.withdraw(1, chosenTool.getID());
                 sleep(1000, 2000);
             }
             if (ing) {
-                MBank.withdraw(0, chosenTool.getIngredientID());
+                MBanking.withdraw(0, chosenTool.getIngredientID());
                 sleep(1000, 2000);
             }
             return true;
@@ -54,7 +53,7 @@ public class Bank {
 
     public boolean deposit() {
         if (!Banking.isBankScreenOpen()) {
-            MBank.openBanker(chosenBank);
+            MBanking.openBanker(chosenBank);
         } else {
 
 

@@ -21,7 +21,7 @@ import static org.tribot.api.General.sleep;
  * Time: 23:37
  * To change this template use File | Settings | File Templates.
  */
-public class MBank {
+public class MBanking {
 
 
     public static boolean openBooth(final Banks bank) {

@@ -6,10 +6,12 @@ import org.tribot.api2007.Camera;
 import org.tribot.api2007.NPCs;
 import org.tribot.api2007.Player;
 import org.tribot.api2007.Walking;
+import org.tribot.api2007.types.RSCharacter;
 import org.tribot.api2007.types.RSNPC;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 
+import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static org.tribot.api.General.sleep;
 
@@ -32,6 +34,7 @@ public class Fish {
 
     public boolean startFishing() {
         final RSNPC pool[] = NPCs.findNearest(POOL.getID());
+
 
         if (pool.length > 0 && pool != null) {
             if (pool[0].isOnScreen()) {

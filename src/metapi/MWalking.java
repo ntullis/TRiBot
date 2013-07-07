@@ -2,10 +2,12 @@ package metapi;
 
 import metapi.util.Timer;
 import metapi.util.Timing;
-import org.tribot.api2007.Game;
-import org.tribot.api2007.GameTab;
-import org.tribot.api2007.Interfaces;
+import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSTile;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 import static metapi.util.Timing.CSleep;
 import static org.tribot.api.General.random;
@@ -81,6 +83,7 @@ public class MWalking {
         return false;
     }
 
+
     public static boolean walkPath(RSTile[] path, boolean reverse) {
         if (path != null) {
 
@@ -96,7 +99,22 @@ public class MWalking {
             }
 
 
-            org.tribot.api2007.Walking.walkPath(path);
+
+                  Walking.walkPath(path);
+                  CSleep(new Timing.Condition() {
+                      @Override
+                      public boolean validate() {
+                          return !Player.isMoving();
+                      }
+                  },random(2000,3000));
+
+
+
+
+
+
+
+
         }
         return false;
     }

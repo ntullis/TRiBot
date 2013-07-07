@@ -13,6 +13,7 @@ import org.tribot.api2007.types.RSTile;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Painting;
+import org.tribot.script.interfaces.RandomEvents;
 import scripts.metafisher.enums.FishPools;
 import scripts.metafisher.enums.FishTools;
 import scripts.metafisher.enums.States;
@@ -39,8 +40,8 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.17)
-public class MetaFisher extends EnumScript<States> implements Painting {
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.18)
+public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
 
     private GraphicalInterface GUI;
 
@@ -70,6 +71,9 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     private RSTile[] tileBlacklist = new RSTile[]{new RSTile(2605, 3395, 0), new RSTile(2605, 3396, 0)};
 
+    private Networking networking;
+
+
     public boolean badTile(RSTile tile) {
 
         for (int i = 0; i < tileBlacklist.length; i++) {
@@ -85,7 +89,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
 
         if (tool[0].isOnScreen()) {
-            if (tool[0].click("Take")) {
+            if (Walking.walkTo(tool[0].getPosition()) && tool[0].click("Take")) {
                 CSleep(new Timing.Condition() {
                     @Override
                     public boolean validate() {
@@ -161,6 +165,8 @@ public class MetaFisher extends EnumScript<States> implements Painting {
     public States getState() {
 
 
+
+
         oldCount = Inventory.getCount(fishIDs);
 
 
@@ -192,7 +198,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
         } else {
             if (Inventory.getCount(toolEnum.getID()) == 0 || (toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0)) {
                 RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
-                if (tool.length > 0 && tool != null && !badTile(tool[0].getPosition())) {
+                if (tool.length > 0 && tool != null && PathFinding.canReach(tool[0].getPosition(),false)) {
                     return States.PICKUP_TOOL;
                 } else {
                     if (!walk.bankIsNear()) return States.WALK_TO_BANK;
@@ -225,7 +231,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
         String settings = null;
 
-        Networking networking = new Networking(script_name);
+        networking = new Networking(script_name);
 
         try {
             settings = networking.fetchSettings();
@@ -245,6 +251,7 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
 
         startTime = System.currentTimeMillis();
+
 
 
         while (true) {
@@ -354,4 +361,21 @@ public class MetaFisher extends EnumScript<States> implements Painting {
 
     }
 
+    @Override
+    public void onRandom(RANDOM_SOLVERS random_solvers) {
+        networking.sendNotification("In random", "In random");
+    }
+
+    @Override
+    public boolean randomFailed(RANDOM_SOLVERS random_solvers) {
+
+       networking.sendNotification("Random event failed", "Random event failed");
+
+        return false;
+    }
+
+    @Override
+    public void randomSolved(RANDOM_SOLVERS random_solvers) {
+
+    }
 }

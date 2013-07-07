@@ -94,6 +94,31 @@ public class GraphicalInterface extends JFrame {
         return -1;
     }
 
+    public int getLogTime() {
+        try {
+            return Integer.parseInt(textField2.getText());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+
+
+    }
+
+    public int getAntibanMin() {
+        try {
+            return Integer.parseInt(textField4.getText());
+        } catch (NumberFormatException e) {
+            return 60;
+        }
+    }
+
+    public int getAntibanMax() {
+        try {
+            return Integer.parseInt(textField5.getText());
+        } catch (NumberFormatException e) {
+            return 120;
+        }
+    }
 
     public boolean saveSettings() {
 
@@ -124,11 +149,12 @@ public class GraphicalInterface extends JFrame {
             }
 
 
-        }
+
+        } else builder.append("0");
 
         String url = "http://www.snapbasecode.com/settings.php?action=post&script=MetaFisher&loc=" + comboBox1.getSelectedIndex() +
-                "&fish=" + comboBox2.getSelectedIndex() + "&pFish=" + p + "&drops=" + builder.toString() + "&aBan=" + a + "&aMin=" + textField4.getText() +
-                "&aMax=" + textField5.getText() + "&email=" + getEmail() + "&logout=" + l + "&logTime=" + textField2.getText() + "&report=" + r;
+                "&fish=" + comboBox2.getSelectedIndex() + "&pFish=" + p + "&drops=" + builder.toString() + "&aBan=" + a + "&aMin=" + getAntibanMin() +
+                "&aMax=" + getAntibanMax() + "&email=" + getEmail() + "&logout=" + l + "&logTime=" + getLogTime() + "&report=" + r;
         try {
             networking.readURL(url);
         } catch (Exception e) {
@@ -392,38 +418,35 @@ public class GraphicalInterface extends JFrame {
     private void initComponents() {
         // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:initComponents
         // Generated using JFormDesigner Evaluation license - Jari Jaaskela
-
-
-
-        JButton button1 = new JButton();
-        JTabbedPane tabbedPane1 = new JTabbedPane();
-        JPanel optionsPanel = new JPanel();
+        button1 = new JButton();
+        tabbedPane1 = new JTabbedPane();
+        optionsPanel = new JPanel();
         checkBox1 = new JCheckBox();
-        JPanel panel1 = new JPanel();
+        panel1 = new JPanel();
         comboBox1 = new JComboBox();
-        JPanel panel2 = new JPanel();
+        panel2 = new JPanel();
         comboBox2 = new JComboBox();
-        JPanel panel4 = new JPanel();
-        JScrollPane scrollPane1 = new JScrollPane();
-        list1 = new JList(listModel);
+        panel4 = new JPanel();
+        scrollPane1 = new JScrollPane();
+        list1 = new JList();
         button2 = new JButton();
         textField1 = new JTextField();
-        JPanel panel3 = new JPanel();
-        JPanel panel5 = new JPanel();
+        panel3 = new JPanel();
+        panel5 = new JPanel();
         checkBox2 = new JCheckBox();
         textField2 = new JTextField();
-        JLabel label1 = new JLabel();
-        JPanel panel6 = new JPanel();
+        label1 = new JLabel();
+        panel6 = new JPanel();
         checkBox3 = new JCheckBox();
-        JLabel label2 = new JLabel();
-        JLabel label3 = new JLabel();
-        JLabel label4 = new JLabel();
+        label2 = new JLabel();
+        label3 = new JLabel();
+        label4 = new JLabel();
         textField5 = new JTextField();
         textField4 = new JTextField();
-        JPanel panel7 = new JPanel();
+        panel7 = new JPanel();
         checkBox4 = new JCheckBox();
         textField3 = new JTextField();
-        JLabel label5 = new JLabel();
+        label5 = new JLabel();
 
         //======== this ========
         setTitle("Setup");
@@ -450,15 +473,10 @@ public class GraphicalInterface extends JFrame {
 
                 // JFormDesigner evaluation mark
                 optionsPanel.setBorder(new javax.swing.border.CompoundBorder(
-                        new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
-                                "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
-                                javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
-                                java.awt.Color.red), optionsPanel.getBorder()));
-                optionsPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-                    public void propertyChange(java.beans.PropertyChangeEvent e) {
-                        if ("border".equals(e.getPropertyName())) throw new RuntimeException();
-                    }
-                });
+                    new javax.swing.border.TitledBorder(new javax.swing.border.EmptyBorder(0, 0, 0, 0),
+                        "JFormDesigner Evaluation", javax.swing.border.TitledBorder.CENTER,
+                        javax.swing.border.TitledBorder.BOTTOM, new java.awt.Font("Dialog", java.awt.Font.BOLD, 12),
+                        java.awt.Color.red), optionsPanel.getBorder())); optionsPanel.addPropertyChangeListener(new java.beans.PropertyChangeListener(){public void propertyChange(java.beans.PropertyChangeEvent e){if("border".equals(e.getPropertyName()))throw new RuntimeException();}});
 
 
                 //---- checkBox1 ----
@@ -475,13 +493,13 @@ public class GraphicalInterface extends JFrame {
                     panel1.setBorder(new TitledBorder("Location"));
 
                     //---- comboBox1 ----
-                    comboBox1.setModel(new DefaultComboBoxModel(new String[]{
-                            "Catherby",
-                            "Al Kharid",
-                            "Draynor",
-                            "Edgeville",
-                            "Fishing Guild",
-                            "Seer's Village"
+                    comboBox1.setModel(new DefaultComboBoxModel(new String[] {
+                        "Catherby",
+                        "Al Kharid",
+                        "Draynor",
+                        "Edgeville",
+                        "Fishing Guild",
+                        "Seer's Village"
                     }));
                     comboBox1.addActionListener(new ActionListener() {
                         @Override
@@ -494,18 +512,18 @@ public class GraphicalInterface extends JFrame {
                     GroupLayout panel1Layout = new GroupLayout(panel1);
                     panel1.setLayout(panel1Layout);
                     panel1Layout.setHorizontalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(panel1Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
-                                            .addContainerGap())
+                        panel1Layout.createParallelGroup()
+                            .addGroup(panel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(comboBox1, GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                                .addContainerGap())
                     );
                     panel1Layout.setVerticalGroup(
-                            panel1Layout.createParallelGroup()
-                                    .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap())
+                        panel1Layout.createParallelGroup()
+                            .addGroup(GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
+                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap())
                     );
                 }
 
@@ -515,28 +533,28 @@ public class GraphicalInterface extends JFrame {
                     panel2.setToolTipText("Select fish for script to fish");
 
                     //---- comboBox2 ----
-                    comboBox2.setModel(new DefaultComboBoxModel(new String[]{
-                            "Bass/Mackerel/Cod/Junk",
-                            "Swordfish/Tuna",
-                            "Lobster",
-                            "Shark"
+                    comboBox2.setModel(new DefaultComboBoxModel(new String[] {
+                        "Bass/Mackerel/Cod/Junk",
+                        "Swordfish/Tuna",
+                        "Lobster",
+                        "Shark"
                     }));
 
                     GroupLayout panel2Layout = new GroupLayout(panel2);
                     panel2.setLayout(panel2Layout);
                     panel2Layout.setHorizontalGroup(
-                            panel2Layout.createParallelGroup()
-                                    .addGroup(panel2Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(comboBox2, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
-                                            .addGap(25, 25, 25))
+                        panel2Layout.createParallelGroup()
+                            .addGroup(panel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(comboBox2, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                                .addGap(25, 25, 25))
                     );
                     panel2Layout.setVerticalGroup(
-                            panel2Layout.createParallelGroup()
-                                    .addGroup(panel2Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap(9, Short.MAX_VALUE))
+                        panel2Layout.createParallelGroup()
+                            .addGroup(panel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(9, Short.MAX_VALUE))
                     );
                 }
 
@@ -571,61 +589,61 @@ public class GraphicalInterface extends JFrame {
                     GroupLayout panel4Layout = new GroupLayout(panel4);
                     panel4.setLayout(panel4Layout);
                     panel4Layout.setHorizontalGroup(
-                            panel4Layout.createParallelGroup()
+                        panel4Layout.createParallelGroup()
+                            .addGroup(panel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel4Layout.createParallelGroup()
+                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
                                     .addGroup(panel4Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addGroup(panel4Layout.createParallelGroup()
-                                                    .addComponent(scrollPane1, GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
-                                                    .addGroup(panel4Layout.createSequentialGroup()
-                                                            .addComponent(button2)
-                                                            .addGap(18, 18, 18)
-                                                            .addComponent(textField1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
-                                            .addContainerGap())
+                                        .addComponent(button2)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(textField1, GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)))
+                                .addContainerGap())
                     );
                     panel4Layout.setVerticalGroup(
-                            panel4Layout.createParallelGroup()
-                                    .addGroup(panel4Layout.createSequentialGroup()
-                                            .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                            .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                    .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(button2))
-                                            .addGap(0, 0, Short.MAX_VALUE))
+                        panel4Layout.createParallelGroup()
+                            .addGroup(panel4Layout.createSequentialGroup()
+                                .addComponent(scrollPane1, GroupLayout.PREFERRED_SIZE, 86, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(panel4Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(textField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(button2))
+                                .addGap(0, 0, Short.MAX_VALUE))
                     );
                 }
 
                 GroupLayout optionsPanelLayout = new GroupLayout(optionsPanel);
                 optionsPanel.setLayout(optionsPanelLayout);
                 optionsPanelLayout.setHorizontalGroup(
-                        optionsPanelLayout.createParallelGroup()
+                    optionsPanelLayout.createParallelGroup()
+                        .addGroup(optionsPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(optionsPanelLayout.createParallelGroup()
                                 .addGroup(optionsPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(optionsPanelLayout.createParallelGroup()
-                                                .addGroup(optionsPanelLayout.createSequentialGroup()
-                                                        .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addGap(97, 97, 97))
-                                                .addGroup(optionsPanelLayout.createSequentialGroup()
-                                                        .addGroup(optionsPanelLayout.createParallelGroup()
-                                                                .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
-                                                                .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)))
-                                        .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addContainerGap())
+                                    .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(97, 97, 97))
+                                .addGroup(optionsPanelLayout.createSequentialGroup()
+                                    .addGroup(optionsPanelLayout.createParallelGroup()
+                                        .addComponent(checkBox1, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)))
+                            .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addContainerGap())
                 );
                 optionsPanelLayout.setVerticalGroup(
-                        optionsPanelLayout.createParallelGroup()
+                    optionsPanelLayout.createParallelGroup()
+                        .addGroup(optionsPanelLayout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(optionsPanelLayout.createParallelGroup()
+                                .addGroup(GroupLayout.Alignment.TRAILING, optionsPanelLayout.createSequentialGroup()
+                                    .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(checkBox1))
                                 .addGroup(optionsPanelLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(optionsPanelLayout.createParallelGroup()
-                                                .addGroup(GroupLayout.Alignment.TRAILING, optionsPanelLayout.createSequentialGroup()
-                                                        .addComponent(panel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                                                        .addComponent(panel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(checkBox1))
-                                                .addGroup(optionsPanelLayout.createSequentialGroup()
-                                                        .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addContainerGap())))
+                                    .addComponent(panel4, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addContainerGap())))
                 );
             }
             tabbedPane1.addTab("Basic", optionsPanel);
@@ -655,25 +673,25 @@ public class GraphicalInterface extends JFrame {
                     GroupLayout panel5Layout = new GroupLayout(panel5);
                     panel5.setLayout(panel5Layout);
                     panel5Layout.setHorizontalGroup(
-                            panel5Layout.createParallelGroup()
-                                    .addGroup(panel5Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addComponent(checkBox2)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                            .addComponent(label1)
-                                            .addContainerGap(35, Short.MAX_VALUE))
+                        panel5Layout.createParallelGroup()
+                            .addGroup(panel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(checkBox2)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(textField2, GroupLayout.PREFERRED_SIZE, 67, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(label1)
+                                .addContainerGap(35, Short.MAX_VALUE))
                     );
                     panel5Layout.setVerticalGroup(
-                            panel5Layout.createParallelGroup()
-                                    .addGroup(panel5Layout.createSequentialGroup()
-                                            .addContainerGap()
-                                            .addGroup(panel5Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                                                    .addComponent(checkBox2)
-                                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                    .addComponent(label1))
-                                            .addContainerGap(7, Short.MAX_VALUE))
+                        panel5Layout.createParallelGroup()
+                            .addGroup(panel5Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(panel5Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                                    .addComponent(checkBox2)
+                                    .addComponent(textField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(label1))
+                                .addContainerGap(7, Short.MAX_VALUE))
                     );
                 }
 
@@ -720,7 +738,7 @@ public class GraphicalInterface extends JFrame {
 
                     { // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for (int i = 0; i < panel6.getComponentCount(); i++) {
+                        for(int i = 0; i < panel6.getComponentCount(); i++) {
                             Rectangle bounds = panel6.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -736,12 +754,12 @@ public class GraphicalInterface extends JFrame {
                 //======== panel7 ========
                 {
                     panel7.setBorder(new CompoundBorder(
-                            new TitledBorder("Email"),
-                            new EmptyBorder(5, 5, 5, 5)));
+                        new TitledBorder("Notify My Android"),
+                        new EmptyBorder(5, 5, 5, 5)));
                     panel7.setLayout(null);
 
                     //---- checkBox4 ----
-                    checkBox4.setText("Send email reports");
+                    checkBox4.setText("Notify My Android");
                     checkBox4.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
@@ -749,7 +767,7 @@ public class GraphicalInterface extends JFrame {
                         }
                     });
                     panel7.add(checkBox4);
-                    checkBox4.setBounds(new Rectangle(new Point(10, 15), checkBox4.getPreferredSize()));
+                    checkBox4.setBounds(10, 15, 145, checkBox4.getPreferredSize().height);
 
                     //---- textField3 ----
                     textField3.setEnabled(false);
@@ -763,7 +781,7 @@ public class GraphicalInterface extends JFrame {
 
                     { // compute preferred size
                         Dimension preferredSize = new Dimension();
-                        for (int i = 0; i < panel7.getComponentCount(); i++) {
+                        for(int i = 0; i < panel7.getComponentCount(); i++) {
                             Rectangle bounds = panel7.getComponent(i).getBounds();
                             preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
                             preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
@@ -779,28 +797,28 @@ public class GraphicalInterface extends JFrame {
                 GroupLayout panel3Layout = new GroupLayout(panel3);
                 panel3.setLayout(panel3Layout);
                 panel3Layout.setHorizontalGroup(
-                        panel3Layout.createParallelGroup()
+                    panel3Layout.createParallelGroup()
+                        .addGroup(panel3Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(panel3Layout.createParallelGroup()
                                 .addGroup(panel3Layout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addGroup(panel3Layout.createParallelGroup()
-                                                .addGroup(panel3Layout.createSequentialGroup()
-                                                        .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                                        .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                                .addComponent(panel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap(53, Short.MAX_VALUE))
+                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(panel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                            .addContainerGap(53, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
-                        panel3Layout.createParallelGroup()
-                                .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
-                                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                                .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                                .addGroup(panel3Layout.createSequentialGroup()
-                                                        .addComponent(panel7, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-                                                        .addGap(18, 18, 18)
-                                                        .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                                        .addGap(17, 17, 17))
+                    panel3Layout.createParallelGroup()
+                        .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
+                            .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                                .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(panel7, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                            .addGap(17, 17, 17))
                 );
             }
             tabbedPane1.addTab("Extras", panel3);
@@ -809,38 +827,55 @@ public class GraphicalInterface extends JFrame {
         GroupLayout contentPaneLayout = new GroupLayout(contentPane);
         contentPane.setLayout(contentPaneLayout);
         contentPaneLayout.setHorizontalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addComponent(tabbedPane1)
-                        .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
-                                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(button1, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
-                                .addGap(156, 156, 156))
+            contentPaneLayout.createParallelGroup()
+                .addComponent(tabbedPane1)
+                .addGroup(GroupLayout.Alignment.TRAILING, contentPaneLayout.createSequentialGroup()
+                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(button1, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
+                    .addGap(156, 156, 156))
         );
         contentPaneLayout.setVerticalGroup(
-                contentPaneLayout.createParallelGroup()
-                        .addGroup(contentPaneLayout.createSequentialGroup()
-                                .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(button1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
-                                .addGap(7, 7, 7))
+            contentPaneLayout.createParallelGroup()
+                .addGroup(contentPaneLayout.createSequentialGroup()
+                    .addComponent(tabbedPane1, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(button1, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
+                    .addGap(7, 7, 7))
         );
         pack();
         setLocationRelativeTo(getOwner());
         // JFormDesigner - End of component initialization  //GEN-END:initComponents
     }
-
+    //GEN-BEGIN:variables
+    // Generated using JFormDesigner Evaluation license - Jari Jaaskela
+    private JButton button1;
+    private JTabbedPane tabbedPane1;
+    private JPanel optionsPanel;
     private JCheckBox checkBox1;
+    private JPanel panel1;
     private JComboBox comboBox1;
+    private JPanel panel2;
     private JComboBox comboBox2;
+    private JPanel panel4;
+    private JScrollPane scrollPane1;
     private JList list1;
     private JButton button2;
     private JTextField textField1;
+    private JPanel panel3;
+    private JPanel panel5;
     private JCheckBox checkBox2;
     private JTextField textField2;
+    private JLabel label1;
+    private JPanel panel6;
     private JCheckBox checkBox3;
+    private JLabel label2;
+    private JLabel label3;
+    private JLabel label4;
     private JTextField textField5;
     private JTextField textField4;
+    private JPanel panel7;
     private JCheckBox checkBox4;
     private JTextField textField3;
+    private JLabel label5;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

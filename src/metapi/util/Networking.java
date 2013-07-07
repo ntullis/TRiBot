@@ -1,17 +1,13 @@
 package metapi.util;
 
 
-import metapi.mail.Message;
-import metapi.mail.MessagingException;
-import metapi.mail.Session;
-import metapi.mail.Transport;
-import metapi.mail.internet.InternetAddress;
-import metapi.mail.internet.MimeMessage;
 
+import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Properties;
 
 import static org.tribot.api.General.println;
 
@@ -55,65 +51,40 @@ public class Networking {
         return body;
     }
 
+
+
     public String fetchSettings() throws Exception {
         println("Loading settings from the server...");
         return readURL("http://www.snapbasecode.com/settings.php?action=get&script=" + script);
     }
 
+    public boolean sendNotification(String event, String description){
 
-    public boolean sendEmail(String email, String event, String msg) {
-
-
-        // Sender's email ID needs to be mentioned
-        String from = "MetaScripts1@gmail.com";
-        String pass = "BmXGIT4rcM6QDcu";
-        // Recipient's email ID needs to be mentioned.
-
-        String host = "smtp.gmail.com";
-
-        // Get system properties
-        Properties properties = System.getProperties();
-        // Setup javamail server
-        properties.put("javamail.smtp.starttls.enable", "true");
-        properties.put("javamail.smtp.host", host);
-        properties.put("javamail.smtp.user", from);
-        properties.put("javamail.smtp.password", pass);
-        properties.put("javamail.smtp.port", "587");
-        properties.put("javamail.smtp.auth", "true");
-
-        // Get the default Session object.
-        Session session = Session.getDefaultInstance(properties);
-
+        String website = "https://www.notifymyandroid.com/publicapi/notify?apikey=c096ba6f0d191f0c966a34ec5f3d38cd6ec8432671085171&application="+script+"&event="+event+"&description="+description;
+        URL url = null;
         try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+            url = new URL(website);
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO,
-                    new InternetAddress(email));
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
 
-            // Set Subject: header field
-            message.setSubject("MetaFisher | " + event);
-
-            // Now set the actual message
-            message.setText(msg);
-
-            // Send message
-            Transport transport = session.getTransport("smtp");
-            transport.connect(host, from, pass);
-            transport.sendMessage(message, message.getAllRecipients());
-            transport.close();
-            println("Sent message successfully....");
             return true;
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
         return false;
     }
+
+
+
 
 
 }
