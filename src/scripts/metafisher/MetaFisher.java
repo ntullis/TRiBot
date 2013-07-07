@@ -40,7 +40,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.18)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.19)
 public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
 
     private GraphicalInterface GUI;
@@ -153,6 +153,10 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                 MWalking.toggleRun(true, runTimer);
                 walk.walkToBank();
                 break;
+            case CLOSE_BANK:
+                Banking.close();
+                println("CLOSE_BANK");
+                break;
             case GUI:
                 break;
         }
@@ -180,6 +184,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
             antiBanTimer = new Timer(GUI.getAntiban());
         }
 
+
         if (antiBanTimer != null && !antiBanTimer.isRunning()) {
             Antiban antiban = new Antiban();
             antiban = null;
@@ -206,7 +211,13 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                 }
 
 
+
             }
+
+            if (Banking.isBankScreenOpen()) {
+                return States.CLOSE_BANK;
+            }
+
 
             if (oldCount > newCount) return States.INV_CHANGE;
             newCount = Inventory.getCount(fishIDs);
@@ -216,7 +227,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
             if (swirlpool.length > 0 && swirlpool != null && swirlpool[0].isInteractingWithMe()) return States.FISH;
 
-            if ((walk.fishIsNear()) && (Player.getAnimation() == -1)) return States.FISH;
+            if ((walk.fishIsNear()) && (Player.getAnimation() == -1) && !Banking.isBankScreenOpen()) return States.FISH;
             else if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat())
                 return States.WALK_TO_FISH;
         }

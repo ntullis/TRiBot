@@ -775,7 +775,7 @@ public class GraphicalInterface extends JFrame {
                     textField3.setBounds(15, 60, 155, textField3.getPreferredSize().height);
 
                     //---- label5 ----
-                    label5.setText("Email:");
+                    label5.setText("Token:");
                     panel7.add(label5);
                     label5.setBounds(15, 40, 40, label5.getPreferredSize().height);
 

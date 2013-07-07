@@ -201,7 +201,7 @@ new FormModel {
 						} )
 						add( new FormComponent( "javax.swing.JLabel" ) {
 							name: "label5"
-							"text": "Email:"
+							"text": "Token:"
 						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 							"x": 15
 							"y": 40
