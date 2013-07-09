@@ -6,6 +6,9 @@ import scripts.metafisher.enums.FishTools;
 
 import java.util.HashMap;
 
+import static org.tribot.api.General.println;
+
+
 /**
  * Created with IntelliJ IDEA.
  * User: Jari
@@ -50,7 +53,16 @@ public class Drop {
         if (power) {
             for (RSItem item : Inventory.getAll()) {
                 if (item != null) {
-                    if (item.getID() == tool.getID() || item.getID() == tool.getIngredientID()) continue;
+
+                        if (item.getID() != tool.getID()) {
+
+                            if (item.getID() == tool.getIngredientID()) continue;
+
+                            println("Dropping "+item.getID()+"...");
+                            Inventory.drop(item.getID());
+                        }
+
+
 
 
                 }
@@ -62,6 +74,7 @@ public class Drop {
 
                 for (RSItem item : Inventory.find(Integer.parseInt(dropList.get(i).toString()))) {
                     if (item != null) {
+                        println("Dropping "+item.getID()+"...");
                         Inventory.drop(item.getID());
 
                     }

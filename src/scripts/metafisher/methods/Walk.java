@@ -35,12 +35,16 @@ public class Walk {
 
         switch (bank) {
            case CATHERBY:
-                Path = new RSTile[]{new RSTile(2809, 3440, 0),new RSTile(2809, 3439, 0),new RSTile(2809, 3438, 0),new RSTile(2809, 3437, 0),new RSTile(2810, 3436, 0)
-                        ,new RSTile(2811, 3436, 0),new RSTile(2812, 3436, 0),new RSTile(2813, 3436, 0),new RSTile(2814, 3436, 0),new RSTile(2815, 3436, 0)
-                        ,new RSTile(2816, 3436, 0),new RSTile(2817, 3436, 0),new RSTile(2818, 3436, 0),new RSTile(2819, 3436, 0),new RSTile(2820, 3436, 0),
-                        new RSTile(2821, 3436, 0),new RSTile(2822, 3436, 0),new RSTile(2823, 3436, 0),new RSTile(2824, 3436, 0),new RSTile(2825, 3436, 0),
-                        new RSTile(2826, 3436, 0),new RSTile(2827, 3436, 0),new RSTile(2828, 3436, 0),new RSTile(2829, 3436, 0),new RSTile(2830, 3436, 0),
-                        new RSTile(2831, 3436, 0),new RSTile(2832, 3436, 0),new RSTile(2833, 3436, 0),new RSTile(2834, 3436, 0)};
+                Path = new RSTile[]{new RSTile(2810, 3441, 0),new RSTile(2810, 3440, 0),new RSTile(2809, 3439, 0),new RSTile(2809, 3438, 0),new RSTile(2809, 3437, 0),new RSTile(2810, 3436, 0),
+                        new RSTile(2811, 3435, 0),new RSTile(2812, 3435, 0),new RSTile(2812, 3434, 0),new RSTile(2813, 3434, 0),new RSTile(2814, 3435, 0),new RSTile(2815, 3435, 0),
+                        new RSTile(2816, 3435, 0),new RSTile(2817, 3436, 0),new RSTile(2818, 3436, 0),new RSTile(2819, 3436, 0),new RSTile(2820, 3436, 0),new RSTile(2821, 3436, 0),
+                        new RSTile(2822, 3436, 0),new RSTile(2823, 3436, 0),new RSTile(2824, 3436, 0),new RSTile(2825, 3436, 0),new RSTile(2826, 3436, 0),new RSTile(2827, 3436, 0),
+                        new RSTile(2828, 3436, 0),new RSTile(2830, 3436, 0),new RSTile(2831, 3436, 0),new RSTile(2832, 3436, 0),new RSTile(2833, 3436, 0),new RSTile(2834, 3435, 0),
+                        new RSTile(2834, 3434, 0),new RSTile(2835, 3433, 0),new RSTile(2836, 3433, 0),new RSTile(2836, 3432, 0),new RSTile(2837, 3432, 0),new RSTile(2838, 3432, 0),
+                        new RSTile(2839, 3432, 0),new RSTile(2840, 3433, 0),new RSTile(2841, 3433, 0),new RSTile(2842, 3433, 0),new RSTile(2843, 3433, 0),new RSTile(2844, 3433, 0),
+                        new RSTile(2845, 3433, 0),new RSTile(2846, 3433, 0),new RSTile(2847, 3433, 0),new RSTile(2848, 3433, 0),new RSTile(2849, 3433, 0),new RSTile(2850, 3432, 0),
+                        new RSTile(2851, 3432, 0),new RSTile(2852, 3431, 0),new RSTile(2853, 3431, 0),new RSTile(2854, 3431, 0),new RSTile(2855, 3431, 0),new RSTile(2856, 3431, 0),
+                        new RSTile(2857, 3430, 0),new RSTile(2858, 3429, 0),new RSTile(2859, 3428, 0),new RSTile(2860, 3427, 0)};
                 break;
            case AL_KHARID:
                 Path = new RSTile[]{new RSTile(3270, 3167, 0),new RSTile(3271, 3167, 0),new RSTile(3272, 3167, 0),new RSTile(3273, 3166, 0),new RSTile(3273, 3165, 0),new RSTile(3273, 3164, 0),

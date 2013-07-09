@@ -40,7 +40,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.19)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.20)
 public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
 
     private GraphicalInterface GUI;
@@ -51,7 +51,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     private Drop drop;
 
     private FishTools toolEnum;
-    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327, 349};
+    private int[] fishIDs = {331, 335, 363, 341, 353, 359, 371, 377, 317, 321, 345, 327, 349, 383};
 
     private HashMap dropMap;
 
@@ -130,6 +130,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                 walk.walkToFish();
                 break;
             case DROP:
+
                 drop.dropAll();
                 break;
             case INV_CHANGE:
