@@ -40,7 +40,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.20)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.21)
 public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
 
     private GraphicalInterface GUI;
@@ -151,8 +151,24 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                 }
                 break;
             case INCOMBAT:
-                MWalking.toggleRun(true, runTimer);
-                walk.walkToBank();
+
+                RSNPC n[] = NPCs.find(96);
+
+                boolean safe = false;
+
+                if (n != null && n.length > 0) {
+                    for (int i = 0 ; i < n.length; i++) {
+                        if (n[i].isInteractingWithMe()) {
+                            safe = true;
+                            break;
+                        }
+                    }
+                }
+                if (!safe) {
+                    MWalking.toggleRun(true, runTimer);
+                    walk.walkToBank();
+                }
+
                 break;
             case CLOSE_BANK:
                 Banking.close();
@@ -176,6 +192,9 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
 
         if (!guiDone) return States.GUI;
+
+
+
 
         if (Player.getRSPlayer().isInCombat()) return States.INCOMBAT;
 
@@ -228,8 +247,8 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
             if (swirlpool.length > 0 && swirlpool != null && swirlpool[0].isInteractingWithMe()) return States.FISH;
 
-            if ((walk.fishIsNear()) && (Player.getAnimation() == -1) && !Banking.isBankScreenOpen()) return States.FISH;
-            else if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat())
+            if (walk.fishIsNear() && Player.getAnimation() == -1 && !Banking.isBankScreenOpen()) return States.FISH;
+            if (!walk.fishIsNear() && Player.getAnimation() == -1 && !Player.getRSPlayer().isInCombat())
                 return States.WALK_TO_FISH;
         }
 
