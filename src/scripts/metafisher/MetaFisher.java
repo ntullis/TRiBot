@@ -40,7 +40,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.21)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.22)
 public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
 
     private GraphicalInterface GUI;
