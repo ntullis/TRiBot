@@ -42,7 +42,7 @@ public class Walk {
                Path = new RSTile[]{new RSTile(3276, 3141, 0),new RSTile(3271, 3146, 0),new RSTile(3269, 3153, 0),new RSTile(3273, 3160, 0),new RSTile(3269, 3167, 0)};
                 break;
             case DRAYNOR:
-                Path = new RSTile[]{new RSTile(3090, 3228, 0),new RSTile(3090, 3235, 0),new RSTile(3087, 3242, 0),new RSTile(3092, 3247, 0)};
+                Path = new RSTile[]{new RSTile(3090, 3228, 0),new RSTile(3090, 3235, 0),new RSTile(3087, 3242, 0),new RSTile(3092, 3247, 0),new RSTile(3093, 3243, 0)};
                 break;
             case EDGEVILLE:
                 Path = new RSTile[]{new RSTile(3100, 3422, 0),new RSTile(3100, 3429, 0),new RSTile(3097, 3436, 0),new RSTile(3093, 3443, 0),new RSTile(3091, 3450, 0),new RSTile(3088, 3457, 0),
@@ -74,8 +74,18 @@ public class Walk {
     }
 
     public boolean bankIsNear() {
+
+
+
         RSNPC banker[] = NPCs.find(bank.getBankerID());
-        return banker.length > 0 && banker != null && Player.getPosition().distanceTo(banker[0].getPosition()) < bank.getMaxDistance();
+
+        if (banker.length > 0) {
+            println("banker = "+banker[0].getID());
+            println("distanceToBank = "+Player.getPosition().distanceTo(banker[0].getPosition()));
+        }
+
+
+        return banker.length > 0 && banker != null && Player.getPosition().distanceTo(banker[0].getPosition()) <= bank.getMaxDistance();
     }
 
     public boolean boothIsNear() {

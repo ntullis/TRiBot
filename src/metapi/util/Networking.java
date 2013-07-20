@@ -72,6 +72,8 @@ public class Networking {
             conn.setDoInput(true);
             conn.setDoOutput(true);
 
+            println("return: "+conn.getInputStream().read());
+
             return true;
         } catch (MalformedURLException e) {
             e.printStackTrace();

@@ -3,15 +3,14 @@ package scripts.metafisher;
 
 import metapi.MWalking;
 import metapi.enums.Banks;
-import metapi.util.Networking;
-import metapi.util.Timer;
-import metapi.util.Timing;
+import metapi.util.*;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.api2007.types.RSNPC;
 import org.tribot.api2007.types.RSTile;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
+import org.tribot.script.interfaces.Ending;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.RandomEvents;
 import scripts.metafisher.enums.FishPools;
@@ -27,7 +26,6 @@ import java.util.HashMap;
 
 
 import static metapi.util.Timing.CSleep;
-import static org.tribot.api.General.println;
 import static org.tribot.api.General.random;
 import static org.tribot.api2007.Login.logout;
 
@@ -40,8 +38,8 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.22)
-public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents{
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.23)
+public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents, Ending {
 
     private GraphicalInterface GUI;
 
@@ -61,11 +59,18 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     private int oldCount;
     private int newCount;
 
-    private int FISHES_CAUGHT = 0;
+    public static long time;
+    public static int gainedXP = 0;
+
+    public static int FISHES_CAUGHT = 0;
 
     private Timer logoutTimer = null;
     private Timer antiBanTimer = null;
     private Timer runTimer = null;
+
+    private NotifyRunnable notifyRunnable;
+    Thread notifyThread = null;
+
 
     public static boolean guiDone = false;
 
@@ -323,8 +328,18 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
         }
 
 
+
+        notifyRunnable = new NotifyRunnable(networking);
+        notifyThread = new Thread(notifyRunnable);
+
+        notifyThread.setDaemon(true);
+        notifyThread.start();
+
+
         return getState();
     }
+
+
 
     private Image getImage(String url) {
         try {
@@ -342,44 +357,23 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     private final Image img1 = getImage("http://i.imgur.com/Exwhyeo.png");
 
 
-    public static String format(long time) {
-        StringBuilder t = new StringBuilder();
-        long total_secs = time / 1000;
-        long total_mins = total_secs / 60;
-        long total_hrs = total_mins / 60;
-        int secs = (int) total_secs % 60;
-        int mins = (int) total_mins % 60;
-        int hrs = (int) total_hrs % 60;
-        if (hrs < 10) {
-            t.append("0");
-        }
-        t.append(hrs);
-        t.append(":");
-        if (mins < 10) {
-            t.append("0");
-        }
-        t.append(mins);
-        t.append(":");
-        if (secs < 10) {
-            t.append("0");
-        }
-        t.append(secs);
-        return t.toString();
-    }
+
 
     @Override
     public void onPaint(Graphics graphics) {
         Graphics2D g = (Graphics2D) graphics;
         g.drawImage(img1, 331, 206, null);
 
-        int gainedXP = Skills.getXP("FISHING") - startXP;
+        gainedXP = Skills.getXP("FISHING") - startXP;
 
-        long time = System.currentTimeMillis() - startTime;
+        time = System.currentTimeMillis() - startTime;
+
+
 
 
         g.setFont(font1);
         g.setColor(color1);
-        g.drawString("Time Running: " + format(time), 333, 224);
+        g.drawString("Time Running: " + Utils.format(time), 333, 224);
         g.drawString("XP Gained: " + gainedXP, 334, 247);
         g.drawString("XP Till Level: " + Skills.getXPToLevel("FISHING", (Skills.getCurrentLevel("FISHING") + 1)), 332, 271);
         g.drawString("Current Level: " + Skills.getCurrentLevel("FISHING"), 332, 296);
@@ -408,5 +402,11 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     @Override
     public void randomSolved(RANDOM_SOLVERS random_solvers) {
 
+    }
+
+    @Override
+    public void onEnd() {
+        notifyThread.interrupt();
+        println("Shutdown");
     }
 }
