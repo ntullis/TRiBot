@@ -80,6 +80,10 @@ public class GraphicalInterface extends JFrame {
 
     }
 
+    public boolean getCleverbot() {
+        return checkBox5.isSelected();
+    }
+
     public boolean getReport() {
         return checkBox4.isSelected();
     }
@@ -447,6 +451,8 @@ public class GraphicalInterface extends JFrame {
         checkBox4 = new JCheckBox();
         textField3 = new JTextField();
         label5 = new JLabel();
+        panel8 = new JPanel();
+        checkBox5 = new JCheckBox();
 
         //======== this ========
         setTitle("Setup");
@@ -794,6 +800,31 @@ public class GraphicalInterface extends JFrame {
                     }
                 }
 
+                //======== panel8 ========
+                {
+                    panel8.setBorder(new TitledBorder("Chatbot"));
+                    panel8.setLayout(null);
+
+                    //---- checkBox5 ----
+                    checkBox5.setText("Cleverbot");
+                    panel8.add(checkBox5);
+                    checkBox5.setBounds(10, 30, 90, checkBox5.getPreferredSize().height);
+
+                    { // compute preferred size
+                        Dimension preferredSize = new Dimension();
+                        for(int i = 0; i < panel8.getComponentCount(); i++) {
+                            Rectangle bounds = panel8.getComponent(i).getBounds();
+                            preferredSize.width = Math.max(bounds.x + bounds.width, preferredSize.width);
+                            preferredSize.height = Math.max(bounds.y + bounds.height, preferredSize.height);
+                        }
+                        Insets insets = panel8.getInsets();
+                        preferredSize.width += insets.right;
+                        preferredSize.height += insets.bottom;
+                        panel8.setMinimumSize(preferredSize);
+                        panel8.setPreferredSize(preferredSize);
+                    }
+                }
+
                 GroupLayout panel3Layout = new GroupLayout(panel3);
                 panel3.setLayout(panel3Layout);
                 panel3Layout.setHorizontalGroup(
@@ -805,20 +836,26 @@ public class GraphicalInterface extends JFrame {
                                     .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                                     .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                .addComponent(panel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(panel7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(panel8, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)))
                             .addContainerGap(53, Short.MAX_VALUE))
                 );
                 panel3Layout.setVerticalGroup(
                     panel3Layout.createParallelGroup()
                         .addGroup(GroupLayout.Alignment.TRAILING, panel3Layout.createSequentialGroup()
                             .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                                .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panel3Layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                                 .addGroup(panel3Layout.createSequentialGroup()
                                     .addComponent(panel7, GroupLayout.PREFERRED_SIZE, 93, GroupLayout.PREFERRED_SIZE)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-                            .addGap(17, 17, 17))
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(panel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panel3Layout.createSequentialGroup()
+                                    .addComponent(panel8, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(panel6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+                            .addGap(23, 23, 23))
                 );
             }
             tabbedPane1.addTab("Extras", panel3);
@@ -877,5 +914,7 @@ public class GraphicalInterface extends JFrame {
     private JCheckBox checkBox4;
     private JTextField textField3;
     private JLabel label5;
+    private JPanel panel8;
+    private JCheckBox checkBox5;
     // JFormDesigner - End of variables declaration  //GEN-END:variables
 }

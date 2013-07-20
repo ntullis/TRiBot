@@ -100,8 +100,8 @@ new FormModel {
 					"title": "Basic"
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
-					"$horizontalGroup": "par l {seq {space :::p, par l {seq {comp panel5:::p::p, space :::p, comp panel6:::p::p}, comp panel7::l:p::p}, space ::53:x}}"
-					"$verticalGroup": "par l {seq t {space :::x, par t {comp panel6:::p::p, seq {comp panel7:::p:93:p, space s:::p, comp panel5:::p::p}}, space :p:17:p}}"
+					"$horizontalGroup": "par l {seq {space :::p, par l {seq l {comp panel5:::p::p, space :::p, comp panel6:::p::p}, seq l {comp panel7:::p::p, space s:::p, comp panel8:::p:122:p}}, space ::53:x}}"
+					"$verticalGroup": "par l {seq t {space :::x, par l:::p {seq {comp panel7:::p:93:p, space u:::p, comp panel5:::p::p}, seq {comp panel8:::p:68:p, space :::x, comp panel6:::p::p}}, space :p:23:p}}"
 				} ) {
 					name: "panel3"
 					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class org.jdesktop.layout.GroupLayout ) {
@@ -206,6 +206,18 @@ new FormModel {
 							"x": 15
 							"y": 40
 							"width": 40
+						} )
+					} )
+					add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jformdesigner.runtime.NullLayout ) ) {
+						name: "panel8"
+						"border": new javax.swing.border.TitledBorder( "Chatbot" )
+						add( new FormComponent( "javax.swing.JCheckBox" ) {
+							name: "checkBox5"
+							"text": "Cleverbot"
+						}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+							"x": 10
+							"y": 30
+							"width": 90
 						} )
 					} )
 				}, new FormLayoutConstraints( null ) {

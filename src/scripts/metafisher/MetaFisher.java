@@ -1,9 +1,13 @@
 package scripts.metafisher;
 
-
 import metapi.MWalking;
+import metapi.chatbot.ChatterBot;
+import metapi.chatbot.ChatterBotFactory;
+import metapi.chatbot.ChatterBotSession;
+import metapi.chatbot.ChatterBotType;
 import metapi.enums.Banks;
 import metapi.util.*;
+import org.tribot.api.input.Keyboard;
 import org.tribot.api2007.*;
 import org.tribot.api2007.types.RSGroundItem;
 import org.tribot.api2007.types.RSNPC;
@@ -11,6 +15,7 @@ import org.tribot.api2007.types.RSTile;
 import org.tribot.script.EnumScript;
 import org.tribot.script.ScriptManifest;
 import org.tribot.script.interfaces.Ending;
+import org.tribot.script.interfaces.MessageListening07;
 import org.tribot.script.interfaces.Painting;
 import org.tribot.script.interfaces.RandomEvents;
 import scripts.metafisher.enums.FishPools;
@@ -38,8 +43,8 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.23)
-public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents, Ending {
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.24)
+public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents, Ending, MessageListening07 {
 
     private GraphicalInterface GUI;
 
@@ -70,6 +75,8 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
     private NotifyRunnable notifyRunnable;
     Thread notifyThread = null;
+
+    ChatterBotSession bot1session;
 
 
     public static boolean guiDone = false;
@@ -258,6 +265,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
         }
 
 
+
         return States.IDLE;
     }
 
@@ -335,6 +343,20 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
         notifyThread.setDaemon(true);
         notifyThread.start();
 
+        if (GUI.getCleverbot()) {
+            ChatterBotFactory factory = new ChatterBotFactory();
+
+            ChatterBot bot1 = null;
+            try {
+                bot1 = factory.create(ChatterBotType.CLEVERBOT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            bot1session = bot1.createSession();
+        }
+
+
+
 
         return getState();
     }
@@ -388,6 +410,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
     @Override
     public void onRandom(RANDOM_SOLVERS random_solvers) {
+
         networking.sendNotification("In random", "In random");
     }
 
@@ -408,5 +431,44 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     public void onEnd() {
         notifyThread.interrupt();
         println("Shutdown");
+    }
+
+    @Override
+    public void clanMessageRecieved(String s, String s2) {
+
+    }
+
+    @Override
+    public void playerMessageRecieved(String s, String s2) {
+
+        if (GUI.getCleverbot()) {
+            if (s2 != Player.getRSPlayer().getName()) {
+                String string = s2;
+
+                try {
+                    string = bot1session.think(string);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if (!string.equals(s2)) {
+                    Keyboard.typeSend(string);
+                    println("Cleverbot: "+string);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+    }
+
+    @Override
+    public void serverMessageRecieved(String s) {
+
     }
 }
