@@ -12,8 +12,8 @@ public enum FishPools {
     TUNA("Swordfish/Tuna", 2544, 2597),
     LOBSTER("Lobster", 2544, 2597),
     SHRIMPS("Anchovies/Shrimps", 309, 330, 318, 3883, 3886, 3877, 2603, 2606),
-    HERRING("Herring/Sardine/Pike", 2591, 2596, 2603, 2606),
-    SALMON("Salmon/Trout", 2591, 2596),
+    HERRING("Herring/Sardine/Pike", 2591, 2596, 2603, 2606, 2604),
+    SALMON("Salmon/Trout", 2591, 2596, 2604),
     SHARK("Shark", 2545, 2598);
 
 

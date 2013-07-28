@@ -28,6 +28,7 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 import static metapi.util.Timing.CSleep;
@@ -43,7 +44,7 @@ import static org.tribot.api2007.Login.logout;
  * To change this template use File | Settings | File Templates.
  */
 
-@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.24)
+@ScriptManifest(authors = {"Merphz"}, category = "Fishing", name = "MetaFisher", version = 1.27)
 public class MetaFisher extends EnumScript<States> implements Painting, RandomEvents, Ending, MessageListening07 {
 
     private GraphicalInterface GUI;
@@ -64,8 +65,8 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     private int oldCount;
     private int newCount;
 
-    public static long time;
-    public static int gainedXP = 0;
+    public long time;
+    public int gainedXP;
 
     public static int FISHES_CAUGHT = 0;
 
@@ -81,21 +82,11 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
     public static boolean guiDone = false;
 
-    private RSTile[] tileBlacklist = new RSTile[]{new RSTile(2605, 3395, 0), new RSTile(2605, 3396, 0)};
 
     private Networking networking;
 
 
-    public boolean badTile(RSTile tile) {
 
-        for (int i = 0; i < tileBlacklist.length; i++) {
-            if (tile.equals(tileBlacklist[i])) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     public boolean pickupTool() {
         RSGroundItem[] tool = GroundItems.findNearest(toolEnum.getID());
@@ -126,7 +117,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
         switch (scriptState) {
             case BANK:
                 println("DEPOSIT");
-                bank.deposit();
+                bank.deposit(true);
                 break;
             case WALK_TO_BANK:
                 println("WALK_TO_BANK");
@@ -230,7 +221,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                     return States.DROP;
                 }
             }
-            if (walk.bankIsNear()) return States.BANK;
+            if (walk.boothIsNear()) return States.BANK;
             else return States.WALK_TO_BANK;
         } else {
             if (Inventory.getCount(toolEnum.getID()) == 0 || (toolEnum.getIngredientID() != -1 && Inventory.getCount(toolEnum.getIngredientID()) == 0)) {
@@ -238,7 +229,7 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
                 if (tool.length > 0 && tool != null && PathFinding.canReach(tool[0].getPosition(),false)) {
                     return States.PICKUP_TOOL;
                 } else {
-                    if (!walk.bankIsNear()) return States.WALK_TO_BANK;
+                    if (!walk.boothIsNear()) return States.WALK_TO_BANK;
                     else return States.WITHDRAW_TOOL;
                 }
 
@@ -337,11 +328,15 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
 
 
 
-        notifyRunnable = new NotifyRunnable(networking);
-        notifyThread = new Thread(notifyRunnable);
+        if (GUI.getNMAToken() != null) {
+            notifyRunnable = new NotifyRunnable(networking, this);
+            notifyThread = new Thread(notifyRunnable);
 
-        notifyThread.setDaemon(true);
-        notifyThread.start();
+            notifyThread.setDaemon(true);
+            notifyThread.start();
+        }
+
+
 
         if (GUI.getCleverbot()) {
             ChatterBotFactory factory = new ChatterBotFactory();
@@ -411,13 +406,13 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     @Override
     public void onRandom(RANDOM_SOLVERS random_solvers) {
 
-        networking.sendNotification("In random", "In random");
+        networking.sendNotification("In_random", "In_random");
     }
 
     @Override
     public boolean randomFailed(RANDOM_SOLVERS random_solvers) {
 
-       networking.sendNotification("Random event failed", "Random event failed");
+       networking.sendNotification("Random_event_failed", "Random_event_failed");
 
         return false;
     }
@@ -442,19 +437,18 @@ public class MetaFisher extends EnumScript<States> implements Painting, RandomEv
     public void playerMessageRecieved(String s, String s2) {
 
         if (GUI.getCleverbot()) {
-            if (s2 != Player.getRSPlayer().getName()) {
+            if (!s.equals(Player.getRSPlayer().getName())) {
                 String string = s2;
 
+                println("Player: "+s);
                 try {
                     string = bot1session.think(string);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                if (!string.equals(s2)) {
                     Keyboard.typeSend(string);
                     println("Cleverbot: "+string);
-                }
+
             }
         }
 

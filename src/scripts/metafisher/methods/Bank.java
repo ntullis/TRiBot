@@ -51,9 +51,11 @@ public class Bank {
         return false;
     }
 
-    public boolean deposit() {
+    public boolean deposit(boolean booth) {
         if (!Banking.isBankScreenOpen()) {
-            MBanking.openBanker(chosenBank);
+            if (booth) {
+                MBanking.openBooth(chosenBank);
+            } else MBanking.openBanker(chosenBank);
         } else {
 
 

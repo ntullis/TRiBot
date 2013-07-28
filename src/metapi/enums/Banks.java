@@ -11,12 +11,12 @@ import org.tribot.api2007.types.RSTile;
  */
 public enum Banks {
     LUMBRIDGE("Lumbridge", 4, null, 18492, 18491, 4907),
-    CATHERBY("Catherby", 6, new RSTile(2809, 3439, 0), 0, 567, 568),
-    AL_KHARID("Al Kharid", 6, new RSTile(3270, 3165, 0), 7126, 569, 570),
-    DRAYNOR("Draynor", 7, new RSTile(3093, 3242, 0), 7126, 1740, 956, 567, 568),
-    EDGEVILLE("Edgeville", 4, new RSTile(3093, 3489, 0), 7126, 956, 1740),
-    FISHING_GUILD("Fishing Guild", 8, new RSTile(2587, 3420, 0), 23961, 567, 568),
-    SEER_VILLAGE("Seer's Village", 8, new RSTile(2739, 3496, 0), 25809, 567, 568);
+    CATHERBY("Catherby", 6, new RSTile(2809, 3439, 0), 2196, 567, 683),
+    AL_KHARID("Al Kharid", 6, new RSTile(3270, 3165, 0), 2196, 569, 570),
+    DRAYNOR("Draynor", 7, new RSTile(3093, 3242, 0), 2481, 1740, 956, 567, 568),
+    EDGEVILLE("Edgeville", 4, new RSTile(3093, 3489, 0), 2196, 567, 568),
+    FISHING_GUILD("Fishing Guild", 9, new RSTile(2587, 3420, 0), 2196, 567, 682),
+    SEER_VILLAGE("Seer's Village", 8, new RSTile(2739, 3496, 0), 25808, 567, 568);
 
 
     private final String BANK_NAME;

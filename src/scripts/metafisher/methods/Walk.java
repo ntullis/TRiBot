@@ -45,15 +45,15 @@ public class Walk {
                 Path = new RSTile[]{new RSTile(3090, 3228, 0),new RSTile(3090, 3235, 0),new RSTile(3087, 3242, 0),new RSTile(3092, 3247, 0),new RSTile(3093, 3243, 0)};
                 break;
             case EDGEVILLE:
-                Path = new RSTile[]{new RSTile(3100, 3422, 0),new RSTile(3100, 3429, 0),new RSTile(3097, 3436, 0),new RSTile(3093, 3443, 0),new RSTile(3091, 3450, 0),new RSTile(3088, 3457, 0),
-                        new RSTile(3086, 3464, 0),new RSTile(3080, 3468, 0),new RSTile(3080, 3475, 0),new RSTile(3080, 3482, 0),new RSTile(3086, 3486, 0),new RSTile(3092, 3490, 0), new RSTile(3094, 3489, 0)};
+                Path = new RSTile[]{new RSTile(3103, 3430, 0),new RSTile(3098, 3435, 0),new RSTile(3094, 3441, 0),new RSTile(3091, 3448, 0),new RSTile(3090, 3455, 0)
+                        ,new RSTile(3088, 3462, 0),new RSTile(3081, 3466, 0),new RSTile(3080, 3473, 0),new RSTile(3080, 3480, 0),new RSTile(3084, 3486, 0),new RSTile(3094, 3489, 0)};
                 break;
             case FISHING_GUILD:
                 Path = new RSTile[]{new RSTile(2606, 3402, 0),new RSTile(2604, 3409, 0),new RSTile(2597, 3409, 0),new RSTile(2593, 3415, 0),new RSTile(2587, 3419, 0)};
                 break;
            case SEER_VILLAGE:
                Path = new RSTile[]{new RSTile(2717, 3533, 0),new RSTile(2724, 3533, 0),new RSTile(2729, 3528, 0),new RSTile(2734, 3523, 0),new RSTile(2737, 3516, 0),new RSTile(2740, 3509, 0),
-                       new RSTile(2740, 3502, 0),new RSTile(2740, 3495, 0),new RSTile(2735, 3489, 0),new RSTile(2728, 3486, 0), new RSTile(2726, 3492, 0)};
+                       new RSTile(2740, 3502, 0),new RSTile(2740, 3495, 0),new RSTile(2735, 3489, 0),new RSTile(2728, 3486, 0), new RSTile(2726, 3491, 0)};
                 break;
         }
 
@@ -90,7 +90,7 @@ public class Walk {
 
     public boolean boothIsNear() {
         RSObject booth[] = Objects.findNearest(bank.getMaxDistance(), bank.getBoothID());
-        return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) < bank.getMaxDistance();
+        return booth.length > 0 && booth != null && Player.getPosition().distanceTo(booth[0].getPosition()) <= bank.getMaxDistance() && PathFinding.canReach(booth[0].getPosition(), true);
     }
 
     public boolean fishIsNear() {

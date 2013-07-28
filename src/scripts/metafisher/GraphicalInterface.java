@@ -70,7 +70,7 @@ public class GraphicalInterface extends JFrame {
         return Integer.parseInt(textField2.getText()) * 60000;
     }
 
-    public String getEmail() {
+    public String getNMAToken() {
 
         if (checkBox4.isSelected()) {
             return textField3.getText();
@@ -79,6 +79,8 @@ public class GraphicalInterface extends JFrame {
         return null;
 
     }
+
+
 
     public boolean getCleverbot() {
         return checkBox5.isSelected();
@@ -158,7 +160,7 @@ public class GraphicalInterface extends JFrame {
 
         String url = "http://www.snapbasecode.com/settings.php?action=post&script=MetaFisher&loc=" + comboBox1.getSelectedIndex() +
                 "&fish=" + comboBox2.getSelectedIndex() + "&pFish=" + p + "&drops=" + builder.toString() + "&aBan=" + a + "&aMin=" + getAntibanMin() +
-                "&aMax=" + getAntibanMax() + "&email=" + getEmail() + "&logout=" + l + "&logTime=" + getLogTime() + "&report=" + r;
+                "&aMax=" + getAntibanMax() + "&email=" + getNMAToken() + "&logout=" + l + "&logTime=" + getLogTime() + "&report=" + r;
         try {
             networking.readURL(url);
         } catch (Exception e) {
